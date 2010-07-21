@@ -1,2 +1,2 @@
-recursive-include tw2/forms/templates *
-recursive-include tw2/forms/static *
+recursive-include tw2/jit/templates *
+recursive-include tw2/jit/static *
