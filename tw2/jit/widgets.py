@@ -3,6 +3,79 @@ import tw2.core as twc, re, itertools, webob, cgi
 #--
 # Basic Fields
 #--
+class JitWidget(twc.Widget):
+    name = twc.Variable(
+        description='dom name',
+        request_local=False,
+        attribute=True,
+        default=property(lambda s: s.compound_id))
+
+class AreaChart(JitWidget):
+    template = "tw2.jit.templates.areachart"
+    animate = twc.Param(
+        '(boolean) Whether to add animated transitions ' +
+        'when filtering/restoring stacks',
+        default=True, attribute=True, request_local=False)
+    offset = twc.Param(
+        '(number) Adds margin between the visualziation ' + 
+        'and the canvas.',
+        default=25, attribute=True, request_local=False)
+    labelOffset = twc.Param(
+        '(number) Adds margin between the label and the ' +
+        'default place where it should be drawn.',
+        default=3, attribute=True, request_local=False)
+    type = twc.Param(
+        '(string) Stack style.  Possible values are ' + 
+        '"stacked", "stacked:gradient" to add gradients.',
+        default='stacked', attribute=True, request_local=False)
+    selectOnHover = twc.Param(
+        '(boolean) If true, it will add a mark to the ' +
+        'hovered stack.',
+        default=True, attribute=True, request_local=False)
+    showAggregates = twc.Param(
+        '(boolean) Display the sum of the values of the ' +
+        'different stacks.',
+        default=True, attribute=True, request_local=False)
+    showLabels = twc.Param(
+        '(boolean) Display the name of the slots.',
+        default=True, attribute=True, request_local=False)
+    filterOnClick = twc.Param(
+        '(boolean) Select the clicked stack by hiding ' +
+        'all other stacks.',
+        default=True, attribute=True, request_local=False)
+    restoreOnRightClick = twc.Param(
+        '(boolean) Show all stacks by right clicking.',
+        default=True, attribute=True, request_local=False)
+
+#BarChart
+class BarChart(JitWidget):
+    pass
+#PieChart
+class PieChart(JitWidget):
+    pass
+#TreeMap
+class TreeMap(JitWidget):
+    pass
+#Force Directed
+class ForceDirected(JitWidget):
+    pass
+#Radial Graph
+class RadialGraph(JitWidget):
+    pass
+#Sunburst
+class Sunburst(JitWidget):
+    pass
+#Icicle
+class Icicle(JitWidget):
+    pass
+#SpaceTree
+class SpaceTree(JitWidget):
+    pass
+#HyperTree
+class HyperTree(JitWidget):
+    pass
+
+# TODO -- delete after here
 class FormField(twc.Widget):
     name = twc.Variable('dom name', request_local=False, attribute=True, default=property(lambda s: s.compound_id))
 
