@@ -12,6 +12,10 @@ jit_yc_js = JSLink(modname=__name__, filename="%s/jit-yc.js" % jit_base)
 jit_js = JSLink(modname=__name__, filename="%s/jit.js" % jit_base)
 
 class JitWidget(twc.Widget):
+    # TODO -- what's the right way to choose minified or not?
+    #resources = [jit_yc_js]
+    resources = [jit_js]
+
     injectInto = twc.Variable(
         description='dom name',
         request_local=False,
@@ -27,49 +31,6 @@ class JitWidget(twc.Widget):
         request_local=False,
         attribute=True,
         default='300px')
-     
-class AreaChart(JitWidget):
-    # TODO -- redo this with mako to have an example of either
-    template = "genshi:tw2.jit.templates.areachart"
-
-    # TODO -- what's the right way to choose minified or not?
-    #resources = [jit_yc_js]
-    resources = [jit_js]
-
-    animate = twc.Param(
-        '(boolean) Whether to add animated transitions ' +
-        'when filtering/restoring stacks',
-        default=True, attribute=True, request_local=False)
-    offset = twc.Param(
-        '(number) Adds margin between the visualiziation ' + 
-        'and the canvas.',
-        default=25, attribute=True, request_local=False)
-    labelOffset = twc.Param(
-        '(number) Adds margin between the label and the ' +
-        'default place where it should be drawn.',
-        default=3, attribute=True, request_local=False)
-    type = twc.Param(
-        '(string) Stack style.  Possible values are ' + 
-        '"stacked", "stacked:gradient" to add gradients.',
-        default='stacked', attribute=True, request_local=False)
-    selectOnHover = twc.Param(
-        '(boolean) If true, it will add a mark to the ' +
-        'hovered stack.',
-        default=True, attribute=True, request_local=False)
-    showAggregates = twc.Param(
-        '(boolean) Display the sum of the values of the ' +
-        'different stacks.',
-        default=True, attribute=True, request_local=False)
-    showLabels = twc.Param(
-        '(boolean) Display the name of the slots.',
-        default=True, attribute=True, request_local=False)
-    filterOnClick = twc.Param(
-        '(boolean) Select the clicked stack by hiding ' +
-        'all other stacks.',
-        default=True, attribute=True, request_local=False)
-    restoreOnRightClick = twc.Param(
-        '(boolean) Show all stacks by right clicking.',
-        default=True, attribute=True, request_local=False)
     Label = twc.Param(
         '(dict) Of the form Options.Label in the jit docs.',
         default={
@@ -90,44 +51,64 @@ class AreaChart(JitWidget):
     #        onShow: JSFuncCall('$.empty'), 
     #        onHide: JSFuncCall('alert("onHide!");'),
         }, attribute=True, request_local=False)
+
+class JitChart(JitWidget):
+    animate = twc.Param(
+        '(boolean) Whether to add animated transitions ' +
+        'when filtering/restoring stacks',
+        default=True, attribute=True, request_local=False)
+    offset = twc.Param(
+        '(number) Adds margin between the visualiziation ' + 
+        'and the canvas.',
+        default=25, attribute=True, request_local=False)
+    type = twc.Param(
+        '(string) Stack style.  Possible values are ' + 
+        '"stacked", "stacked:gradient" to add gradients.',
+        default='stacked', attribute=True, request_local=False)
+    showLabels = twc.Param(
+        '(boolean) Display the name of the slots.',
+        default=True, attribute=True, request_local=False)
+    labelOffset = twc.Param(
+        '(number) Adds margin between the label and the ' +
+        'default place where it should be drawn.',
+        default=3, attribute=True, request_local=False)
     json = twc.Param(
         '(dict) Data to send to the widget.',
         default=AreaChartJSONDefaults, attribute=True, request_local=False)
-
     config = twc.Variable( 'jsonified version of other attrs.', default={} )
+
+class AreaChart(JitChart):
+    # TODO -- redo this with mako to have an example of either
+    template = "genshi:tw2.jit.templates.areachart"
+
+    selectOnHover = twc.Param(
+        '(boolean) If true, it will add a mark to the ' +
+        'hovered stack.',
+        default=True, attribute=True, request_local=False)
+    showAggregates = twc.Param(
+        '(boolean) Display the sum of the values of the ' +
+        'different stacks.',
+        default=True, attribute=True, request_local=False)
+    filterOnClick = twc.Param(
+        '(boolean) Select the clicked stack by hiding ' +
+        'all other stacks.',
+        default=True, attribute=True, request_local=False)
+    restoreOnRightClick = twc.Param(
+        '(boolean) Show all stacks by right clicking.',
+        default=True, attribute=True, request_local=False)
 
     def prepare(self):
         super(AreaChart, self).prepare()
         self.config = encoder.encode(self.attrs)
         self.json = encoder.encode(self.json)
 
-class BarChart(JitWidget):
+class BarChart(JitChart):
     # TODO -- redo this with mako to have an example of either
     template = "genshi:tw2.jit.templates.barchart"
 
-    # TODO -- what's the right way to choose minified or not?
-    #resources = [jit_yc_js]
-    resources = [jit_js]
-
-    animate = twc.Param(
-        '(boolean) Whether to add animated transitions ' +
-        'when filtering/restoring stacks',
-        default=True, attribute=True, request_local=False)
-    offset = twc.Param(
-        '(number) Adds margin between the visualiziation ' +
-        'and the canvas.',
-        default=25, attribute=True, request_local=False)
-    labelOffset = twc.Param(
-        '(number) Adds margin between the label and the ' +
-        'default place where it should be drawn.',
-        default=3, attribute=True, request_local=False)
     barsOffset = twc.Param(
         '(number) Separation between bars.',
         default=0, attribute=True, request_local=False)
-    type = twc.Param(
-        '(string) Stack style.  Possible values are ' +
-        '"stacked", "stacked:gradient" to add gradients.',
-        default='stacked', attribute=True, request_local=False)
     hoveredColor = twc.Param(
         '(string) Sets the selected color for a hovered bar stack.',
         default='#9fd4ff', attribute=True, request_local=False)
@@ -139,73 +120,22 @@ class BarChart(JitWidget):
         '(boolean) Display the sum of the values of the ' +
         'different stacks.',
         default=True, attribute=True, request_local=False)
-    showLabels = twc.Param(
-        '(boolean) Display the name of the slots.',
-        default=True, attribute=True, request_local=False)
-    Label = twc.Param(
-        '(dict) Of the form Options.Label in the jit docs.',
-        default={
-            'type': 'HTML',
-            'size': 9,
-            'family': 'Arial',
-            'color': 'black',
-        }, attribute=True, request_local=False)
-    # TODO -- this doesn't seem to work at all :(
-    Tips = twc.Param(
-        '(dict) Of the form of Options.Tips in the jit docs.',
-        default={
-            'enable' : True,
-            'type' : 'auto',
-            'offsetX' : 20,
-            'offsetY' : 20,
-    # TODO -- how do we go about this?
-    #        onShow: JSFuncCall('$.empty'), 
-    #        onHide: JSFuncCall('alert("onHide!");'),
-        }, attribute=True, request_local=False)
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=BarChartJSONDefaults, attribute=True, request_local=False)
-
-    config = twc.Variable( 'jsonified version of other attrs.', default={} )
 
     def prepare(self):
         super(BarChart, self).prepare()
         self.config = encoder.encode(self.attrs)
         self.json = encoder.encode(self.json)
-class PieChart(JitWidget):
+class PieChart(JitChart):
     # TODO -- redo this with mako to have an example of either
     template = "genshi:tw2.jit.templates.piechart"
 
-    # TODO -- what's the right way to choose minified or not?
-    #resources = [jit_yc_js]
-    resources = [jit_js]
-
-    animate = twc.Param(
-        '(boolean) Whether to add animated transitions ' +
-        'when filtering/restoring stacks',
-        default=True, attribute=True, request_local=False)
-    offset = twc.Param(
-        '(number) Adds margin between the visualiziation ' +
-        'and the canvas.',
-        default=25, attribute=True, request_local=False)
     sliceOffset = twc.Param(
         '(number) Separation between the center of the ' +
         'canvas and each pie slice.',
         default=0, attribute=True, request_local=False)
-    labelOffset = twc.Param(
-        '(number) Adds margin between the label and the ' +
-        'default place where it should be drawn.',
-        default=3, attribute=True, request_local=False)
-    type = twc.Param(
-        '(string) Stack style.  Possible values are ' +
-        '"stacked", "stacked:gradient" to add gradients.',
-        default='stacked', attribute=True, request_local=False)
     hoveredColor = twc.Param(
         '(string) Sets the selected color for a hovered pie stack.',
         default='#9fd4ff', attribute=True, request_local=False)
-    showLabels = twc.Param(
-        '(boolean) Display the name of the slots.',
-        default=True, attribute=True, request_local=False)
     resizeLabels = twc.Param(
         '(boolean|number) Resize the pie labels according to ' +
         'their stacked values.  Set a number for resizeLabels ' +
@@ -216,31 +146,6 @@ class PieChart(JitWidget):
         'charts.  Resize the height of the pie slices ' +
         'according to their current values.',
         default=False, attribute=True, request_local=False)
-    Label = twc.Param(
-        '(dict) Of the form Options.Label in the jit docs.',
-        default={
-            'type': 'HTML',
-            'size': 9,
-            'family': 'Arial',
-            'color': 'black',
-        }, attribute=True, request_local=False)
-    # TODO -- this doesn't seem to work at all :(
-    Tips = twc.Param(
-        '(dict) Of the form of Options.Tips in the jit docs.',
-        default={
-            'enable' : True,
-            'type' : 'auto',
-            'offsetX' : 20,
-            'offsetY' : 20,
-    # TODO -- how do we go about this?
-    #        onShow: JSFuncCall('$.empty'), 
-    #        onHide: JSFuncCall('alert("onHide!");'),
-        }, attribute=True, request_local=False)
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=PieChartJSONDefaults, attribute=True, request_local=False)
-
-    config = twc.Variable( 'jsonified version of other attrs.', default={} )
 
     def prepare(self):
         super(PieChart, self).prepare()
