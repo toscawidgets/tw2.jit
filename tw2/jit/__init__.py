@@ -5,7 +5,7 @@ This package contains the basic jit widgets.
 # TODO -- is this the right way todo this?
 jit_base = "static/Jit-2.0.0a"
 
-from widgets import (AreaChart)
+from widgets import (AreaChart, BarChart, PieChart)
 
 """
 from widgets import (Button, CheckBox, FieldSet, FileField, Form, HiddenField, ImageButton,
