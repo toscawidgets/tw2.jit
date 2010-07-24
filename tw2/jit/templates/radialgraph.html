@@ -1,0 +1,36 @@
+<div>
+<div style="background-color:#1a1a1a; width: $w.width; height: $w.height;" id="$w.compound_id"></div>
+<script language="javascript" type="text/javascript">
+(function() {
+    var config = $w.config;
+    var reg_js_attrs = $w.registered_javascript_attrs;
+    for ( var i in reg_js_attrs ) {
+        if ( reg_js_attrs[i] == true ) {
+            config[i] = eval(config[i]);
+        } else {
+            for ( var j in reg_js_attrs[i] ) {
+                if ( reg_js_attrs[i][j] ) {
+                    // this is done only to get around simplejson not accepting
+                    // javascript and tw2...JSSource being hard to understand.
+                    // rewrite if necessary or keep it :)
+                    config[i][j] = eval(config[i][j]) 
+                }
+            }
+        }
+    }
+    
+    var rgraph = new $$jit.RGraph(config);
+    rgraph.loadJSON($w.json);
+    //trigger small animation for kicks
+    rgraph.graph.eachNode(function(n) {
+        var pos = n.getPos();
+        pos.setc(-200, -200);
+    });
+    rgraph.compute('end');
+    rgraph.fx.animate({
+        modes:['polar'],
+        duration: 2000
+    });
+})();
+</script>
+</div>
