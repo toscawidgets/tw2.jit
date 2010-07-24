@@ -6,8 +6,9 @@ This package contains the basic jit widgets.
 jit_base = "static/Jit-2.0.0a"
 
 #from widgets import (AreaChart, BarChart, PieChart,
-#                     TreeMap, ForceDirectedGraph, RadialGraph)
-from widgets import RadialGraph
+#                     TreeMap, ForceDirectedGraph, RadialGraph,
+#                     Sunburst)
+from widgets import Sunburst
 
 """
 from widgets import (Button, CheckBox, FieldSet, FileField, Form, HiddenField, ImageButton,

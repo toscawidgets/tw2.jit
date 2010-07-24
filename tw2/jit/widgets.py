@@ -9,6 +9,7 @@ from tw2.jit.defaults import PieChartJSONDefaults
 from tw2.jit.defaults import TreeMapJSONDefaults
 from tw2.jit.defaults import ForceDirectedGraphJSONDefaults
 from tw2.jit.defaults import RadialGraphJSONDefaults
+from tw2.jit.defaults import SunburstJSONDefaults
 
 encoder = JSONEncoder() 
 
@@ -16,6 +17,7 @@ jit_yc_js = JSLink(modname=__name__, filename="%s/jit-yc.js" % jit_base)
 jit_js = JSLink(modname=__name__, filename="%s/jit.js" % jit_base)
 jit_css = CSSLink(modname=__name__, filename="static/css/jit_base.css")
 treemap_css = CSSLink(modname=__name__, filename="static/css/treemap.css")
+sunburst_css = CSSLink(modname=__name__, filename="static/css/sunburst.css")
 
 class JitWidget(twc.Widget):
     # TODO -- what's the right way to choose minified or not?
@@ -490,9 +492,109 @@ class RadialGraph(JitGraph):
         attribute=True, request_local=False)
 
     
-#Sunburst
 class Sunburst(JitWidget):
-    pass
+    resources = [jit_js, sunburst_css, jit_css]
+    template = "genshi:tw2.jit.templates.sunburst"
+
+    levelDistance = twc.Param(
+        '(number) Distance between levels.',
+        default=90, attribute=True, request_local=False)
+    Label = twc.Param(
+        '(dict)',
+        default = {
+            'type' : 'SVG',
+        }, attribute=True, request_local=False)
+    NodeStyles = twc.Param(
+        '(dict)',
+        default={
+            'enable': True,  
+            'type': 'SVG',  
+            'stylesClick': {  
+                'color': '#33dddd'  
+            },  
+            'stylesHover': {  
+                'color': '#dd3333'  
+            }  
+        }, attribute=True, request_local=False)
+    Tips = twc.Param(
+        '(dict)',
+        default={
+            'enable': True,  
+            'onShow': """
+            (function(tip, node) {  
+                var html = '<div class=\"tip-title\">' + node.name + '</div>';
+                var data = node.data;  
+                if('days' in data) {  
+                    html += '<b>Last modified:</b> ' + data.days + ' days ago';
+                }  
+                if('size' in data) {  
+                    html += '<br /><b>File size:</b> ' + Math.round(data.size / 1024) + 'KB';
+                }
+                tip.innerHTML = html;  
+            })"""}, attribute=True, request_local=False)
+    Events = twc.Param(
+        default= {
+            'enable': True,
+            'onClick': """
+        (function(node) {  
+         if(!node) return;  
+         //hide tip  
+         sb.tips.hide();  
+         //rotate  
+         sb.rotate(node, 'animate', {  
+           duration: 1000,  
+           transition: $jit.Trans.Quart.easeInOut  
+         });  
+       })"""}, attribute=True, request_local=False)
+    onCreateLabel = twc.Param(
+         '(string) javascript callback.',
+         default="""
+         (function(domElement, node){
+       var labels = sb.config.Label.type,  
+           aw = node.getData('angularWidth');  
+       if (labels === 'HTML' && (node._depth < 2 || aw > 2000)) {  
+         domElement.innerHTML = node.name;  
+       } else if (labels === 'SVG' && (node._depth < 2 || aw > 2000)) {  
+         domElement.firstChild.appendChild(document.createTextNode(node.name));  
+       }  
+     })""",
+         attribute=True, request_local=False)
+    onPlaceLabel = twc.Param(
+         '(string) javascript callback.',
+         default="""
+     (function(domElement, node){  
+       var labels = sb.config.Label.type;  
+       if (labels === 'SVG') {  
+         var fch = domElement.firstChild;  
+         var style = fch.style;  
+         style.display = '';  
+         style.cursor = 'pointer';  
+         style.fontSize = "0.8em";  
+         fch.setAttribute('fill', "#fff");  
+       } else if (labels === 'HTML') {  
+         var style = domElement.style;  
+         style.display = '';  
+         style.cursor = 'pointer';  
+         style.fontSize = "0.8em";  
+         style.color = "#ddd";  
+         var left = parseInt(style.left);  
+         var w = domElement.offsetWidth;  
+         style.left = (left - w / 2) + 'px';  
+       }  
+     })""", attribute=True, request_local=False)
+   
+    registered_javascript_attrs = {
+        'Tips' : { 'onShow' : True },
+        'Events' : { 'onClick' : True },
+        'onPlaceLabel' : True,
+        'onCreateLabel' : True,
+    }
+
+    json = twc.Param(
+        '(dict) Data to send to the widget.',
+        default=SunburstJSONDefaults,
+        attribute=True, request_local=False)
+
 #Icicle
 class Icicle(JitWidget):
     pass
