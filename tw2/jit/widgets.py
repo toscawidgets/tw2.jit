@@ -499,6 +499,12 @@ class Sunburst(JitWidget):
     levelDistance = twc.Param(
         '(number) Distance between levels.',
         default=90, attribute=True, request_local=False)
+    Node = twc.Param(
+        '(dict)',
+        default = {
+            'overridable' : True,
+            'type' : 'gradient-multipie',
+        }, attribute=True, request_local=False)
     Label = twc.Param(
         '(dict)',
         default = {
