@@ -502,13 +502,13 @@ class Sunburst(JitWidget):
     Label = twc.Param(
         '(dict)',
         default = {
-            'type' : 'SVG',
+            'type' : 'HTML',
         }, attribute=True, request_local=False)
     NodeStyles = twc.Param(
         '(dict)',
         default={
             'enable': True,  
-            'type': 'SVG',  
+            'type': 'HTML',  
             'stylesClick': {  
                 'color': '#33dddd'  
             },  
