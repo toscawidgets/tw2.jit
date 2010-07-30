@@ -3,6 +3,7 @@ from tw2.core.resources import JSLink, CSSLink
 from tw2.core.resources import JSSource
 from tw2.jit import jit_base
 from simplejson.encoder import JSONEncoder
+
 from tw2.jit.defaults import AreaChartJSONDefaults
 from tw2.jit.defaults import BarChartJSONDefaults
 from tw2.jit.defaults import PieChartJSONDefaults
@@ -10,6 +11,7 @@ from tw2.jit.defaults import TreeMapJSONDefaults
 from tw2.jit.defaults import ForceDirectedGraphJSONDefaults
 from tw2.jit.defaults import RadialGraphJSONDefaults
 from tw2.jit.defaults import SunburstJSONDefaults
+from tw2.jit.defaults import IcicleJSONDefaults
 
 encoder = JSONEncoder() 
 
@@ -18,6 +20,7 @@ jit_js = JSLink(modname=__name__, filename="%s/jit.js" % jit_base)
 jit_css = CSSLink(modname=__name__, filename="static/css/jit_base.css")
 treemap_css = CSSLink(modname=__name__, filename="static/css/treemap.css")
 sunburst_css = CSSLink(modname=__name__, filename="static/css/sunburst.css")
+icicle_css = CSSLink(modname=__name__, filename="static/css/icicle.css")
 
 class JitWidget(twc.Widget):
     # TODO -- what's the right way to choose minified or not?
@@ -603,7 +606,119 @@ class Sunburst(JitWidget):
 
 #Icicle
 class Icicle(JitWidget):
-    pass
+    resources = [jit_js, icicle_css, jit_css]
+    template = "genshi:tw2.jit.templates.icicle"
+
+    animate = twc.Param(
+        '(boolean)', default=True, attribute=True, request_local=False)
+
+    offset = twc.Param(
+        '(number)', default=1, attribute=True, request_local=False)
+
+    cushion = twc.Param(
+        '(boolean)', default=1, attribute=True, request_local=False)
+
+    constrained = twc.Param(
+        '(boolean)', default=True, attribute=True, request_local=False)
+    levelsToShow = twc.Param(
+        '(number)', default=3, attribute=True, request_local=False)
+    Tips = twc.Param(
+        '(dict)',
+        default={
+            'enable': True,  
+            'type' : 'Native',
+            'offsetX' : 20,
+            'offsetY' : 20,
+            'onShow': """
+            (function(tip, node){
+                // count children
+                var count = 0;
+                node.eachSubnode(function(){
+                  count++;
+                });
+                // add tooltip info
+                tip.innerHTML = '<div class=\"tip-title\"><b>Name:</b> ' 
+                    + node.name + '</div><div class=\"tip-text\">' 
+                    + count + ' children</div>';
+            })"""}, attribute=True, request_local=False)
+    Events = twc.Param(
+        default= {
+            'enable': True,
+            'onMouseEnter': """
+            (function(node) {
+                //add border and replot node
+                node.setData('border', '#33dddd');
+                icicle.fx.plotNode(node, icicle.canvas);
+                icicle.labels.plotLabel(icicle.canvas, node, icicle.controller);
+            })""",
+            'onMouseLeave': """
+            (function(node) {
+                node.removeData('border');
+                icicle.fx.plot();
+            })""",
+            'onClick': """
+            (function(node){
+                if (node) {
+                    //hide tips and selections
+                    icicle.tips.hide();
+                    if(icicle.events.hoveredNode)
+                        this.onMouseLeave(icicle.events.hoveredNode);
+                    //perform the enter animation
+                    icicle.enter(node);
+               }
+            })""",
+            'onRightClick': """
+            (function(){
+                //hide tips and selections
+                icicle.tips.hide();
+                if(icicle.events.hoveredNode)
+                    this.onMouseLeave(icicle.events.hoveredNode);
+                //perform the out animation
+                icicle.out();
+            })""",
+      }, attribute=True, request_local=False)
+    onCreateLabel = twc.Param(
+         '(string) javascript callback.',
+         default="""
+         (function(domElement, node){
+              domElement.innerHTML = node.name;
+              var style = domElement.style;
+              style.fontSize = '0.9em';
+              style.display = '';
+              style.cursor = 'pointer';
+              style.color = '#333';
+              style.overflow = 'hidden';
+        })""", attribute=True, request_local=False)
+    onPlaceLabel = twc.Param(
+         '(string) javascript callback.',
+         default="""
+            (function(domElement, node){
+                  var style = domElement.style,
+                      width = node.getData('width'),
+                      height = node.getData('height');
+                  if(width < 7 || height < 7) {
+                    style.display = 'none';
+                  } else {
+                    style.display = '';
+                    style.width = width + 'px';
+                    style.height = height + 'px';
+                  }
+        })""", attribute=True, request_local=False)
+    registered_javascript_attrs = {
+        'Tips' : { 'onShow' : True },
+        'Events' : {
+            'onMouseEnter' : True,
+            'onMouseLeave' : True,
+            'onClick' : True,
+            'onRightClick' : True
+        },
+        'onCreateLabel' : True,
+        'onPlaceLabel' : True,
+    }
+    json = twc.Param(
+        '(dict) Data to send to the widget.',
+        default=IcicleJSONDefaults,
+        attribute=True, request_local=False)
 #SpaceTree
 class SpaceTree(JitWidget):
     pass
