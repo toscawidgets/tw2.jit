@@ -33,7 +33,7 @@ AreaChartJSONDefaults = {
 }
 
 def icicleColor(level, total, val):
-    magic = 0.5 # lol
+    magic = 0.49 # lol
     total = total + 1
     coeff = magic/total
     perturb = coeff*val/10.0
@@ -46,11 +46,12 @@ def icicleColor(level, total, val):
         ["%2s" % hex(component)[2:] for component in [R, G, B]]
     ).replace(' ', '0')
 
-def generateIcicle(total_levels=2, _level=0, _index=0):
+def generateIcicle(total_levels=2, _level=0, _index=0, pid=''):
     val = randint(1,10)
+    id = '%i_%i_%s' % (_level, _index, pid)
     this_node = {
-        'id' : 'iciclenode.%i.%i.%i' % (val, _level, _index),
-        'name' : '%i(%i.%i)' % (val, _level, _index),
+        'id' : "inode_" + id,
+        'name' : "%i" % val,
         'data' : {
             '$area' : val,
             '$dim' : val,
@@ -59,12 +60,12 @@ def generateIcicle(total_levels=2, _level=0, _index=0):
     }
     if _level < total_levels:
         this_node['children'] = [
-            generateIcicle(total_levels, _level+1, random()) 
-                for i in range(randint(1,_level+3))
+            generateIcicle(total_levels, _level+1, i, id) 
+                for i in range(randint(2,4))
         ]
     return this_node
 
-IcicleJSONDefaults = generateIcicle(6)
+IcicleJSONDefaults = generateIcicle(5)
 BarChartJSONDefaults = AreaChartJSONDefaults
 PieChartJSONDefaults = AreaChartJSONDefaults
 TreeMapJSONDefaults = {
