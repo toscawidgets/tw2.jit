@@ -1,5 +1,7 @@
 # This module just contains some of the more lengthy constants used in
 # widgets.py that would otherwise clutter that file.
+from random import randint
+
 AreaChartJSONDefaults = {
     'label': ['label A', 'label B', 'label C', 'label D'],
     'values': [
@@ -29,6 +31,41 @@ AreaChartJSONDefaults = {
         }
     ]
 }
+
+def icicleColor(level, total, val):
+    magic = 0.5 # lol
+    total = total + 1
+    coeff = magic/total
+    perturb = coeff*val/10.0
+    base = (level+magic)/total + perturb
+    assert(base >= 0 and base <= 1)
+    R = int(256*base)
+    G = int(128*base)
+    B = int(256*(1 - base))
+    col = "".join(
+        ["%2s" % hex(component)[2:] for component in [R, G, B]]
+    ).replace(' ', '0')
+    return col
+
+def generateIcicle(total_levels=2, _level=0, _index=0):
+    val = randint(1,10)
+    this_node = {
+        'id' : 'iciclenode.%i.%i.%i' % (val, _level, _index),
+        'name' : '%i(%i.%i)' % (val, _level, _index),
+        'data' : {
+            '$area' : val,
+            '$dim' : val,
+            '$color' : icicleColor(_level, total_levels, val)
+        }
+    }
+    if _level < total_levels:
+        this_node['children'] = [
+            generateIcicle(total_levels, _level+1, i) 
+                for i in range(randint(1,10))
+        ]
+    return this_node
+
+IcicleJSONDefaults = generateIcicle(2)
 BarChartJSONDefaults = AreaChartJSONDefaults
 PieChartJSONDefaults = AreaChartJSONDefaults
 TreeMapJSONDefaults = {
