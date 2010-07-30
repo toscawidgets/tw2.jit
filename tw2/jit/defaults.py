@@ -46,7 +46,7 @@ def icicleColor(level, total, val):
         ["%2s" % hex(component)[2:] for component in [R, G, B]]
     ).replace(' ', '0')
 
-def generateIcicle(total_levels=2, _level=0, _index=0, pid=''):
+def generateTree(total_levels=2, _level=0, _index=0, pid=''):
     val = randint(1,10)
     id = '%i_%i_%s' % (_level, _index, pid)
     this_node = {
@@ -60,12 +60,15 @@ def generateIcicle(total_levels=2, _level=0, _index=0, pid=''):
     }
     if _level < total_levels:
         this_node['children'] = [
-            generateIcicle(total_levels, _level+1, i, id) 
+            generateTree(total_levels, _level+1, i, id) 
                 for i in range(randint(2,4))
         ]
     return this_node
 
-IcicleJSONDefaults = generateIcicle(5)
+
+IcicleJSONDefaults = generateTree(5)
+SpaceTreeJSONDefaults = generateTree(5)
+
 BarChartJSONDefaults = AreaChartJSONDefaults
 PieChartJSONDefaults = AreaChartJSONDefaults
 TreeMapJSONDefaults = {
