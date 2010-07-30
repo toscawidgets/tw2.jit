@@ -12,6 +12,8 @@ from tw2.jit.defaults import ForceDirectedGraphJSONDefaults
 from tw2.jit.defaults import RadialGraphJSONDefaults
 from tw2.jit.defaults import SunburstJSONDefaults
 from tw2.jit.defaults import IcicleJSONDefaults
+from tw2.jit.defaults import SpaceTreeJSONDefaults
+from tw2.jit.defaults import HyperTreeJSONDefaults
 
 encoder = JSONEncoder() 
 
@@ -604,11 +606,7 @@ class Sunburst(JitWidget):
         default=SunburstJSONDefaults,
         attribute=True, request_local=False)
 
-#Icicle
-class Icicle(JitWidget):
-    resources = [jit_js, icicle_css, jit_css]
-    template = "genshi:tw2.jit.templates.icicle"
-
+class JitTree(JitWidget):
     animate = twc.Param(
         '(boolean)', default=True, attribute=True, request_local=False)
 
@@ -622,6 +620,94 @@ class Icicle(JitWidget):
         '(boolean)', default=True, attribute=True, request_local=False)
     levelsToShow = twc.Param(
         '(number)', default=3, attribute=True, request_local=False)
+
+class HyperTree(JitTree):
+    resources = [jit_js]
+    template = "genshi:tw2.jit.templates.hypertree"
+    w = twc.Variable( 'width of the canvas.', default=500 )
+    h = twc.Variable( 'height of the canvas.', default=500 )
+
+    def prepare(self):
+        super(HyperTree, self).prepare()
+        self.w = self.width
+        self.h = self.height
+    
+    registered_javascript_attrs = {
+        'onPlaceLabel' : True,
+        'onCreateLabel' : True,
+    }
+    
+    Node = twc.Param(
+        '(dict)',
+        default = {
+            'dim' : 9,
+            'color' : '#f00',
+        }, attribute=True, request_local=False)
+    Edge = twc.Param(
+        '(dict)',
+        default = {
+            'lineWidth' : 2,
+            'color' : '#088',
+        }, attribute=True, request_local=False)
+    onCreateLabel = twc.Param(
+         '(string) javascript callback.',
+         default="""
+            ( function(domElement, node){
+                  domElement.innerHTML = node.name;
+                  $jit.util.addEvent(domElement, 'click', function () {
+                      ht.onClick(node.id);
+                  });
+            })""", attribute=True, request_local=False)
+    onPlaceLabel = twc.Param(
+        '(string) javascript callback.',
+        default="""
+            ( function(domElement, node){
+                  var style = domElement.style;
+                  style.display = '';
+                  style.cursor = 'pointer';
+                  if (node._depth <= 1) {
+                      style.fontSize = "0.8em";
+                      style.color = "#ddd";
+
+                  } else if(node._depth == 2){
+                      style.fontSize = "0.7em";
+                      style.color = "#555";
+
+                  } else {
+                      style.display = 'none';
+                  }
+
+                  var left = parseInt(style.left);
+                  var w = domElement.offsetWidth;
+                  style.left = (left - w / 2) + 'px';
+              })""", attribute=True, request_local=False)
+
+    json = twc.Param(
+        '(dict) Data to send to the widget.',
+        default=HyperTreeJSONDefaults,
+        attribute=True, request_local=False)
+
+
+
+class SpaceTree(JitTree):
+    resources = [jit_js]
+    template = "genshi:tw2.jit.templates.spacetree"
+    
+
+    json = twc.Param(
+        '(dict) Data to send to the widget.',
+        default=SpaceTreeJSONDefaults,
+        attribute=True, request_local=False)
+
+class Icicle(JitTree):
+    resources = [jit_js]
+    template = "genshi:tw2.jit.templates.icicle"
+    
+    json = twc.Param(
+        '(dict) Data to send to the widget.',
+        default=IcicleJSONDefaults,
+        attribute=True, request_local=False)
+
     Tips = twc.Param(
         '(dict)',
         default={
@@ -715,14 +801,5 @@ class Icicle(JitWidget):
         'onCreateLabel' : True,
         'onPlaceLabel' : True,
     }
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=IcicleJSONDefaults,
-        attribute=True, request_local=False)
-#SpaceTree
-class SpaceTree(JitWidget):
-    pass
-#HyperTree
-class HyperTree(JitWidget):
     pass
 
