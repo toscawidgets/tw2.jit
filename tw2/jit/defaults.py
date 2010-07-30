@@ -1,6 +1,6 @@
 # This module just contains some of the more lengthy constants used in
 # widgets.py that would otherwise clutter that file.
-from random import randint
+from random import randint, random
 
 AreaChartJSONDefaults = {
     'label': ['label A', 'label B', 'label C', 'label D'],
@@ -59,12 +59,12 @@ def generateIcicle(total_levels=2, _level=0, _index=0):
     }
     if _level < total_levels:
         this_node['children'] = [
-            generateIcicle(total_levels, _level+1, i) 
-                for i in range(randint(1,10))
+            generateIcicle(total_levels, _level+1, random()) 
+                for i in range(randint(1,_level+3))
         ]
     return this_node
 
-IcicleJSONDefaults = generateIcicle(7)
+IcicleJSONDefaults = generateIcicle(6)
 BarChartJSONDefaults = AreaChartJSONDefaults
 PieChartJSONDefaults = AreaChartJSONDefaults
 TreeMapJSONDefaults = {
