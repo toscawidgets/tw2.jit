@@ -42,10 +42,9 @@ def icicleColor(level, total, val):
     R = int(256*base)
     G = int(128*base)
     B = int(256*(1 - base))
-    col = "".join(
+    return "#" + "".join(
         ["%2s" % hex(component)[2:] for component in [R, G, B]]
     ).replace(' ', '0')
-    return col
 
 def generateIcicle(total_levels=2, _level=0, _index=0):
     val = randint(1,10)
@@ -65,7 +64,7 @@ def generateIcicle(total_levels=2, _level=0, _index=0):
         ]
     return this_node
 
-IcicleJSONDefaults = generateIcicle(2)
+IcicleJSONDefaults = generateIcicle(7)
 BarChartJSONDefaults = AreaChartJSONDefaults
 PieChartJSONDefaults = AreaChartJSONDefaults
 TreeMapJSONDefaults = {
