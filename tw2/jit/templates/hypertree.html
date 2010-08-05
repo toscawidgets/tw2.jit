@@ -19,9 +19,10 @@
         }
     }
     
-    var ht = new $$jit.Hypertree(config);
-    ht.loadJSON($w.json);
-    ht.refresh();
+    $w.preinitJS
+    var jitwidget = new $$jit.Hypertree(config);
+    jitwidget.loadJSON($w.json);
+    $w.postinitJS
 })();
 </script>
 </div>

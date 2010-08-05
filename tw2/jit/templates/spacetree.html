@@ -18,12 +18,14 @@
             }
         }
     }
-    
-    var st = new $$jit.ST(config);
-    st.loadJSON($w.json);
-    st.compute();
-    st.geom.translate(new $$jit.Complex(-200, 0), "current");
-    st.onClick(st.root);
+  
+    $w.preinitJS;
+
+    var jitwidget = new $$jit.ST(config);
+    jitwidget.loadJSON($w.json);
+
+    $w.postinitJS;
+
 })();
 </script>
 </div>

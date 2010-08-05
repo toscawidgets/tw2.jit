@@ -29,6 +29,13 @@ class JitWidget(twc.Widget):
     #resources = [jit_yc_js]
     resources = [jit_js]
 
+    preinitJS = twc.Param(
+        'javascript to run before initialization of the jit widget',
+        default='', request_local=False, attribute=True)
+    postinitJS = twc.Param(
+        'javascript to run after initialization of the jit widget',
+        default='', request_local=False, attribute=True)
+
     injectInto = twc.Variable(
         description='dom name',
         request_local=False,
@@ -636,7 +643,11 @@ class HyperTree(JitTree):
         'onPlaceLabel' : True,
         'onCreateLabel' : True,
     }
-    
+   
+    postinitJS = twc.Param(
+        'whatevs',
+        default="jitwidget.refresh();", attribute=True, request_local=False)
+
     Node = twc.Param(
         '(dict)',
         default = {
@@ -655,7 +666,7 @@ class HyperTree(JitTree):
             ( function(domElement, node){
                   domElement.innerHTML = node.name;
                   $jit.util.addEvent(domElement, 'click', function () {
-                      ht.onClick(node.id);
+                      jitwidget.onClick(node.id);
                   });
             })""", attribute=True, request_local=False)
     onPlaceLabel = twc.Param(
@@ -692,7 +703,105 @@ class HyperTree(JitTree):
 class SpaceTree(JitTree):
     resources = [jit_js]
     template = "genshi:tw2.jit.templates.spacetree"
-    
+    postinitJS = twc.Param(
+        'whatever',
+        default="jitwidget.compute();jitwidget.geom.translate(new $jit.Complex(-200, 0), \"current\");jitwidget.onClick(jitwidget.root);", attribute=True, request_local=False)
+
+    duration = twc.Param(
+        'foo',
+        default=800, attribute=True, request_local=False)
+    transition = twc.Param(
+        'javascript',
+        default='$jit.Trans.Quart.easeInOut', attribute=True, request_local=False)
+    levelDistance = twc.Param(
+        'foo',
+        default=50, attribute=True, request_local=False)
+
+    Navigation = twc.Param(
+        'alsdkfjalsdjkfalskfj',
+        default={
+            'enable' : True,
+            'panning' : True,
+        }, attribute=True, request_local=False)
+
+    Node = twc.Param(
+        '(dict)',
+        default = {
+            'height' : 20,
+            'width' : 60,
+            'type' : 'rectangle',
+            'color' : '#aaa',
+            'overridable' : True
+        }, attribute=True, request_local=False)
+
+    Edge = twc.Param(
+        '(dict)',
+        default = {
+            'type' : 'bezier',
+            'overridable' : True
+        }, attribute=True, request_local=False)
+
+    onCreateLabel = twc.Param(
+        'dofalsdkjfadf',
+        default="""
+        (function(label, node){
+            label.id = node.id;            
+            label.innerHTML = node.name;
+            label.onclick = function(){
+                jitwidget.onClick(node.id);
+            };
+            //set label styles
+            var style = label.style;
+            style.width = 60 + 'px';
+            style.height = 17 + 'px';            
+            style.cursor = 'pointer';
+            style.color = '#333';
+            style.fontSize = '0.8em';
+            style.textAlign= 'center';
+            style.paddingTop = '3px';
+        })""", attribute=True, request_local=False)
+    onBeforePlotNode = twc.Param(
+        'asdlfkjasdlkfj',
+        default="""
+        (function(node){
+            //add some color to the nodes in the path between the
+            //root node and the selected node.
+            if (node.selected) {
+                node.data.$color = "#ff7";
+            }
+            else {
+                delete node.data.$color;
+                //if the node belongs to the last plotted level
+                if(!node.anySubnode("exist")) {
+                    //count children number
+                    var count = 0;
+                    node.eachSubnode(function(n) { count++; });
+                    //assign a node color based on
+                    //how many children it has
+                    node.data.$color = ['#aaa', '#baa', '#caa', '#daa', '#eaa', '#faa'][count];                    
+                }
+            }
+        })""", attribute=True, request_local=False)
+    onBeforePlotLine = twc.Param(
+        'asdlkfjasldfjka',
+        default="""
+        (function(adj){
+            if (adj.nodeFrom.selected && adj.nodeTo.selected) {
+                adj.data.$color = "#eed";
+                adj.data.$lineWidth = 3;
+            }
+            else {
+                delete adj.data.$color;
+                delete adj.data.$lineWidth;
+            }
+        })""", attribute=True, request_local=False)
+
+    registered_javascript_attrs = {
+        'transition' : True,
+        'onCreateLabel' : True,
+        'onBeforePlotLine' : True,
+        'onBeforePlotNode' : True,
+    }
 
     json = twc.Param(
         '(dict) Data to send to the widget.',
