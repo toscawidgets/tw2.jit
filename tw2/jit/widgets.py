@@ -633,6 +633,9 @@ class HyperTree(JitTree):
     template = "genshi:tw2.jit.templates.hypertree"
     w = twc.Variable( 'width of the canvas.', default=500 )
     h = twc.Variable( 'height of the canvas.', default=500 )
+    
+    offset = twc.Param(
+        '(number)', default=0, attribute=True, request_local=False)
 
     def prepare(self):
         super(HyperTree, self).prepare()
