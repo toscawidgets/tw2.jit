@@ -6,7 +6,9 @@
     var reg_js_attrs = $w.registered_javascript_attrs;
     for ( var i in reg_js_attrs ) {
         if ( reg_js_attrs[i] == true ) {
+            console.log("converting: $w.jitClassName : " + i);
             config[i] = eval(config[i]);
+            console.log(config[i]);
         } else {
             for ( var j in reg_js_attrs[i] ) {
                 if ( reg_js_attrs[i][j] ) {
@@ -15,13 +17,17 @@
                     // understand.
                     //
                     // rewrite if necessary or keep it :)
-                    config[i][j] = eval(config[i][j]) 
+                    config[i][j] = eval(config[i][j]);
                 }
             }
         }
     }
     
     $w.preinitJS
+    console.log("$w.jitClassName");
+    for ( var i in config ) {
+        console.log( " " + i + " " + config[i] );
+    }
     var jitwidget = new $$jit.$w.jitClassName(config);
     jitwidget.loadJSON($w.json);
     $w.postinitJS

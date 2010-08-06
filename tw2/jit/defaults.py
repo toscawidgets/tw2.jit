@@ -1369,7 +1369,7 @@ ForceDirectedGraphJSONDefaults = [
 
 RadialGraphJSONDefaults = {
 "id": "190_0",  
-    "name": "Pearl Jam",  
+    "name": "Pearl Jamx0r",  
     "children": [{  
         "id": "306208_1",  
         "name": "Pearl Jam &amp; Cypress Hill",  
