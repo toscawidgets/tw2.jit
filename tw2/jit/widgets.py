@@ -37,18 +37,14 @@ class JitWidget(twc.Widget):
     jitClassName = twc.Variable('Name of the Jit class for this widget')
 
     injectInto = twc.Variable(
-        description='dom name', default=property(lambda s: s.compound_id))
+        description='name of the DOM element containing the canvas',
+        attribute=True, default=property(lambda s: s.compound_id))
 
     width = twc.Param(
-        description='(string) width of the widget',
-        request_local=False,
-        attribute=True,
-        default='500')
+        description='(string) widget width', attribute=True, default='500')
     height = twc.Param(
-        description='(string) height of the widget',
-        request_local=False,
-        attribute=True,
-        default='500')
+        description='(string) widget height', attribute=True, default='500')
+
     Canvas = twc.Param(
         '(dict) Of the form Options.Canvas in the jit docs.',
         default = {
@@ -57,7 +53,8 @@ class JitWidget(twc.Widget):
             'useCanvas' : False,
             'withLabels' : True,
             'background' : False
-        }, attribute=True, request_local=False)
+        })
+
     Label = twc.Param(
         '(dict) Of the form Options.Label in the jit docs.',
         default={
@@ -69,7 +66,7 @@ class JitWidget(twc.Widget):
             'textAlign' : 'center',
             'textBaseline' : 'alphabetic',
             'color': 'black',
-        }, attribute=True, request_local=False)
+        })
     Tips = twc.Param(
         '(dict) Of the form of Options.Tips in the jit docs.',
         default={
@@ -79,7 +76,7 @@ class JitWidget(twc.Widget):
             'offsetY' : 20,  
             'onShow' : "(function() {})",
             'onHide' : "(function() {})",
-        }, attribute=True, request_local=False)
+        })
     Events = twc.Param(
         '(dict) Of the form Options.Events in the jit docs.',
         default={
@@ -99,11 +96,12 @@ class JitWidget(twc.Widget):
             'onTouchEnd': '(function() {})',  
             'onTouchCancel': '(function() {})',  
             'onMouseWheel': '(function() {})' 
-        }, attribute=True, request_local=False)
+        })
+
     animate = twc.Param(
         '(boolean) Whether to add animated transitions ' +
-        'when filtering/restoring stacks',
-        default=True, attribute=True, request_local=False)
+        'when filtering/restoring stacks', default=True)
+
     config = twc.Variable( 'jsonified version of other attrs.', default={} )
     # TODO -- rename this to 'data'.  its confusing since its not jsonified until 'prepare'
     json = twc.Param('python data to pass to the widget')
@@ -680,9 +678,6 @@ class Sunburst(JitWidget):
     }
 
 class JitTree(JitWidget):
-    animate = twc.Param(
-        '(boolean)', default=True, attribute=True, request_local=False)
-
     offset = twc.Param(
         '(number)', default=1, attribute=True, request_local=False)
 
