@@ -351,7 +351,26 @@ class JitGraph(JitChart):
 
 class ForceDirectedGraph(JitGraph):
     resources = [jit_js]
-    template = "genshi:tw2.jit.templates.forcedirectedgraph"
+    template = "genshi:tw2.jit.templates.jitwidget"
+    
+    jitClassName = twc.Variable(
+        'name of the Jit class for this widget', default='ForceDirected')
+    
+    postinitJS = twc.Param(
+        'whatevs',
+        default="""
+  // compute positions incrementally and animate.
+  jitwidget.computeIncremental({
+    iter: 40,
+    property: 'end',
+    onComplete: function(){
+      jitwidget.animate({
+        modes: ['linear'],
+        transition: $jit.Trans.Elastic.easeOut,
+        duration: 2500
+      });
+    }
+  });""", attribute=True, request_local=False)
 
     Navigation = twc.Param(
         '(dict) As per Options.Navigation.',
@@ -400,17 +419,17 @@ class ForceDirectedGraph(JitGraph):
             'enable' : True,
             'onMouseEnter' : """
             (function() { 
-                fd.canvas.getElement().style.cursor = \'move\';
+                jitwidget.canvas.getElement().style.cursor = \'move\';
             })""",
             'onMouseLeave' : """
             (function() {
-                fd.canvas.getElement().style.cursor = \'\';
+                jitwidget.canvas.getElement().style.cursor = \'\';
             })""",
             'onDragMove' : """
             (function(node, eventInfo, e) {
                 var pos = eventInfo.getPos();
                 node.pos.setc(pos.x, pos.y);
-                fd.plot();
+                jitwidget.plot();
             })""",
             'onTouchMove' : """
             (function(node, eventInfo, e) {
