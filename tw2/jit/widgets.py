@@ -37,10 +37,8 @@ class JitWidget(twc.Widget):
     jitClassName = twc.Variable('Name of the Jit class for this widget')
 
     injectInto = twc.Variable(
-        description='dom name',
-        request_local=False,
-        attribute=True,
-        default=property(lambda s: s.compound_id))
+        description='dom name', default=property(lambda s: s.compound_id))
+
     width = twc.Param(
         description='(string) width of the widget',
         request_local=False,
