@@ -144,21 +144,19 @@ class AreaChart(JitChart):
     json = twc.Param(default=AreaChartJSONDefaults)
 
     selectOnHover = twc.Param(
-        '(boolean) If true, it will add a mark to the ' +
-        'hovered stack.',
-        default=True, attribute=True, request_local=False)
-    showAggregates = twc.Param(
-        '(boolean) Display the sum of the values of the ' +
-        'different stacks.',
-        default=True, attribute=True, request_local=False)
-    filterOnClick = twc.Param(
-        '(boolean) Select the clicked stack by hiding ' +
-        'all other stacks.',
-        default=True, attribute=True, request_local=False)
-    restoreOnRightClick = twc.Param(
-        '(boolean) Show all stacks by right clicking.',
-        default=True, attribute=True, request_local=False)
+        '(boolean) Add a mark to the hovered stack.', default=True)
 
+    showAggregates = twc.Param(
+        '(boolean) Display the sum of the stack values.', default=True)
+
+    filterOnClick = twc.Param(
+        '(boolean) Select the clicked stack and hide others.', default=True)
+
+    restoreOnRightClick = twc.Param(
+        '(boolean) Show all stacks by right clicking.', default=True)
+
+    # TODO -- not actually a new requisite of AreaChart
+    # TODO -- how to handle the black background always passed to the template?
     Label = twc.Param(
         'dictionary of parameters for the labels',
         default={
