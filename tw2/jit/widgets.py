@@ -49,15 +49,16 @@ class JitWidget(twc.Widget):
     
     animate = twc.Param(
         '(boolean) Whether to add animated transitions ' +
-        'when filtering/restoring stacks', default=True)
+        'when filtering/restoring stacks', default=True, attribute=True)
     
     offset = twc.Param(
-        '(number) Margin between the display and the canvas.', default=25)
+        '(number) Margin between the display and the canvas.',
+        default=25, attribute=True)
 
     config = twc.Variable( 'jsonified version of other attrs.', default={} )
 
     Canvas = twc.Param(
-        '(dict) Of the form Options.Canvas in the jit docs.',
+        '(dict) Of the form Options.Canvas in the jit docs.', attribute=True,
         default = {
             'width' : False,
             'height' : False,
@@ -67,7 +68,7 @@ class JitWidget(twc.Widget):
         })
 
     Label = twc.Param(
-        '(dict) Of the form Options.Label in the jit docs.',
+        '(dict) Of the form Options.Label in the jit docs.', attribute=True,
         default={
             'overridable' : False,
             'type': 'HTML',
@@ -79,7 +80,7 @@ class JitWidget(twc.Widget):
             'color': 'black',
         })
     Tips = twc.Param(
-        '(dict) Of the form of Options.Tips in the jit docs.',
+        '(dict) Of the form of Options.Tips in the jit docs.', attribute=True,
         default={
             'enable' : False,  
             'type' : 'auto',  
@@ -89,7 +90,7 @@ class JitWidget(twc.Widget):
             'onHide' : "(function() {})",
         })
     Events = twc.Param(
-        '(dict) Of the form Options.Events in the jit docs.',
+        '(dict) Of the form Options.Events in the jit docs.', attribute=True,
         default={
             'enable': False,  
             'type': 'auto',  
@@ -127,14 +128,12 @@ class JitChart(JitWidget):
     type = twc.Param(
         '(string) Stack style.  Possible values are ' + 
         '"stacked", "stacked:gradient" to add gradients.',
-        default='stacked', attribute=True, request_local=False)
+        default='stacked:gradient', attribute=True)
     showLabels = twc.Param(
-        '(boolean) Display the name of the slots.',
-        default=True, attribute=True, request_local=False)
+        '(boolean) Display the slot names.', default=True, attribute=True)
     labelOffset = twc.Param(
         '(number) Adds margin between the label and the ' +
-        'default place where it should be drawn.',
-        default=3, attribute=True, request_local=False)
+        'default place where it should be drawn.', default=3, attribute=True)
 
 class AreaChart(JitChart):
     template = "genshi:tw2.jit.templates.jitwidget"
@@ -144,27 +143,31 @@ class AreaChart(JitChart):
     json = twc.Param(default=AreaChartJSONDefaults)
 
     selectOnHover = twc.Param(
-        '(boolean) Add a mark to the hovered stack.', default=True)
-
-    showAggregates = twc.Param(
-        '(boolean) Display the sum of the stack values.', default=True)
-
+        '(boolean) Add a mark to the hovered stack.',
+        default=True, attribute=True)
+    
     filterOnClick = twc.Param(
-        '(boolean) Select the clicked stack and hide others.', default=True)
+        '(boolean) Select the clicked stack and hide others.',
+        default=True, attribute=True)
 
     restoreOnRightClick = twc.Param(
-        '(boolean) Show all stacks by right clicking.', default=True)
+        '(boolean) Show all stacks by right clicking.',
+        default=True, attribute=True)
+    
+    showAggregates = twc.Param(
+        '(boolean) Display the sum of the stack values.',
+        default=True, attribute=True)
 
     # TODO -- not actually a new requisite of AreaChart
     # TODO -- how to handle the black background always passed to the template?
     Label = twc.Param(
-        'dictionary of parameters for the labels',
+        'dictionary of parameters for the labels', attribute=True,
         default={
             'type' : 'Native',
             'size' : 20,
             'family' : 'Arial',
             'color' : 'white'
-        }, attribute=True, request_local=False)
+        })
 
 
 class BarChart(JitChart):
@@ -176,27 +179,30 @@ class BarChart(JitChart):
     
     barsOffset = twc.Param(
         '(number) Separation between bars.',
-        default=0, attribute=True, request_local=False)
-    hoveredColor = twc.Param(
-        '(string) Sets the selected color for a hovered bar stack.',
-        default='#9fd4ff', attribute=True, request_local=False)
-    orientation = twc.Param(
-        '(string) Sets the direction of the bars.  Possible ' +
-        'options are "vertical" and "horizontal".',
-        default='horizontal', attribute=True, request_local=False)
-    showAggregates = twc.Param(
-        '(boolean) Display the sum of the values of the ' +
-        'different stacks.',
-        default=True, attribute=True, request_local=False)
+        default=0, attribute=True)
 
+    hoveredColor = twc.Param(
+        '(string) The color for a hovered bar stack.',
+        default='#9fd4ff', attribute=True)
+
+    orientation = twc.Param(
+        '(string) The direction of the bars.  ' + 
+        'Possible options are "vertical" and "horizontal".',
+        default='horizontal', attribute=True)
+    
+    showAggregates = twc.Param(
+        '(boolean) Display the sum of the stack values.',
+        default=True, attribute=True)
+
+    # TODO ditch this as above...
     Label = twc.Param(
-        'dictionary of parameters for the labels',
+        'dictionary of parameters for the labels', attribute=True,
         default={
             'type' : 'Native',
             'size' : 20,
             'family' : 'Arial',
             'color' : 'white'
-        }, attribute=True, request_local=False)
+        })
 
 
 class PieChart(JitChart):
@@ -207,12 +213,12 @@ class PieChart(JitChart):
     json = twc.Param(default=PieChartJSONDefaults)
 
     sliceOffset = twc.Param(
-        '(number) Separation between the center of the ' +
-        'canvas and each pie slice.',
-        default=0, attribute=True, request_local=False)
+        '(number) Separation between slices.', default=0, attribute=True)
+
     hoveredColor = twc.Param(
         '(string) Sets the selected color for a hovered pie stack.',
         default='#9fd4ff', attribute=True, request_local=False)
+
     resizeLabels = twc.Param(
         '(boolean|number) Resize the pie labels according to ' +
         'their stacked values.  Set a number for resizeLabels ' +
