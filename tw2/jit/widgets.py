@@ -24,6 +24,7 @@ treemap_css = CSSLink(modname=__name__, filename="static/css/treemap.css")
 sunburst_css = CSSLink(modname=__name__, filename="static/css/sunburst.css")
 icicle_css = CSSLink(modname=__name__, filename="static/css/icicle.css")
 
+# TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
     # TODO -- what's the right way to choose minified or not?
     #resources = [jit_yc_js]
@@ -136,7 +137,6 @@ class JitChart(JitWidget):
         default=3, attribute=True, request_local=False)
 
 class AreaChart(JitChart):
-    # TODO -- redo this with mako to have an example of either
     template = "genshi:tw2.jit.templates.jitwidget"
 
     jitClassName = twc.Variable(default='AreaChart')
@@ -168,7 +168,6 @@ class AreaChart(JitChart):
 
 
 class BarChart(JitChart):
-    # TODO -- redo this with mako to have an example of either
     template = "genshi:tw2.jit.templates.jitwidget"
 
     jitClassName = twc.Variable(default='BarChart')
@@ -201,7 +200,6 @@ class BarChart(JitChart):
 
 
 class PieChart(JitChart):
-    # TODO -- redo this with mako to have an example of either
     template = "genshi:tw2.jit.templates.jitwidget"
 
     jitClassName = twc.Variable(default='PieChart')
