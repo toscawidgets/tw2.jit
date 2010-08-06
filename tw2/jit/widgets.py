@@ -505,7 +505,25 @@ class ForceDirectedGraph(JitGraph):
 #Radial Graph
 class RadialGraph(JitGraph):
     resources = [jit_js]
-    template = "genshi:tw2.jit.templates.radialgraph"
+    template = "genshi:tw2.jit.templates.jitwidget"
+    
+    jitClassName = twc.Variable(
+        'name of the Jit class for this widget', default='RGraph')
+    
+    postinitJS = twc.Param(
+        'whatevs',
+        default="""
+    //trigger small animation for kicks
+    jitwidget.graph.eachNode(function(n) {
+        var pos = n.getPos();
+        pos.setc(-200, -200);
+    });
+    jitwidget.compute('end');
+    jitwidget.fx.animate({
+        modes:['polar'],
+        duration: 2000
+    });""", attribute=True, request_local=False)
+   
     background = twc.Param(
         '(dict) see ... TODO.',
         default={
@@ -530,7 +548,7 @@ class RadialGraph(JitGraph):
         (function(domElement, node){
             domElement.innerHTML = node.name;
             domElement.onclick = function(){
-                rgraph.onClick(node.id);
+                jitwidget.onClick(node.id);
             };
         })""", attribute=True, request_local=False)
     onPlaceLabel = twc.Param(
