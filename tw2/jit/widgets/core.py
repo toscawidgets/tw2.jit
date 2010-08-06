@@ -70,13 +70,13 @@ class JitWidget(twc.Widget):
         '(dict) Of the form Options.Label in the jit docs.', attribute=True,
         default={
             'overridable' : False,
-            'type': 'HTML',
+            'type': 'Native',
             'style' : ' ',
             'size': 10,  
             'family': 'sans-serif',
             'textAlign' : 'center',
             'textBaseline' : 'alphabetic',
-            'color': 'black',
+            'color': 'white',
         })
     Tips = twc.Param(
         '(dict) Of the form of Options.Tips in the jit docs.', attribute=True,

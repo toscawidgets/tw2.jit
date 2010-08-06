@@ -16,13 +16,12 @@ class JitChart(JitWidget):
         '(number) Adds margin between the label and the ' +
         'default place where it should be drawn.', default=3, attribute=True)
 
+# TODO -- how to handle the black background always passed to the template?
 class AreaChart(JitChart):
     template = "genshi:tw2.jit.templates.jitwidget"
 
     jitClassName = twc.Variable(default='AreaChart')
     
-    data = twc.Param(default=AreaChartJSONDefaults)
-
     selectOnHover = twc.Param(
         '(boolean) Add a mark to the hovered stack.',
         default=True, attribute=True)
@@ -38,17 +37,6 @@ class AreaChart(JitChart):
     showAggregates = twc.Param(
         '(boolean) Display the sum of the stack values.',
         default=True, attribute=True)
-
-    # TODO -- not actually a new requisite of AreaChart
-    # TODO -- how to handle the black background always passed to the template?
-    Label = twc.Param(
-        'dictionary of parameters for the labels', attribute=True,
-        default={
-            'type' : 'Native',
-            'size' : 20,
-            'family' : 'Arial',
-            'color' : 'white'
-        })
 
 
 class BarChart(JitChart):
