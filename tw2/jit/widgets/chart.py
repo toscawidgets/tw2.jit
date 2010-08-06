@@ -1,10 +1,6 @@
 import tw2.core as twc
 from tw2.jit.widgets.core import JitWidget
 
-from tw2.jit.defaults import AreaChartJSONDefaults
-from tw2.jit.defaults import BarChartJSONDefaults
-from tw2.jit.defaults import PieChartJSONDefaults
-
 class JitChart(JitWidget):
     type = twc.Param(
         '(string) Stack style.  Possible values are ' + 
@@ -44,8 +40,6 @@ class BarChart(JitChart):
 
     jitClassName = twc.Variable(default='BarChart')
     
-    data = twc.Param(default=BarChartJSONDefaults)
-    
     barsOffset = twc.Param(
         '(number) Separation between bars.',
         default=0, attribute=True)
@@ -63,24 +57,12 @@ class BarChart(JitChart):
         '(boolean) Display the sum of the stack values.',
         default=True, attribute=True)
 
-    # TODO ditch this as above...
-    Label = twc.Param(
-        'dictionary of parameters for the labels', attribute=True,
-        default={
-            'type' : 'Native',
-            'size' : 20,
-            'family' : 'Arial',
-            'color' : 'white'
-        })
-
 
 class PieChart(JitChart):
     template = "genshi:tw2.jit.templates.jitwidget"
 
     jitClassName = twc.Variable(default='PieChart')
     
-    data = twc.Param(default=PieChartJSONDefaults)
-
     sliceOffset = twc.Param(
         '(number) Separation between slices.', default=0, attribute=True)
 
@@ -100,13 +82,3 @@ class PieChart(JitChart):
         'according to their current values.',
         default=False, attribute=True)
    
-    # TODO -- get rid of this
-    Label = twc.Param(
-        'dictionary of parameters for the labels',
-        default={
-            'type' : 'Native',
-            'size' : 20,
-            'family' : 'Arial',
-            'color' : 'white'
-        }, attribute=True)
-
