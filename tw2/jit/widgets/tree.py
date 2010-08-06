@@ -39,7 +39,7 @@ class TreeMap(JitTree):
     
     jitClassName = twc.Variable(default='TM.Squarified')
     
-    json = twc.Param(default=TreeMapJSONDefaults)
+    data = twc.Param(default=TreeMapJSONDefaults)
 
     postinitJS = twc.Param(default="jitwidget.refresh();")
    
@@ -125,7 +125,7 @@ class Sunburst(JitTree):
     
     jitClassName = twc.Variable(default='Sunburst')
 
-    json = twc.Param(default=SunburstJSONDefaults)
+    data = twc.Param(default=SunburstJSONDefaults)
 
     postinitJS = twc.Param(
         'whatevs',
@@ -237,7 +237,7 @@ class HyperTree(JitTree):
     
     jitClassName = twc.Variable(default='Hypertree')
     
-    json = twc.Param(default=HyperTreeJSONDefaults)
+    data = twc.Param(default=HyperTreeJSONDefaults)
     
     w = twc.Variable( 'width of the canvas.', default=500 )
     h = twc.Variable( 'height of the canvas.', default=500 )
@@ -311,7 +311,7 @@ class SpaceTree(JitTree):
     
     jitClassName = twc.Variable(default='ST')
     
-    json = twc.Param(default=SpaceTreeJSONDefaults)
+    data = twc.Param(default=SpaceTreeJSONDefaults)
     
     postinitJS = twc.Param(
         'whatever',
@@ -417,7 +417,7 @@ class Icicle(JitTree):
     
     jitClassName = twc.Variable(default='Icicle')
     
-    json = twc.Param(default=IcicleJSONDefaults)
+    data = twc.Param(default=IcicleJSONDefaults)
 
     postinitJS = twc.Param(
         default="jitwidget.refresh();", attribute=True, request_local=False)

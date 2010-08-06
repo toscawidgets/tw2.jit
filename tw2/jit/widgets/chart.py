@@ -21,7 +21,7 @@ class AreaChart(JitChart):
 
     jitClassName = twc.Variable(default='AreaChart')
     
-    json = twc.Param(default=AreaChartJSONDefaults)
+    data = twc.Param(default=AreaChartJSONDefaults)
 
     selectOnHover = twc.Param(
         '(boolean) Add a mark to the hovered stack.',
@@ -56,7 +56,7 @@ class BarChart(JitChart):
 
     jitClassName = twc.Variable(default='BarChart')
     
-    json = twc.Param(default=BarChartJSONDefaults)
+    data = twc.Param(default=BarChartJSONDefaults)
     
     barsOffset = twc.Param(
         '(number) Separation between bars.',
@@ -91,7 +91,7 @@ class PieChart(JitChart):
 
     jitClassName = twc.Variable(default='PieChart')
     
-    json = twc.Param(default=PieChartJSONDefaults)
+    data = twc.Param(default=PieChartJSONDefaults)
 
     sliceOffset = twc.Param(
         '(number) Separation between slices.', default=0, attribute=True)

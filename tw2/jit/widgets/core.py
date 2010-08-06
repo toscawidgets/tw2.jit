@@ -109,15 +109,14 @@ class JitWidget(twc.Widget):
             'onMouseWheel': '(function() {})' 
         })
 
-    # TODO -- rename this to 'data'.  its confusing since its not jsonified until 'prepare'
-    json = twc.Param('python data to pass to the widget')
+    data = twc.Param('python data to be jsonified and passed to the widget')
 
     registered_javascript_attrs = {}
 
     def prepare(self):
         super(JitWidget, self).prepare()
         self.config = encoder.encode(self.attrs)
-        self.json = encoder.encode(self.json)
+        self.json = encoder.encode(self.data)
         self.registered_javascript_attrs = encoder.encode(
             self.registered_javascript_attrs)
     

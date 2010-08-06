@@ -16,7 +16,7 @@ class ForceDirectedGraph(JitGraph):
     
     jitClassName = twc.Variable(default='ForceDirected')
     
-    json = twc.Param(default=ForceDirectedGraphJSONDefaults)
+    data = twc.Param(default=ForceDirectedGraphJSONDefaults)
     
     postinitJS = twc.Param(default="""
   // compute positions incrementally and animate.
@@ -165,7 +165,7 @@ class RadialGraph(JitGraph):
 
     jitClassName = twc.Variable(default='RGraph')
 
-    json = twc.Param(default=RadialGraphJSONDefaults)
+    data = twc.Param(default=RadialGraphJSONDefaults)
 
     postinitJS = twc.Param(
         default="""
