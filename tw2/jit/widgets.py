@@ -903,7 +903,14 @@ class SpaceTree(JitTree):
 
 class Icicle(JitTree):
     resources = [jit_js]
-    template = "genshi:tw2.jit.templates.icicle"
+    template = "genshi:tw2.jit.templates.jitwidget"
+    
+    jitClassName = twc.Variable(
+        'name of the Jit class for this widget', default='Icicle')
+    
+    postinitJS = twc.Param(
+        'whatevs',
+        default="jitwidget.refresh();", attribute=True, request_local=False)
     
     json = twc.Param(
         '(dict) Data to send to the widget.',
@@ -936,33 +943,33 @@ class Icicle(JitTree):
             (function(node) {
                 //add border and replot node
                 node.setData('border', '#33dddd');
-                icicle.fx.plotNode(node, icicle.canvas);
-                icicle.labels.plotLabel(icicle.canvas, node, icicle.controller);
+                jitwidget.fx.plotNode(node, jitwidget.canvas);
+                jitwidget.labels.plotLabel(jitwidget.canvas, node, jitwidget.controller);
             })""",
             'onMouseLeave': """
             (function(node) {
                 node.removeData('border');
-                icicle.fx.plot();
+                jitwidget.fx.plot();
             })""",
             'onClick': """
             (function(node){
                 if (node) {
                     //hide tips and selections
-                    icicle.tips.hide();
-                    if(icicle.events.hoveredNode)
-                        this.onMouseLeave(icicle.events.hoveredNode);
+                    jitwidget.tips.hide();
+                    if(jitwidget.events.hoveredNode)
+                        this.onMouseLeave(jitwidget.events.hoveredNode);
                     //perform the enter animation
-                    icicle.enter(node);
+                    jitwidget.enter(node);
                }
             })""",
             'onRightClick': """
             (function(){
                 //hide tips and selections
-                icicle.tips.hide();
-                if(icicle.events.hoveredNode)
-                    this.onMouseLeave(icicle.events.hoveredNode);
+                jitwidget.tips.hide();
+                if(jitwidget.events.hoveredNode)
+                    this.onMouseLeave(jitwidget.events.hoveredNode);
                 //perform the out animation
-                icicle.out();
+                jitwidget.out();
             })""",
       }, attribute=True, request_local=False)
     onCreateLabel = twc.Param(
