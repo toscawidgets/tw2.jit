@@ -138,7 +138,10 @@ class JitChart(JitWidget):
 
 class AreaChart(JitChart):
     # TODO -- redo this with mako to have an example of either
-    template = "genshi:tw2.jit.templates.areachart"
+    template = "genshi:tw2.jit.templates.jitwidget"
+
+    jitClassName = twc.Variable(
+        'name of the Jit class for this widget', default='AreaChart')
 
     selectOnHover = twc.Param(
         '(boolean) If true, it will add a mark to the ' +
@@ -155,6 +158,16 @@ class AreaChart(JitChart):
     restoreOnRightClick = twc.Param(
         '(boolean) Show all stacks by right clicking.',
         default=True, attribute=True, request_local=False)
+
+    Label = twc.Param(
+        'dictionary of parameters for the labels',
+        default={
+            'type' : 'Native',
+            'size' : 20,
+            'family' : 'Arial',
+            'color' : 'white'
+        }, attribute=True, request_local=False)
+
     json = twc.Param(
         '(dict) Data to send to the widget.',
         default=AreaChartJSONDefaults, attribute=True, request_local=False)

@@ -8,7 +8,7 @@ jit_base = "static/Jit-2.0.0a"
 #from widgets import (AreaChart, BarChart, PieChart,
 #                     TreeMap, ForceDirectedGraph, RadialGraph,
 #                     Sunburst, Icicle, SpaceTree)
-from widgets import SpaceTree, HyperTree, Icicle
+from widgets import AreaChart
 
 """
 from widgets import (Button, CheckBox, FieldSet, FileField, Form, HiddenField, ImageButton,
