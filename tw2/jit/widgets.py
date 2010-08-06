@@ -259,6 +259,7 @@ class JitTree(JitChart):
         '(number) The number of levels to show for a subtree.  This ' +
         'number is relative to the selected node.',
         default=3, attribute=True)
+
 class TreeMap(JitTree):
     resources = [jit_js, jit_css, treemap_css]
     template = "genshi:tw2.jit.templates.jitwidget"
@@ -268,6 +269,19 @@ class TreeMap(JitTree):
     json = twc.Param(default=TreeMapJSONDefaults)
 
     postinitJS = twc.Param(default="jitwidget.refresh();")
+   
+    # Just a note -- this is different from the parents' "offset"
+    #  Bad thejit.. bad.
+    offset = twc.Param(
+        '(number) Margin between boxes.', default=0, attribute=True)
+    
+    orientation = twc.Param(
+        '(string) Whether to set horizontal or vertical layout.  ' +
+        'Possible values are "h" or "v".', default='h', attribute=True)
+
+    titleHeight = twc.Param(
+        '(number) Separation between the center of the ' +
+        'canvas and each pie slice.', default=13, attribute=True)
    
     registered_javascript_attrs = {
         'Events' : {
@@ -284,9 +298,10 @@ class TreeMap(JitTree):
         '(dict) Of the form Options.Events in the jit docs.',
         default={
             'enable': True,
-            'onClick': '(function(node) {if (node) { jitwidget.enter(node); }})',
+            'onClick': '(function(node) {if (node) {jitwidget.enter(node);}})',
             'onRightClick': '(function() {jitwidget.out();})',
-        }, attribute=True, request_local=False)
+        }, attribute=True)
+
     Tips = twc.Param(
         '(dict) Of the form of Options.Tips in the jit docs.',
         default={
@@ -303,12 +318,13 @@ class TreeMap(JitTree):
                      html += 'play count: ' + data.playcount;  
                    }  
                    if(data.image) {  
-            html += '<img src=\"'+ data.image +'\" style=\"width: 100px; margin: 3px;\" />';  
+                        html += '<img src=\"'+ data.image +'\" style=\"width: 100px; margin: 3px;\" />';  
                    }  
                    tip.innerHTML =  html;   
                  })
             """,
-        }, attribute=True, request_local=False)
+        }, attribute=True)
+    
     onCreateLabel = twc.Param(
         '(string) Javascript callback definition.',
         default="""
@@ -324,18 +340,9 @@ class TreeMap(JitTree):
              style.border = '1px solid transparent';  
            };  
         } )
-        """, attribute=True, request_local=False)
-    orientation = twc.Param(
-        '(string) Whether to set horizontal or vertical layout.  ' +
-        'Possible values are "h" or "v".',
-        default='h', attribute=True, request_local=False)
-    titleHeight = twc.Param(
-        '(number) Separation between the center of the ' +
-        'canvas and each pie slice.',
-        default=13, attribute=True, request_local=False)
-    offset = twc.Param(
-        '(number) Boxes offset.',
-        default=2, attribute=True, request_local=False)
+        """, attribute=True)
+
+
     # TODO - Node.Type 
     #see http://thejit.org/static/v20/Docs/files/Visualizations/Treemap-js.html
 
