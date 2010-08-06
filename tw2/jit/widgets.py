@@ -30,11 +30,11 @@ class JitWidget(twc.Widget):
     resources = [jit_js]
 
     preinitJS = twc.Param(
-        'javascript to run before initialization of the jit widget',
-        default='', request_local=False, attribute=True)
+        'javascript to run before init of the widget', default='')
     postinitJS = twc.Param(
-        'javascript to run after initialization of the jit widget',
-        default='', request_local=False, attribute=True)
+        'javascript to run after init of the widget', default='')
+    
+    jitClassName = twc.Variable('Name of the Jit class for this widget')
 
     injectInto = twc.Variable(
         description='dom name',
@@ -107,7 +107,8 @@ class JitWidget(twc.Widget):
         'when filtering/restoring stacks',
         default=True, attribute=True, request_local=False)
     config = twc.Variable( 'jsonified version of other attrs.', default={} )
-    json = ''
+    # TODO -- rename this to 'data'.  its confusing since its not jsonified until 'prepare'
+    json = twc.Param('python data to pass to the widget')
 
     registered_javascript_attrs = {}
 
@@ -140,8 +141,9 @@ class AreaChart(JitChart):
     # TODO -- redo this with mako to have an example of either
     template = "genshi:tw2.jit.templates.jitwidget"
 
-    jitClassName = twc.Variable(
-        'name of the Jit class for this widget', default='AreaChart')
+    jitClassName = twc.Variable(default='AreaChart')
+    
+    json = twc.Param(default=AreaChartJSONDefaults)
 
     selectOnHover = twc.Param(
         '(boolean) If true, it will add a mark to the ' +
@@ -168,16 +170,14 @@ class AreaChart(JitChart):
             'color' : 'white'
         }, attribute=True, request_local=False)
 
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=AreaChartJSONDefaults, attribute=True, request_local=False)
 
 class BarChart(JitChart):
     # TODO -- redo this with mako to have an example of either
     template = "genshi:tw2.jit.templates.jitwidget"
 
-    jitClassName = twc.Variable(
-        'name of the Jit class for this widget', default='BarChart')
+    jitClassName = twc.Variable(default='BarChart')
+    
+    json = twc.Param(default=BarChartJSONDefaults)
     
     barsOffset = twc.Param(
         '(number) Separation between bars.',
@@ -203,16 +203,14 @@ class BarChart(JitChart):
             'color' : 'white'
         }, attribute=True, request_local=False)
 
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=BarChartJSONDefaults, attribute=True, request_local=False)
 
 class PieChart(JitChart):
     # TODO -- redo this with mako to have an example of either
     template = "genshi:tw2.jit.templates.jitwidget"
 
-    jitClassName = twc.Variable(
-        'name of the Jit class for this widget', default='PieChart')
+    jitClassName = twc.Variable(default='PieChart')
+    
+    json = twc.Param(default=PieChartJSONDefaults)
 
     sliceOffset = twc.Param(
         '(number) Separation between the center of the ' +
@@ -241,9 +239,6 @@ class PieChart(JitChart):
             'color' : 'white'
         }, attribute=True, request_local=False)
 
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=PieChartJSONDefaults, attribute=True, request_local=False)
 
 class JitTree(JitChart):
     constrained = twc.Param(
@@ -265,12 +260,11 @@ class TreeMap(JitTree):
     resources = [jit_js, jit_css, treemap_css]
     template = "genshi:tw2.jit.templates.jitwidget"
     
-    jitClassName = twc.Variable(
-        'name of the Jit class for this widget', default='TM.Squarified')
+    jitClassName = twc.Variable(default='TM.Squarified')
     
-    postinitJS = twc.Param(
-        'whatevs',
-        default="jitwidget.refresh();", attribute=True, request_local=False)
+    json = twc.Param(default=TreeMapJSONDefaults)
+
+    postinitJS = twc.Param(default="jitwidget.refresh();")
    
     registered_javascript_attrs = {
         'Events' : {
@@ -342,9 +336,6 @@ class TreeMap(JitTree):
     # TODO - Node.Type 
     #see http://thejit.org/static/v20/Docs/files/Visualizations/Treemap-js.html
     #duration and fps too
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=TreeMapJSONDefaults, attribute=True, request_local=False)
 
 class JitGraph(JitChart):
     pass
@@ -353,12 +344,11 @@ class ForceDirectedGraph(JitGraph):
     resources = [jit_js]
     template = "genshi:tw2.jit.templates.jitwidget"
     
-    jitClassName = twc.Variable(
-        'name of the Jit class for this widget', default='ForceDirected')
+    jitClassName = twc.Variable(default='ForceDirected')
     
-    postinitJS = twc.Param(
-        'whatevs',
-        default="""
+    json = twc.Param(default=ForceDirectedGraphJSONDefaults)
+    
+    postinitJS = twc.Param(default="""
   // compute positions incrementally and animate.
   jitwidget.computeIncremental({
     iter: 40,
@@ -497,21 +487,17 @@ class ForceDirectedGraph(JitGraph):
     levelDistance = twc.Param(
         '(number) The natural length desired for the edges.',
         default=50, attribute=True, request_local=False)
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=ForceDirectedGraphJSONDefaults,
-        attribute=True, request_local=False)
 
 #Radial Graph
 class RadialGraph(JitGraph):
     resources = [jit_js]
     template = "genshi:tw2.jit.templates.jitwidget"
-    
-    jitClassName = twc.Variable(
-        'name of the Jit class for this widget', default='RGraph')
-    
+
+    jitClassName = twc.Variable(default='RGraph')
+
+    json = twc.Param(default=RadialGraphJSONDefaults)
+
     postinitJS = twc.Param(
-        'whatevs',
         default="""
     //trigger small animation for kicks
     jitwidget.graph.eachNode(function(n) {
@@ -581,18 +567,15 @@ class RadialGraph(JitGraph):
         'onPlaceLabel' : True,
     }
 
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=RadialGraphJSONDefaults,
-        attribute=True, request_local=False)
 
     
 class Sunburst(JitWidget):
     resources = [jit_js, sunburst_css, jit_css]
     template = "genshi:tw2.jit.templates.jitwidget"
     
-    jitClassName = twc.Variable(
-        'name of the Jit class for this widget', default='Sunburst')
+    jitClassName = twc.Variable(default='Sunburst')
+
+    json = twc.Param(default=SunburstJSONDefaults)
 
     postinitJS = twc.Param(
         'whatevs',
@@ -698,11 +681,6 @@ class Sunburst(JitWidget):
         'onCreateLabel' : True,
     }
 
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=SunburstJSONDefaults,
-        attribute=True, request_local=False)
-
 class JitTree(JitWidget):
     animate = twc.Param(
         '(boolean)', default=True, attribute=True, request_local=False)
@@ -722,8 +700,9 @@ class HyperTree(JitTree):
     resources = [jit_js]
     template = "genshi:tw2.jit.templates.jitwidget"
     
-    jitClassName = twc.Variable(
-        'name of the Jit class for this widget', default='Hypertree')
+    jitClassName = twc.Variable(default='Hypertree')
+    
+    json = twc.Param(default=HyperTreeJSONDefaults)
     
     w = twc.Variable( 'width of the canvas.', default=500 )
     h = twc.Variable( 'height of the canvas.', default=500 )
@@ -790,19 +769,14 @@ class HyperTree(JitTree):
                   style.left = (left - w / 2) + 'px';
               })""", attribute=True, request_local=False)
 
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=HyperTreeJSONDefaults,
-        attribute=True, request_local=False)
-
-
 
 class SpaceTree(JitTree):
     resources = [jit_js]
     template = "genshi:tw2.jit.templates.jitwidget"
     
-    jitClassName = twc.Variable(
-        'name of the Jit class for this widget', default='ST')
+    jitClassName = twc.Variable(default='ST')
+    
+    json = twc.Param(default=SpaceTreeJSONDefaults)
     
     postinitJS = twc.Param(
         'whatever',
@@ -904,26 +878,17 @@ class SpaceTree(JitTree):
         'onBeforePlotNode' : True,
     }
 
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=SpaceTreeJSONDefaults,
-        attribute=True, request_local=False)
 
 class Icicle(JitTree):
     resources = [jit_js]
     template = "genshi:tw2.jit.templates.jitwidget"
     
-    jitClassName = twc.Variable(
-        'name of the Jit class for this widget', default='Icicle')
+    jitClassName = twc.Variable(default='Icicle')
     
+    json = twc.Param(default=IcicleJSONDefaults)
+
     postinitJS = twc.Param(
-        'whatevs',
         default="jitwidget.refresh();", attribute=True, request_local=False)
-    
-    json = twc.Param(
-        '(dict) Data to send to the widget.',
-        default=IcicleJSONDefaults,
-        attribute=True, request_local=False)
 
     Tips = twc.Param(
         '(dict)',
