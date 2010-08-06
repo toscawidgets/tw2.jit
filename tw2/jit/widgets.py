@@ -593,7 +593,7 @@ class Sunburst(JitWidget):
     
     jitClassName = twc.Variable(
         'name of the Jit class for this widget', default='Sunburst')
-    
+
     postinitJS = twc.Param(
         'whatevs',
         default="jitwidget.refresh();", attribute=True, request_local=False)
@@ -795,7 +795,11 @@ class HyperTree(JitTree):
 
 class SpaceTree(JitTree):
     resources = [jit_js]
-    template = "genshi:tw2.jit.templates.spacetree"
+    template = "genshi:tw2.jit.templates.jitwidget"
+    
+    jitClassName = twc.Variable(
+        'name of the Jit class for this widget', default='ST')
+    
     postinitJS = twc.Param(
         'whatever',
         default="jitwidget.compute();jitwidget.geom.translate(new $jit.Complex(-200, 0), \"current\");jitwidget.onClick(jitwidget.root);", attribute=True, request_local=False)
