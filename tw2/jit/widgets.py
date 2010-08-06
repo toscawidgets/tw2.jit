@@ -263,7 +263,14 @@ class JitTree(JitChart):
 
 class TreeMap(JitTree):
     resources = [jit_js, jit_css, treemap_css]
-    template = "genshi:tw2.jit.templates.treemap"
+    template = "genshi:tw2.jit.templates.jitwidget"
+    
+    jitClassName = twc.Variable(
+        'name of the Jit class for this widget', default='TM.Squarified')
+    
+    postinitJS = twc.Param(
+        'whatevs',
+        default="jitwidget.refresh();", attribute=True, request_local=False)
    
     registered_javascript_attrs = {
         'Events' : {
@@ -280,8 +287,8 @@ class TreeMap(JitTree):
         '(dict) Of the form Options.Events in the jit docs.',
         default={
             'enable': True,
-            'onClick': '(function(node) {if (node) { tm.enter(node); }})',
-            'onRightClick': '(function() {tm.out();})',
+            'onClick': '(function(node) {if (node) { jitwidget.enter(node); }})',
+            'onRightClick': '(function() {jitwidget.out();})',
         }, attribute=True, request_local=False)
     Tips = twc.Param(
         '(dict) Of the form of Options.Tips in the jit docs.',
