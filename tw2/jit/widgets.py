@@ -723,7 +723,7 @@ class HyperTree(JitTree):
     template = "genshi:tw2.jit.templates.jitwidget"
     
     jitClassName = twc.Variable(
-        'name of the Jit class for this widget', default='HyperTree')
+        'name of the Jit class for this widget', default='Hypertree')
     
     w = twc.Variable( 'width of the canvas.', default=500 )
     h = twc.Variable( 'height of the canvas.', default=500 )
