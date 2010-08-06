@@ -589,7 +589,14 @@ class RadialGraph(JitGraph):
     
 class Sunburst(JitWidget):
     resources = [jit_js, sunburst_css, jit_css]
-    template = "genshi:tw2.jit.templates.sunburst"
+    template = "genshi:tw2.jit.templates.jitwidget"
+    
+    jitClassName = twc.Variable(
+        'name of the Jit class for this widget', default='Sunburst')
+    
+    postinitJS = twc.Param(
+        'whatevs',
+        default="jitwidget.refresh();", attribute=True, request_local=False)
 
     levelDistance = twc.Param(
         '(number) Distance between levels.',
@@ -640,9 +647,9 @@ class Sunburst(JitWidget):
         (function(node) {  
          if(!node) return;  
          //hide tip  
-         sb.tips.hide();  
+         jitwidget.tips.hide();  
          //rotate  
-         sb.rotate(node, 'animate', {  
+         jitwidget.rotate(node, 'animate', {  
            duration: 1000,  
            transition: $jit.Trans.Quart.easeInOut  
          });  
@@ -651,7 +658,7 @@ class Sunburst(JitWidget):
          '(string) javascript callback.',
          default="""
          (function(domElement, node){
-       var labels = sb.config.Label.type,  
+       var labels = jitwidget.config.Label.type,  
            aw = node.getData('angularWidth');  
        if (labels === 'HTML' && (node._depth < 2 || aw > 2000)) {  
          domElement.innerHTML = node.name;  
@@ -664,7 +671,7 @@ class Sunburst(JitWidget):
          '(string) javascript callback.',
          default="""
      (function(domElement, node){  
-       var labels = sb.config.Label.type;  
+       var labels = jitwidget.config.Label.type;  
        if (labels === 'SVG') {  
          var fch = domElement.firstChild;  
          var style = fch.style;  
