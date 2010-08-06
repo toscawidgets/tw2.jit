@@ -42,8 +42,18 @@ class JitWidget(twc.Widget):
 
     width = twc.Param(
         description='(string) widget width', attribute=True, default='500')
+
     height = twc.Param(
         description='(string) widget height', attribute=True, default='500')
+    
+    animate = twc.Param(
+        '(boolean) Whether to add animated transitions ' +
+        'when filtering/restoring stacks', default=True)
+    
+    offset = twc.Param(
+        '(number) Margin between the display and the canvas.', default=25)
+
+    config = twc.Variable( 'jsonified version of other attrs.', default={} )
 
     Canvas = twc.Param(
         '(dict) Of the form Options.Canvas in the jit docs.',
@@ -98,11 +108,6 @@ class JitWidget(twc.Widget):
             'onMouseWheel': '(function() {})' 
         })
 
-    animate = twc.Param(
-        '(boolean) Whether to add animated transitions ' +
-        'when filtering/restoring stacks', default=True)
-
-    config = twc.Variable( 'jsonified version of other attrs.', default={} )
     # TODO -- rename this to 'data'.  its confusing since its not jsonified until 'prepare'
     json = twc.Param('python data to pass to the widget')
 
@@ -114,13 +119,10 @@ class JitWidget(twc.Widget):
         self.json = encoder.encode(self.json)
         self.registered_javascript_attrs = encoder.encode(
             self.registered_javascript_attrs)
+    
 
 
 class JitChart(JitWidget):
-    offset = twc.Param(
-        '(number) Adds margin between the visualiziation ' + 
-        'and the canvas.',
-        default=25, attribute=True, request_local=False)
     type = twc.Param(
         '(string) Stack style.  Possible values are ' + 
         '"stacked", "stacked:gradient" to add gradients.',
