@@ -720,17 +720,21 @@ class JitTree(JitWidget):
 
 class HyperTree(JitTree):
     resources = [jit_js]
-    template = "genshi:tw2.jit.templates.hypertree"
+    template = "genshi:tw2.jit.templates.jitwidget"
+    
+    jitClassName = twc.Variable(
+        'name of the Jit class for this widget', default='HyperTree')
+    
     w = twc.Variable( 'width of the canvas.', default=500 )
     h = twc.Variable( 'height of the canvas.', default=500 )
-    
-    offset = twc.Param(
-        '(number)', default=0, attribute=True, request_local=False)
 
     def prepare(self):
         super(HyperTree, self).prepare()
         self.w = self.width
         self.h = self.height
+    
+    offset = twc.Param(
+        '(number)', default=0, attribute=True, request_local=False)
     
     registered_javascript_attrs = {
         'onPlaceLabel' : True,
