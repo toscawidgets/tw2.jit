@@ -17,13 +17,17 @@ from tw2.jit.defaults import HyperTreeJSONDefaults
 
 encoder = JSONEncoder() 
 
-# TODO -- what's the right way to choose minified or not?
-jit_yc_js = JSLink(modname=__name__, filename="%s/jit-yc.js" % jit_base)
-jit_js = JSLink(modname=__name__, filename="%s/jit.js" % jit_base)
-jit_css = CSSLink(modname=__name__, filename="static/css/jit_base.css")
-treemap_css = CSSLink(modname=__name__, filename="static/css/treemap.css")
-sunburst_css = CSSLink(modname=__name__, filename="static/css/sunburst.css")
-icicle_css = CSSLink(modname=__name__, filename="static/css/icicle.css")
+# TODO -- the tw2 devtools are give me __name__ as tw2.jit.widgets but the resources are all in tw2.jit/static
+modname = ".".join(__name__.split('.')[:-1])
+modname = "tw2.jit"
+
+# TODO -- what's the right way to choose minified or not in tw2
+jit_yc_js = JSLink(modname=modname, filename="%s/jit-yc.js" % jit_base)
+jit_js = JSLink(modname=modname, filename="%s/jit.js" % jit_base)
+jit_css = CSSLink(modname=modname, filename="static/css/jit_base.css")
+treemap_css = CSSLink(modname=modname, filename="static/css/treemap.css")
+sunburst_css = CSSLink(modname=modname, filename="static/css/sunburst.css")
+icicle_css = CSSLink(modname=modname, filename="static/css/icicle.css")
 
 # TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
