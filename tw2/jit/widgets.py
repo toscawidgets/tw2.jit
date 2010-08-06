@@ -178,7 +178,7 @@ class BarChart(JitChart):
 
     jitClassName = twc.Variable(
         'name of the Jit class for this widget', default='BarChart')
-
+    
     barsOffset = twc.Param(
         '(number) Separation between bars.',
         default=0, attribute=True, request_local=False)
@@ -209,7 +209,10 @@ class BarChart(JitChart):
 
 class PieChart(JitChart):
     # TODO -- redo this with mako to have an example of either
-    template = "genshi:tw2.jit.templates.piechart"
+    template = "genshi:tw2.jit.templates.jitwidget"
+
+    jitClassName = twc.Variable(
+        'name of the Jit class for this widget', default='PieChart')
 
     sliceOffset = twc.Param(
         '(number) Separation between the center of the ' +
@@ -228,6 +231,16 @@ class PieChart(JitChart):
         'charts.  Resize the height of the pie slices ' +
         'according to their current values.',
         default=False, attribute=True, request_local=False)
+    
+    Label = twc.Param(
+        'dictionary of parameters for the labels',
+        default={
+            'type' : 'Native',
+            'size' : 20,
+            'family' : 'Arial',
+            'color' : 'white'
+        }, attribute=True, request_local=False)
+
     json = twc.Param(
         '(dict) Data to send to the widget.',
         default=PieChartJSONDefaults, attribute=True, request_local=False)
