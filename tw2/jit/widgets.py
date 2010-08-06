@@ -174,7 +174,10 @@ class AreaChart(JitChart):
 
 class BarChart(JitChart):
     # TODO -- redo this with mako to have an example of either
-    template = "genshi:tw2.jit.templates.barchart"
+    template = "genshi:tw2.jit.templates.jitwidget"
+
+    jitClassName = twc.Variable(
+        'name of the Jit class for this widget', default='BarChart')
 
     barsOffset = twc.Param(
         '(number) Separation between bars.',
@@ -190,6 +193,16 @@ class BarChart(JitChart):
         '(boolean) Display the sum of the values of the ' +
         'different stacks.',
         default=True, attribute=True, request_local=False)
+
+    Label = twc.Param(
+        'dictionary of parameters for the labels',
+        default={
+            'type' : 'Native',
+            'size' : 20,
+            'family' : 'Arial',
+            'color' : 'white'
+        }, attribute=True, request_local=False)
+
     json = twc.Param(
         '(dict) Data to send to the widget.',
         default=BarChartJSONDefaults, attribute=True, request_local=False)
