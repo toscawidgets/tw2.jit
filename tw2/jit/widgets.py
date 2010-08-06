@@ -17,6 +17,7 @@ from tw2.jit.defaults import HyperTreeJSONDefaults
 
 encoder = JSONEncoder() 
 
+# TODO -- what's the right way to choose minified or not?
 jit_yc_js = JSLink(modname=__name__, filename="%s/jit-yc.js" % jit_base)
 jit_js = JSLink(modname=__name__, filename="%s/jit.js" % jit_base)
 jit_css = CSSLink(modname=__name__, filename="static/css/jit_base.css")
@@ -26,7 +27,6 @@ icicle_css = CSSLink(modname=__name__, filename="static/css/icicle.css")
 
 # TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
-    # TODO -- what's the right way to choose minified or not?
     #resources = [jit_yc_js]
     resources = [jit_js]
 
@@ -48,8 +48,16 @@ class JitWidget(twc.Widget):
         description='(string) widget height', attribute=True, default='500')
     
     animate = twc.Param(
-        '(boolean) Whether to add animated transitions ' +
-        'when filtering/restoring stacks', default=True, attribute=True)
+        '(boolean) Whether to add animated transitions.',
+        default=True, attribute=True)
+    
+    duration = twc.Param(
+        '(number) Duration of the animation in milliseconds.',
+        default=1000, attribute=True)
+
+    fps = twc.Param(
+        '(number) Frames per second of the animation.',
+        default=45, attribute=True)
     
     offset = twc.Param(
         '(number) Margin between the display and the canvas.',
@@ -217,19 +225,21 @@ class PieChart(JitChart):
 
     hoveredColor = twc.Param(
         '(string) Sets the selected color for a hovered pie stack.',
-        default='#9fd4ff', attribute=True, request_local=False)
+        default='#9fd4ff', attribute=True)
 
     resizeLabels = twc.Param(
         '(boolean|number) Resize the pie labels according to ' +
         'their stacked values.  Set a number for resizeLabels ' +
         'to set a font size minimum.',
-        default=False, attribute=True, request_local=False)
+        default=False, attribute=True)
+
     updateHeights = twc.Param(
         '(boolean) Only for mono-valued (most common) pie ' +
         'charts.  Resize the height of the pie slices ' +
         'according to their current values.',
-        default=False, attribute=True, request_local=False)
-    
+        default=False, attribute=True)
+   
+    # TODO -- get rid of this
     Label = twc.Param(
         'dictionary of parameters for the labels',
         default={
@@ -237,25 +247,18 @@ class PieChart(JitChart):
             'size' : 20,
             'family' : 'Arial',
             'color' : 'white'
-        }, attribute=True, request_local=False)
+        }, attribute=True)
 
 
 class JitTree(JitChart):
     constrained = twc.Param(
         '(boolean) Whether to show the entire tree when loaded ' +
         'or just the number of levels specified by levelsToShow.',
-        default=False, attribute=True, request_local=False)
+        default=False, attribute=True)
     levelsToShow = twc.Param(
         '(number) The number of levels to show for a subtree.  This ' +
         'number is relative to the selected node.',
-        default=3, attribute=True, request_local=False)
-    duration = twc.Param(
-        '(number) Duration of the animation in milliseconds.',
-        default=700, attribute=True, request_local=False)
-    fps = twc.Param(
-        '(number) Frames per second of the animation.',
-        default=45, attribute=True, request_local=False)
-
+        default=3, attribute=True)
 class TreeMap(JitTree):
     resources = [jit_js, jit_css, treemap_css]
     template = "genshi:tw2.jit.templates.jitwidget"
@@ -335,7 +338,6 @@ class TreeMap(JitTree):
         default=2, attribute=True, request_local=False)
     # TODO - Node.Type 
     #see http://thejit.org/static/v20/Docs/files/Visualizations/Treemap-js.html
-    #duration and fps too
 
 class JitGraph(JitChart):
     pass
@@ -779,9 +781,6 @@ class SpaceTree(JitTree):
         'whatever',
         default="jitwidget.compute();jitwidget.geom.translate(new $jit.Complex(-200, 0), \"current\");jitwidget.onClick(jitwidget.root);", attribute=True, request_local=False)
 
-    duration = twc.Param(
-        'foo',
-        default=800, attribute=True, request_local=False)
     transition = twc.Param(
         'javascript',
         default='$jit.Trans.Quart.easeInOut', attribute=True, request_local=False)
