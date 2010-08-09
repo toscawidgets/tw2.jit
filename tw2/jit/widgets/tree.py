@@ -11,6 +11,17 @@ from tw2.jit.defaults import HyperTreeJSONDefaults
 
 
 class JitTree(JitWidget):
+
+    # Trees and graphs have Navigation
+    Navigation = twc.Param(
+        'Panning and zooming options for Graph/Tree visualziations.',
+        default={  
+            'enable': False,  
+            'type': 'auto',  
+            'panning': False, #true, 'avoid nodes'  
+            'zooming': False  
+        }, attribute=True)
+
     constrained = twc.Param(
         '(boolean) Whether to show the entire tree when loaded ' +
         'or just the number of levels specified by levelsToShow.',

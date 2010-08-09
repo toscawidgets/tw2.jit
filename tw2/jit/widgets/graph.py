@@ -8,7 +8,15 @@ from tw2.jit.defaults import RadialGraphJSONDefaults
 
 # TODO -- PANIC -- what should thsi include from JitChart??? or JitTree?
 class JitGraph(JitWidget):
-    pass
+    # Trees and graphs have Navigation
+    Navigation = twc.Param(
+        'Panning and zooming options for Graph/Tree visualziations.',
+        default={
+            'enable': False,
+            'type': 'auto',
+            'panning': False, #true, 'avoid nodes'  
+            'zooming': False
+        }, attribute=True)
 
 class ForceDirectedGraph(JitGraph):
     resources = [jit_js]
@@ -17,7 +25,6 @@ class ForceDirectedGraph(JitGraph):
     jitClassName = twc.Variable(default='ForceDirected')
     
     data = twc.Param(default=ForceDirectedGraphJSONDefaults)
-    
     postinitJS = twc.Param(default="""
   // compute positions incrementally and animate.
   jitwidget.computeIncremental({
@@ -39,6 +46,7 @@ class ForceDirectedGraph(JitGraph):
             'panning' : 'avoid nodes',
             'zooming' : 10
         }, attribute=True, request_local=False)
+    
     Node = twc.Param(
         '(dict) As per Options.Node.',
         default={
@@ -165,21 +173,6 @@ class RadialGraph(JitGraph):
 
     jitClassName = twc.Variable(default='RGraph')
 
-    data = twc.Param(default=RadialGraphJSONDefaults)
-
-    postinitJS = twc.Param(
-        default="""
-    //trigger small animation for kicks
-    jitwidget.graph.eachNode(function(n) {
-        var pos = n.getPos();
-        pos.setc(-200, -200);
-    });
-    jitwidget.compute('end');
-    jitwidget.fx.animate({
-        modes:['polar'],
-        duration: 2000
-    });""", attribute=True, request_local=False)
-   
     background = twc.Param(
         '(dict) see ... TODO.',
         default={
