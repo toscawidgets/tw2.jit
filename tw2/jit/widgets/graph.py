@@ -114,7 +114,7 @@ class ForceDirectedGraph(JitGraph):
         '(string) Javascript callback bizniz',
         default="""
         (function(domElement, node){
-              domElement.innerHTML = node.name + "wtfevrybdy";
+              domElement.innerHTML = node.name;
               var style = domElement.style;
               style.fontSize = "0.8em";
               style.color = "#ddd";
@@ -202,7 +202,7 @@ class RadialGraph(JitGraph):
         'javascript function callback',
         default="""
         (function(domElement, node){
-            domElement.innerHTML = node.name + "foobangface";
+            domElement.innerHTML = node.name;
             domElement.onclick = function(){
                 jitwidget.onClick(node.id);
             };
