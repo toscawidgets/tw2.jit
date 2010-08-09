@@ -17,6 +17,70 @@ class JitGraph(JitWidget):
             'zooming': False
         }, attribute=True)
 
+#Radial Graph
+class RadialGraph(JitGraph):
+    resources = [jit_js]
+    template = "genshi:tw2.jit.templates.jitwidget"
+
+    jitClassName = twc.Variable(default='RGraph')
+
+    background = twc.Param(
+        '(dict) see ... TODO.',
+        default={
+            'CanvasStyles':{
+                'strokeStyle' : '#555'
+            }
+        }, attribute=True, request_local=False)
+    Node = twc.Param(
+        '(dict) .. blah.',
+        default={
+            'color': '#ddeeff',
+        }, attribute=True, request_local=False)
+    Edge = twc.Param(
+        '(dict) .. blah.',
+        default={
+            'color': '#C17878',
+            'lineWidth':1.5,
+        }, attribute=True, request_local=False)
+    onCreateLabel = twc.Param(
+        'javascript function callback',
+        default="""
+        (function(domElement, node){
+            domElement.innerHTML = node.name;
+            domElement.onclick = function(){
+                jitwidget.onClick(node.id);
+            };
+        })""", attribute=True, request_local=False)
+    onPlaceLabel = twc.Param(
+        'javascript function callback',
+        default="""
+        (function(domElement, node){
+            var style = domElement.style;
+            style.display = '';
+            style.cursor = 'pointer';
+
+            if (node._depth <= 1) {
+                style.fontSize = "0.8em";
+                style.color = "#ccc";
+            
+            } else if(node._depth == 2){
+                style.fontSize = "0.7em";
+                style.color = "#494949";
+            
+            } else {
+                style.display = 'none';
+            }
+
+            var left = parseInt(style.left);
+            var w = domElement.offsetWidth;
+            style.left = (left - w / 2) + 'px';
+        })""", attribute=True, request_local=False)
+    
+    registered_javascript_attrs = {
+        'onCreateLabel' : True,
+        'onPlaceLabel' : True,
+    }
+
 class ForceDirectedGraph(JitGraph):
     resources = [jit_js]
     template = "genshi:tw2.jit.templates.jitwidget"
@@ -165,66 +229,3 @@ class ForceDirectedGraph(JitGraph):
         '(number) The natural length desired for the edges.',
         default=50, attribute=True, request_local=False)
 
-#Radial Graph
-class RadialGraph(JitGraph):
-    resources = [jit_js]
-    template = "genshi:tw2.jit.templates.jitwidget"
-
-    jitClassName = twc.Variable(default='RGraph')
-
-    background = twc.Param(
-        '(dict) see ... TODO.',
-        default={
-            'CanvasStyles':{
-                'strokeStyle' : '#555'
-            }
-        }, attribute=True, request_local=False)
-    Node = twc.Param(
-        '(dict) .. blah.',
-        default={
-            'color': '#ddeeff',
-        }, attribute=True, request_local=False)
-    Edge = twc.Param(
-        '(dict) .. blah.',
-        default={
-            'color': '#C17878',
-            'lineWidth':1.5,
-        }, attribute=True, request_local=False)
-    onCreateLabel = twc.Param(
-        'javascript function callback',
-        default="""
-        (function(domElement, node){
-            domElement.innerHTML = node.name;
-            domElement.onclick = function(){
-                jitwidget.onClick(node.id);
-            };
-        })""", attribute=True, request_local=False)
-    onPlaceLabel = twc.Param(
-        'javascript function callback',
-        default="""
-        (function(domElement, node){
-            var style = domElement.style;
-            style.display = '';
-            style.cursor = 'pointer';
-
-            if (node._depth <= 1) {
-                style.fontSize = "0.8em";
-                style.color = "#ccc";
-            
-            } else if(node._depth == 2){
-                style.fontSize = "0.7em";
-                style.color = "#494949";
-            
-            } else {
-                style.display = 'none';
-            }
-
-            var left = parseInt(style.left);
-            var w = domElement.offsetWidth;
-            style.left = (left - w / 2) + 'px';
-        })""", attribute=True, request_local=False)
-    
-    registered_javascript_attrs = {
-        'onCreateLabel' : True,
-        'onPlaceLabel' : True,
-    }
