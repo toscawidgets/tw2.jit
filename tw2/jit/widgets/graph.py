@@ -4,7 +4,6 @@ from tw2.jit.widgets.core import JitWidget
 from tw2.jit.widgets.core import jit_js
 
 from tw2.jit.defaults import ForceDirectedGraphJSONDefaults
-from tw2.jit.defaults import RadialGraphJSONDefaults
 
 # TODO -- PANIC -- what should thsi include from JitChart??? or JitTree?
 class JitGraph(JitWidget):
