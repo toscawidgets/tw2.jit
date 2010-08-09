@@ -66,18 +66,18 @@ class JitWidget(twc.Widget):
             'background' : False
         })
 
-    #Label = twc.Param(
-    #    '(dict) Of the form Options.Label in the jit docs.', attribute=True,
-    #    default={
-    #        'overridable' : False,
-    #        'type': 'Native',
-    #        'style' : ' ',
-    #        'size': 10,  
-    #        'family': 'sans-serif',
-    #        'textAlign' : 'center',
-    #        'textBaseline' : 'alphabetic',
-    #        'color': 'white',
-    #    })
+    Label = twc.Param(
+        '(dict) Of the form Options.Label in the jit docs.', attribute=True,
+        default={
+            'overridable' : False,
+            'type': 'HTML',
+            'style' : ' ',
+            'size': 10,  
+            'family': 'sans-serif',
+            'textAlign' : 'center',
+            'textBaseline' : 'alphabetic',
+            'color': 'white',
+        })
     Tips = twc.Param(
         '(dict) Of the form of Options.Tips in the jit docs.', attribute=True,
         default={

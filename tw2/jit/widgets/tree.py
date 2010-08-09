@@ -426,7 +426,7 @@ class Icicle(JitTree):
         '(dict)',
         default={
             'enable': True,  
-            'type' : 'Native',
+            'type' : 'HTML',
             'offsetX' : 20,
             'offsetY' : 20,
             'onShow': """
