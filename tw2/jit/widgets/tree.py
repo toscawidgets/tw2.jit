@@ -1,6 +1,7 @@
 import tw2.core as twc
+from tw2.core.resources import JSSource
 
-from tw2.jit.widgets.core import JitWidget
+from tw2.jit.widgets.core import JitTreeOrGraphWidget
 from tw2.jit.widgets.core import jit_js, jit_css, treemap_css, sunburst_css
 
 from tw2.jit.defaults import TreeMapJSONDefaults
@@ -10,18 +11,7 @@ from tw2.jit.defaults import SpaceTreeJSONDefaults
 from tw2.jit.defaults import HyperTreeJSONDefaults
 
 
-class JitTree(JitWidget):
-
-    # Trees and graphs have Navigation
-    Navigation = twc.Param(
-        'Panning and zooming options for Graph/Tree visualziations.',
-        default={  
-            'enable': False,  
-            'type': 'auto',  
-            'panning': False, #true, 'avoid nodes'  
-            'zooming': False  
-        }, attribute=True)
-
+class JitTree(JitTreeOrGraphWidget):
     constrained = twc.Param(
         '(boolean) Whether to show the entire tree when loaded ' +
         'or just the number of levels specified by levelsToShow.',
@@ -67,23 +57,12 @@ class TreeMap(JitTree):
         '(number) Separation between the center of the ' +
         'canvas and each pie slice.', default=13, attribute=True)
    
-    registered_javascript_attrs = {
-        'Events' : {
-            'onClick' : True,
-            'onRightClick' : True,
-        },
-        'Tips' : {
-            'onShow' : True,
-        },
-        'onCreateLabel' : True
-    }
-    
     Events = twc.Param(
         '(dict) Of the form Options.Events in the jit docs.',
         default={
             'enable': True,
-            'onClick': '(function(node) {if (node) {jitwidget.enter(node);}})',
-            'onRightClick': '(function() {jitwidget.out();})',
+            'onClick': JSSource(src='(function(node) {if (node) {jitwidget.enter(node);}})'),
+            'onRightClick': JSSource(src='(function() {jitwidget.out();})'),
         }, attribute=True)
 
     Tips = twc.Param(
@@ -92,26 +71,25 @@ class TreeMap(JitTree):
             'enable' : True,
             'offsetX' : 20,  
             'offsetY' : 20,  
-            'onShow' :
-            """
+            'onShow' : JSSource(src="""
             (function(tip, node, isLeaf, domElement) {
-                   var html = '<div class=\"tip-title\">' + node.name   
-                     + '</div><div class=\"tip-text\">';  
+                   var html = '<div class=\'tip-title\'>' + node.name   
+                     + '</div><div class=\\'tip-text\\'>';  
                    var data = node.data;  
                    if(data.playcount) {  
                      html += 'play count: ' + data.playcount;  
                    }  
                    if(data.image) {  
-                        html += '<img src=\"'+ data.image +'\" style=\"width: 100px; margin: 3px;\" />';  
+                        html += '<img src=\''+ data.image +'\' style=\'width: 100px; margin: 3px;\' />';  
                    }  
                    tip.innerHTML =  html;   
                  })
-            """,
+            """),
         }, attribute=True)
     
     onCreateLabel = twc.Param(
         '(string) Javascript callback definition.',
-        default="""
+        default=JSSource(src="""
         (function(domElement, node){  
            domElement.innerHTML = node.name;  
            var style = domElement.style;  
@@ -124,8 +102,7 @@ class TreeMap(JitTree):
              style.border = '1px solid transparent';  
            };  
         } )
-        """, attribute=True)
-
+        """), attribute=True)
 
     # TODO - Node.Type 
     #see http://thejit.org/static/v20/Docs/files/Visualizations/Treemap-js.html
@@ -172,9 +149,9 @@ class Sunburst(JitTree):
         '(dict)',
         default={
             'enable': True,  
-            'onShow': """
+            'onShow': JSSource(src="""
             (function(tip, node) {  
-                var html = '<div class=\"tip-title\">' + node.name + '</div>';
+                var html = '<div class=\'tip-title\'>' + node.name + '</div>';
                 var data = node.data;  
                 if('days' in data) {  
                     html += '<b>Last modified:</b> ' + data.days + ' days ago';
@@ -183,37 +160,35 @@ class Sunburst(JitTree):
                     html += '<br /><b>File size:</b> ' + Math.round(data.size / 1024) + 'KB';
                 }
                 tip.innerHTML = html;  
-            })"""}, attribute=True, request_local=False)
+            })""")}, attribute=True, request_local=False)
     Events = twc.Param(
         default= {
             'enable': True,
-            'onClick': """
+            'onClick': JSSource(src="""
         (function(node) {  
          if(!node) return;  
-         //hide tip  
          jitwidget.tips.hide();  
-         //rotate  
          jitwidget.rotate(node, 'animate', {  
            duration: 1000,  
            transition: $jit.Trans.Quart.easeInOut  
          });  
-       })"""}, attribute=True, request_local=False)
+       })""")}, attribute=True, request_local=False)
     onCreateLabel = twc.Param(
          '(string) javascript callback.',
-         default="""
+         default=JSSource(src="""
          (function(domElement, node){
-       var labels = jitwidget.config.Label.type,  
-           aw = node.getData('angularWidth');  
+       var labels = jitwidget.config.Label.type;
+       var aw = node.getData('angularWidth');  
        if (labels === 'HTML' && (node._depth < 2 || aw > 2000)) {  
          domElement.innerHTML = node.name;  
        } else if (labels === 'SVG' && (node._depth < 2 || aw > 2000)) {  
          domElement.firstChild.appendChild(document.createTextNode(node.name));  
        }  
-     })""",
-         attribute=True, request_local=False)
+     })"""), attribute=True, request_local=False)
+
     onPlaceLabel = twc.Param(
          '(string) javascript callback.',
-         default="""
+         default=JSSource(src="""
      (function(domElement, node){  
        var labels = jitwidget.config.Label.type;  
        if (labels === 'SVG') {  
@@ -221,26 +196,20 @@ class Sunburst(JitTree):
          var style = fch.style;  
          style.display = '';  
          style.cursor = 'pointer';  
-         style.fontSize = "0.8em";  
-         fch.setAttribute('fill', "#fff");  
+         style.fontSize = '0.8em';  
+         fch.setAttribute('fill', '#fff');  
        } else if (labels === 'HTML') {  
          var style = domElement.style;  
          style.display = '';  
          style.cursor = 'pointer';  
-         style.fontSize = "0.8em";  
-         style.color = "#ddd";  
+         style.fontSize = '0.8em';  
+         style.color = '#ddd';  
          var left = parseInt(style.left);  
          var w = domElement.offsetWidth;  
          style.left = (left - w / 2) + 'px';  
        }  
-     })""", attribute=True, request_local=False)
+     })"""), attribute=True, request_local=False)
    
-    registered_javascript_attrs = {
-        'Tips' : { 'onShow' : True },
-        'Events' : { 'onClick' : True },
-        'onPlaceLabel' : True,
-        'onCreateLabel' : True,
-    }
 
 class HyperTree(JitTree):
     resources = [jit_js]
@@ -261,11 +230,6 @@ class HyperTree(JitTree):
     offset = twc.Param(
         '(number)', default=0, attribute=True, request_local=False)
     
-    registered_javascript_attrs = {
-        'onPlaceLabel' : True,
-        'onCreateLabel' : True,
-    }
-   
     postinitJS = twc.Param(
         'whatevs',
         default="jitwidget.refresh();", attribute=True, request_local=False)
@@ -284,36 +248,33 @@ class HyperTree(JitTree):
         }, attribute=True, request_local=False)
     onCreateLabel = twc.Param(
          '(string) javascript callback.',
-         default="""
+         default=JSSource(src="""
             ( function(domElement, node){
                   domElement.innerHTML = node.name;
                   $jit.util.addEvent(domElement, 'click', function () {
                       jitwidget.onClick(node.id);
                   });
-            })""", attribute=True, request_local=False)
+            })"""), attribute=True, request_local=False)
     onPlaceLabel = twc.Param(
         '(string) javascript callback.',
-        default="""
+        default=JSSource(src="""
             ( function(domElement, node){
                   var style = domElement.style;
                   style.display = '';
                   style.cursor = 'pointer';
                   if (node._depth <= 1) {
-                      style.fontSize = "0.8em";
-                      style.color = "#ddd";
-
+                      style.fontSize = '0.8em';
+                      style.color = '#ddd';
                   } else if(node._depth == 2){
-                      style.fontSize = "0.7em";
-                      style.color = "#555";
-
+                      style.fontSize = '0.7em';
+                      style.color = '#555';
                   } else {
                       style.display = 'none';
                   }
-
                   var left = parseInt(style.left);
                   var w = domElement.offsetWidth;
                   style.left = (left - w / 2) + 'px';
-              })""", attribute=True, request_local=False)
+              })"""), attribute=True, request_local=False)
 
 
 class SpaceTree(JitTree):
@@ -323,14 +284,18 @@ class SpaceTree(JitTree):
     jitClassName = twc.Variable(default='ST')
     
     data = twc.Param(default=SpaceTreeJSONDefaults)
-    
+   
+    # TODO -- try wrapping this in a JSSource to see if it works like its supposed to.
     postinitJS = twc.Param(
         'whatever',
-        default="jitwidget.compute();jitwidget.geom.translate(new $jit.Complex(-200, 0), \"current\");jitwidget.onClick(jitwidget.root);", attribute=True, request_local=False)
+        default="""
+        jitwidget.compute();jitwidget.geom.translate(new $jit.Complex(-200, 0), "current");jitwidget.onClick(jitwidget.root);""", attribute=True, request_local=False)
 
     transition = twc.Param(
         'javascript',
-        default='$jit.Trans.Quart.easeInOut', attribute=True, request_local=False)
+        default=JSSource(src='$jit.Trans.Quart.easeInOut'),
+        attribute=True, request_local=False)
+
     levelDistance = twc.Param(
         'foo',
         default=50, attribute=True, request_local=False)
@@ -361,14 +326,13 @@ class SpaceTree(JitTree):
 
     onCreateLabel = twc.Param(
         'dofalsdkjfadf',
-        default="""
+        default=JSSource(src="""
         (function(label, node){
             label.id = node.id;            
             label.innerHTML = node.name;
             label.onclick = function(){
                 jitwidget.onClick(node.id);
             };
-            //set label styles
             var style = label.style;
             style.width = 60 + 'px';
             style.height = 17 + 'px';            
@@ -377,50 +341,36 @@ class SpaceTree(JitTree):
             style.fontSize = '0.8em';
             style.textAlign= 'center';
             style.paddingTop = '3px';
-        })""", attribute=True, request_local=False)
+        })"""), attribute=True, request_local=False)
     onBeforePlotNode = twc.Param(
         'asdlfkjasdlkfj',
-        default="""
+        default=JSSource(src="""
         (function(node){
-            //add some color to the nodes in the path between the
-            //root node and the selected node.
             if (node.selected) {
-                node.data.$color = "#ff7";
+                node.data.$color = \'#ff7\';
             }
             else {
                 delete node.data.$color;
-                //if the node belongs to the last plotted level
-                if(!node.anySubnode("exist")) {
-                    //count children number
+                if(!node.anySubnode(\'exist\')) {
                     var count = 0;
                     node.eachSubnode(function(n) { count++; });
-                    //assign a node color based on
-                    //how many children it has
                     node.data.$color = ['#aaa', '#baa', '#caa', '#daa', '#eaa', '#faa'][count];                    
                 }
             }
-        })""", attribute=True, request_local=False)
+        })"""), attribute=True, request_local=False)
     onBeforePlotLine = twc.Param(
         'asdlkfjasldfjka',
-        default="""
+        default=JSSource(src="""
         (function(adj){
             if (adj.nodeFrom.selected && adj.nodeTo.selected) {
-                adj.data.$color = "#eed";
+                adj.data.$color = \'#eed\';
                 adj.data.$lineWidth = 3;
             }
             else {
                 delete adj.data.$color;
                 delete adj.data.$lineWidth;
             }
-        })""", attribute=True, request_local=False)
-
-    registered_javascript_attrs = {
-        'transition' : True,
-        'onCreateLabel' : True,
-        'onBeforePlotLine' : True,
-        'onBeforePlotNode' : True,
-    }
-
+        })"""), attribute=True, request_local=False)
 
 class Icicle(JitTree):
     resources = [jit_js]
@@ -440,57 +390,52 @@ class Icicle(JitTree):
             'type' : 'HTML',
             'offsetX' : 20,
             'offsetY' : 20,
-            'onShow': """
+            'onShow': JSSource(src="""
             (function(tip, node){
-                // count children
                 var count = 0;
                 node.eachSubnode(function(){
                   count++;
-                });
-                // add tooltip info
-                tip.innerHTML = '<div class=\"tip-title\"><b>Name:</b> ' 
-                    + node.name + '</div><div class=\"tip-text\">' 
+                }); // TODO -- working here.. quotes are broke.
+                tip.innerHTML = '<div class="tip-title"><b>Name:</b> ' 
+                    + node.name + '</div><div class=\\'tip-text\\'>' 
                     + count + ' children</div>';
-            })"""}, attribute=True, request_local=False)
+            })""")}, attribute=True, request_local=False)
     Events = twc.Param(
         default= {
             'enable': True,
-            'onMouseEnter': """
+            'onMouseEnter': JSSource(src="""
             (function(node) {
-                //add border and replot node
                 node.setData('border', '#33dddd');
                 jitwidget.fx.plotNode(node, jitwidget.canvas);
                 jitwidget.labels.plotLabel(jitwidget.canvas, node, jitwidget.controller);
-            })""",
-            'onMouseLeave': """
+            })"""),
+            'onMouseLeave': JSSource(src="""
             (function(node) {
                 node.removeData('border');
                 jitwidget.fx.plot();
-            })""",
-            'onClick': """
+            })"""),
+            'onClick': JSSource(src="""
             (function(node){
                 if (node) {
-                    //hide tips and selections
                     jitwidget.tips.hide();
-                    if(jitwidget.events.hoveredNode)
+                    if(jitwidget.events.hoveredNode){
                         this.onMouseLeave(jitwidget.events.hoveredNode);
-                    //perform the enter animation
+                               }
                     jitwidget.enter(node);
                }
-            })""",
-            'onRightClick': """
+            })"""),
+            'onRightClick': JSSource(src="""
             (function(){
-                //hide tips and selections
                 jitwidget.tips.hide();
-                if(jitwidget.events.hoveredNode)
+                if(jitwidget.events.hoveredNode) {
                     this.onMouseLeave(jitwidget.events.hoveredNode);
-                //perform the out animation
+                }
                 jitwidget.out();
-            })""",
+            })"""),
       }, attribute=True, request_local=False)
     onCreateLabel = twc.Param(
          '(string) javascript callback.',
-         default="""
+         default=JSSource(src="""
          (function(domElement, node){
               domElement.innerHTML = node.name;
               var style = domElement.style;
@@ -499,10 +444,10 @@ class Icicle(JitTree):
               style.cursor = 'pointer';
               style.color = '#333';
               style.overflow = 'hidden';
-        })""", attribute=True, request_local=False)
+        })"""), attribute=True, request_local=False)
     onPlaceLabel = twc.Param(
          '(string) javascript callback.',
-         default="""
+         default=JSSource(src="""
             (function(domElement, node){
                   var style = domElement.style,
                       width = node.getData('width'),
@@ -514,16 +459,5 @@ class Icicle(JitTree):
                     style.width = width + 'px';
                     style.height = height + 'px';
                   }
-        })""", attribute=True, request_local=False)
-    registered_javascript_attrs = {
-        'Tips' : { 'onShow' : True },
-        'Events' : {
-            'onMouseEnter' : True,
-            'onMouseLeave' : True,
-            'onClick' : True,
-            'onRightClick' : True
-        },
-        'onCreateLabel' : True,
-        'onPlaceLabel' : True,
-    }
+        })"""), attribute=True, request_local=False)
 

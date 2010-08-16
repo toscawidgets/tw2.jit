@@ -1,21 +1,14 @@
 import tw2.core as twc
+from tw2.core.resources import JSSource
 
-from tw2.jit.widgets.core import JitWidget
+from tw2.jit.widgets.core import JitTreeOrGraphWidget
 from tw2.jit.widgets.core import jit_js
 
 from tw2.jit.defaults import ForceDirectedGraphJSONDefaults
 
 # TODO -- PANIC -- what should thsi include from JitChart??? or JitTree?
-class JitGraph(JitWidget):
-    # Trees and graphs have Navigation
-    Navigation = twc.Param(
-        'Panning and zooming options for Graph/Tree visualziations.',
-        default={
-            'enable': False,
-            'type': 'auto',
-            'panning': False, #true, 'avoid nodes'  
-            'zooming': False
-        }, attribute=True)
+class JitGraph(JitTreeOrGraphWidget):
+    pass
 
 #Radial Graph
 class RadialGraph(JitGraph):
@@ -25,62 +18,9 @@ class RadialGraph(JitGraph):
     jitClassName = twc.Variable(default='RGraph')
 
     background = twc.Param(
-        '(dict) see ... TODO.',
-        default={
-            'CanvasStyles':{
-                'strokeStyle' : '#555'
-            }
-        }, attribute=True, request_local=False)
-    Node = twc.Param(
-        '(dict) .. blah.',
-        default={
-            'color': '#ddeeff',
-        }, attribute=True, request_local=False)
-    Edge = twc.Param(
-        '(dict) .. blah.',
-        default={
-            'color': '#C17878',
-            'lineWidth':1.5,
-        }, attribute=True, request_local=False)
-    onCreateLabel = twc.Param(
-        'javascript function callback',
-        default="""
-        (function(domElement, node){
-            domElement.innerHTML = node.name;
-            domElement.onclick = function(){
-                jitwidget.onClick(node.id);
-            };
-        })""", attribute=True, request_local=False)
-    onPlaceLabel = twc.Param(
-        'javascript function callback',
-        default="""
-        (function(domElement, node){
-            var style = domElement.style;
-            style.display = '';
-            style.cursor = 'pointer';
-
-            if (node._depth <= 1) {
-                style.fontSize = "0.8em";
-                style.color = "#ccc";
-            
-            } else if(node._depth == 2){
-                style.fontSize = "0.7em";
-                style.color = "#494949";
-            
-            } else {
-                style.display = 'none';
-            }
-
-            var left = parseInt(style.left);
-            var w = domElement.offsetWidth;
-            style.left = (left - w / 2) + 'px';
-        })""", attribute=True, request_local=False)
-    
-    registered_javascript_attrs = {
-        'onCreateLabel' : True,
-        'onPlaceLabel' : True,
-    }
-
+        '(dict) see sample (TODO).', default={},
+        attribute=True, request_local=False)
+   
 class ForceDirectedGraph(JitGraph):
     resources = [jit_js]
     template = "genshi:tw2.jit.templates.jitwidget"
@@ -89,7 +29,6 @@ class ForceDirectedGraph(JitGraph):
     
     data = twc.Param(default=ForceDirectedGraphJSONDefaults)
     postinitJS = twc.Param(default="""
-  // compute positions incrementally and animate.
   jitwidget.computeIncremental({
     iter: 40,
     property: 'end',
@@ -131,68 +70,64 @@ class ForceDirectedGraph(JitGraph):
         '(dict) As per Options.Tips.',
         default={
             'enable' : True,
-            'onShow' : """
+            'onShow' : JSSource(src="""
             (function(tip, node) {
-                //count connections
                 var count = 0;
                 node.eachAdjacency(function() { count++; });
-                //display node info in tooltip
-                tip.innerHTML = '<div class=\"tip-title\">' 
+                tip.innerHTML = '<div class="tip-title">' 
                     + node.name + '</div>'
-                    + '<div class=\"tip-text\"><b>connections:</b> ' 
+                    + '<div class="tip-text"><b>connections:</b> ' 
                     + count + '</div>';
                   })
-            """
+            """)
         }, attribute=True, request_local=False)
     Events = twc.Param(
         '(dict) As per usual.',
         default={
             'enable' : True,
-            'onMouseEnter' : """
+            'onMouseEnter' : JSSource(src="""
             (function() { 
                 jitwidget.canvas.getElement().style.cursor = \'move\';
-            })""",
-            'onMouseLeave' : """
+            })"""),
+            'onMouseLeave' : JSSource(src="""
             (function() {
                 jitwidget.canvas.getElement().style.cursor = \'\';
-            })""",
-            'onDragMove' : """
+            })"""),
+            'onDragMove' : JSSource(src="""
             (function(node, eventInfo, e) {
                 var pos = eventInfo.getPos();
                 node.pos.setc(pos.x, pos.y);
                 jitwidget.plot();
-            })""",
-            'onTouchMove' : """
+            })"""),
+            'onTouchMove' : JSSource(src="""
             (function(node, eventInfo, e) {
-                $jit.util.event.stop(e); //stop default touchmove event
+                $jit.util.event.stop(e);
                 this.onDragMove(node, eventInfo, e);
-            })""",
-            'onClick' : """
+            })"""),
+            'onClick' : JSSource(src="""
             (function(node) {
                 if(!node) return;
-                // Build the right column relations list.
-                // This is done by traversing the clicked node connections.
                 var html = "<h4>" + node.name + "</h4><b> connections:</b><ul><li>",
                 list = [];
                 node.eachAdjacency(function(adj){
                     list.push(adj.nodeTo.name);
                 });
                 alert("this is connected to: " + list.join(", "));
-            })"""
+            })""")
         }, attribute=True, request_local=False)
 
     onCreateLabel = twc.Param(
         '(string) Javascript callback bizniz',
-        default="""
+        default=JSSource(src="""
         (function(domElement, node){
               domElement.innerHTML = node.name;
               var style = domElement.style;
               style.fontSize = "0.8em";
               style.color = "#ddd";
-        })""", attribute=True, request_local=False)
+        })"""), attribute=True, request_local=False)
     onPlaceLabel = twc.Param(
         '(string) Javascript callback bizzzzniz',
-        default="""
+        default=JSSource(src="""
         (function(domElement, node){
             var style = domElement.style;
             var left = parseInt(style.left);
@@ -201,22 +136,7 @@ class ForceDirectedGraph(JitGraph):
             style.left = (left - w / 2) + 'px';
             style.top = (top + 10) + 'px';
             style.display = '';
-        })""", attribute=True, request_local=False)
-
-    registered_javascript_attrs = {
-        'onCreateLabel' : True,
-        'onPlaceLabel' : True,
-        'Events' : {
-            'onMouseEnter' : True,
-            'onMouseLeave' : True,
-            'onDragMove' : True,
-            'onTouchMove' : True,
-            'onClick' : True,
-        },
-        'Tips' : {
-            'onShow' : True,
-        },
-    }
+        })"""), attribute=True, request_local=False)
 
     iterations = twc.Param(
         '(number) The number of iterations for the spring ' +

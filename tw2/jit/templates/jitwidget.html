@@ -2,27 +2,8 @@
 <div style="background-color:#1a1a1a; width: $w.width; height: $w.height;" id="$w.compound_id"></div>
 <script language="javascript" type="text/javascript">
 (function() {
-    var config = $w.config;
-    var reg_js_attrs = $w.registered_javascript_attrs;
-    for ( var i in reg_js_attrs ) {
-        if ( reg_js_attrs[i] == true ) {
-            config[i] = eval(config[i]);
-        } else {
-            for ( var j in reg_js_attrs[i] ) {
-                if ( reg_js_attrs[i][j] ) {
-                    // this is done only to get around simplejson not accepting
-                    // javascript and tw2:JSSource being hard for me to
-                    // understand.
-                    //
-                    // rewrite if necessary or keep it :)
-                    config[i][j] = eval(config[i][j]);
-                }
-            }
-        }
-    }
-    
     $w.preinitJS
-    var jitwidget = new $$jit.$w.jitClassName(config);
+    var jitwidget = new $$jit.$w.jitClassName($w.config);
     jitwidget.loadJSON($w.json);
     $w.postinitJS
 })();

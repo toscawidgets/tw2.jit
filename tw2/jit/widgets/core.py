@@ -1,11 +1,10 @@
 import tw2.core as twc
 from tw2.core.resources import JSLink, CSSLink
 from tw2.core.resources import JSSource
-from tw2.jit import jit_base
-from simplejson.encoder import JSONEncoder
+from tw2.core.widgets import WidgetMeta
 
-# TODO -- is this line going to get run over and over?  singleton?
-encoder = JSONEncoder() 
+from tw2.jit import jit_base
+from tw2.jit.notquitejson import NotQuiteJSONEncoder
 
 # TODO -- the tw2 devtools are give me __name__ as tw2.jit.widgets but the resources are all in tw2.jit/static
 modname = ".".join(__name__.split('.')[:-1])
@@ -18,6 +17,11 @@ jit_css = CSSLink(modname=modname, filename="static/css/jit_base.css")
 treemap_css = CSSLink(modname=modname, filename="static/css/treemap.css")
 sunburst_css = CSSLink(modname=modname, filename="static/css/sunburst.css")
 icicle_css = CSSLink(modname=modname, filename="static/css/icicle.css")
+
+
+# TODO -- is this line going to get run over and over?  singleton?
+encoder = NotQuiteJSONEncoder() 
+
 
 # TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
@@ -55,6 +59,8 @@ class JitWidget(twc.Widget):
         default=25, attribute=True)
 
     config = twc.Variable( 'jsonified version of other attrs.', default={} )
+
+
 
     Canvas = twc.Param(
         '(dict) Of the form Options.Canvas in the jit docs.', attribute=True,
@@ -111,13 +117,106 @@ class JitWidget(twc.Widget):
 
     data = twc.Param('python data to be jsonified and passed to the widget')
 
-    registered_javascript_attrs = {}
-
     def prepare(self):
         super(JitWidget, self).prepare()
+        print "-" * 20
+        print "starting encoding"
+        for name, attr in self.attrs.iteritems():
+            print " checking pre-encode:", type(attr)
+            print "  ", name, type(attr)
         self.config = encoder.encode(self.attrs)
+        print "type of config:", type(self.config)
+        print self.config
         self.json = encoder.encode(self.data)
-        self.registered_javascript_attrs = encoder.encode(
-            self.registered_javascript_attrs)
+        print "done encoding"
     
-
+class JitTreeOrGraphWidget(JitWidget):
+    # TODO __
+    # http://thejit.org/static/v20/Docs/files/Options/Options-Controller-js.html#Options.Controller
+    # Trees and graphs have Navigation
+    Navigation = twc.Param(
+        'Panning and zooming options for Graph/Tree visualziations.',
+        default={
+            'enable': False,
+            'type': 'auto',
+            'panning': False, #True, 'avoid nodes'  
+            'zooming': False
+        }, attribute=True)
+ 
+    Node = twc.Param(
+        'Provides Node rendering options for ' +
+        'Tree and Graph based visualizations.',
+        default = {
+            'overridable': False,  
+            'type': 'circle',  
+            'color': '#ccb',  
+            'alpha': 1,  
+            'dim': 3,  
+            'height': 20,  
+            'width': 90,  
+            'autoHeight': False,  
+            'autoWidth': False,  
+            'lineWidth': 1,  
+            'transform': True,  
+            'align': "center",  
+            'angularWidth':1,  
+            'span':1,  
+            'CanvasStyles': {}  
+        }, attribute=True)
+    Edge = twc.Param(
+        "Provides Edge rendering options for " +
+        "Tree and Graph based visualizations.",
+        default = {
+            'overridable': False,
+            'type': 'line',  
+            'color': '#ccb',  
+            'lineWidth': 1,  
+            'dim':15,  
+            'alpha': 1,  
+            'CanvasStyles': {} 
+        }, attribute=True)
+    onBeforeCompute = twc.Param(
+        "(javascript) This method is called right before performing all " +
+        "computations and animations.  The selected Graph.Node " +
+        "is passed as parameter.",
+        default=JSSource(src="(function(node) {})"), attribute=True)
+    onAfterCompute = twc.Param(
+        "(javascript) This method is triggered after all animations " +
+        "or computations ended.",
+        default=JSSource(src="(function(node) {})"), attribute=True)
+    onCreateLabel = twc.Param(
+        "(javascript) This method receives a new label DIV element as " +
+        "first parameter, and the corresponding Graph.Node  as second " +
+        "parameter.  This method will only be called once for each label.  " +
+        "This method is useful when adding events or styles to the labels " +
+        "used by the JIT.",
+        default=JSSource(src="(function(node) {})"), attribute=True)
+    onPlaceLabel = twc.Param(
+        "(javascript) This method receives a label DIV element as first " +
+        "parameter and the corresponding Graph.Node  as second parameter.  " +
+        "This method is called each time a label has been placed in the " +
+        "visualization, for example at each step of an animation, and thus " +
+        "it allows you to update the labels properties, such as size or " +
+        "position.  Note that onPlaceLabel will be triggered after updating " +
+        "the labels positions.  That means that, for example, the left and " +
+        "top css properties are already updated to match the nodes " +
+        "positions.  Width and height properties are not set however.",
+        default=JSSource(src="(function(node) {})"), attribute=True)
+    onBeforePlotNode = twc.Param(
+        "(javascript) This method is triggered right before plotting " +
+        "each Graph.Node.  This method is useful for changing a node " +
+        "style right before plotting it.",
+        default=JSSource(src="(function(node) {})"), attribute=True)
+    onAfterPlotNode = twc.Param(
+        "(javascript) This method is triggered right after plotting " +
+        "each Graph.Node.",
+        default=JSSource(src="(function(node) {})"), attribute=True)
+    onBeforePlotLine = twc.Param(
+        "(javascript) This method is triggered right before plotting " +
+        "a Graph.Adjacence.  This method is useful for adding some " +
+        "styles to a particular edge before being plotted.",
+        default=JSSource(src="(function(node) {})"), attribute=True)
+    onAfterPlotLine = twc.Param(
+        "(javascript) This method is triggered right after plotting " +
+        "a Graph.Adjacence.",
+        default=JSSource(src="(function(node) {})"), attribute=True)
