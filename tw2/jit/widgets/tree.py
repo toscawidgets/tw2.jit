@@ -35,7 +35,9 @@ class JitTree(JitTreeOrGraphWidget):
         '(number)', default=3, attribute=True, request_local=False)
 
 class TreeMap(JitTree):
-    resources = [jit_js, jit_css, treemap_css]
+    def prepare(self):
+        super(TreeMap, self).prepare()
+        self.resources.extend([jit_css, treemap_css])
     template = "genshi:tw2.jit.templates.jitwidget"
     
     jitClassName = twc.Variable(default='TM.Squarified')
