@@ -188,9 +188,47 @@ class DemoForceDirectedGraph(ForceDirectedGraph):
             style.display = '';
         })""")
 
+from tw2.jit.widgets import TreeMap
+from tw2.jit.defaults import TreeMapJSONDefaults
+class DemoTreeMap(TreeMap):
+    data = TreeMapJSONDefaults
+
+    postInitJSCallback = JSSymbol(
+        src="(function (jitwidget) { jitwidget.refresh(); })")
+
+    Tips = {
+        'enable' : True,
+        'offsetX' : 20,
+        'offsetY' : 20,
+        'onShow' : JSSymbol(src="""
+            (function(tip, node, isLeaf, domElement) {
+                   var html = '<div class="tip-title">' + node.name   
+                     + '</div><div class="tip-text">';  
+                   var data = node.data;  
+                   if(data.playcount) {  
+                     html += 'play count: ' + data.playcount;  
+                   }  
+                   if(data.image) {  
+                        html += '<img src="'+ data.image +'" style="width: 100px; margin: 3px;" />';  
+                   }  
+                   tip.innerHTML =  html;   
+            })
+            """)
+    }
+
+    onCreateLabel = JSSymbol(src="""
+        (function(domElement, node){  
+           domElement.innerHTML = node.name;  
+           var style = domElement.style;  
+           style.display = '';  
+           style.border = '1px solid transparent';  
+           domElement.onmouseover = function() {  
+             style.border = '1px solid #9FD4FF';  
+           };  
+           domElement.onmouseout = function() {  
+             style.border = '1px solid transparent';  
+           };  
+        } )
+        """)
     
-
-
-
-
 

@@ -64,45 +64,6 @@ class TreeMap(JitTree):
             'onRightClick': JSSymbol(src='(function() {jitwidget.out();})'),
         }, attribute=True)
 
-    Tips = twc.Param(
-        '(dict) Of the form of Options.Tips in the jit docs.',
-        default={
-            'enable' : True,
-            'offsetX' : 20,  
-            'offsetY' : 20,  
-            'onShow' : JSSymbol(src="""
-            (function(tip, node, isLeaf, domElement) {
-                   var html = '<div class=\'tip-title\'>' + node.name   
-                     + '</div><div class=\\'tip-text\\'>';  
-                   var data = node.data;  
-                   if(data.playcount) {  
-                     html += 'play count: ' + data.playcount;  
-                   }  
-                   if(data.image) {  
-                        html += '<img src=\''+ data.image +'\' style=\'width: 100px; margin: 3px;\' />';  
-                   }  
-                   tip.innerHTML =  html;   
-                 })
-            """),
-        }, attribute=True)
-    
-    onCreateLabel = twc.Param(
-        '(string) Javascript callback definition.',
-        default=JSSymbol(src="""
-        (function(domElement, node){  
-           domElement.innerHTML = node.name;  
-           var style = domElement.style;  
-           style.display = '';  
-           style.border = '1px solid transparent';  
-           domElement.onmouseover = function() {  
-             style.border = '1px solid #9FD4FF';  
-           };  
-           domElement.onmouseout = function() {  
-             style.border = '1px solid transparent';  
-           };  
-        } )
-        """), attribute=True)
-
     # TODO - Node.Type 
     #see http://thejit.org/static/v20/Docs/files/Visualizations/Treemap-js.html
 
