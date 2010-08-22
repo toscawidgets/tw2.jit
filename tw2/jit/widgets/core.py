@@ -18,10 +18,8 @@ treemap_css = CSSLink(modname=modname, filename="static/css/treemap.css")
 sunburst_css = CSSLink(modname=modname, filename="static/css/sunburst.css")
 icicle_css = CSSLink(modname=modname, filename="static/css/icicle.css")
 
-
 # TODO -- is this line going to get run over and over?  singleton?
 encoder = NotQuiteJSONEncoder() 
-
 
 # TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
@@ -35,6 +33,10 @@ class JitWidget(twc.Widget):
     injectInto = twc.Variable(
         description='name of the DOM element containing the canvas',
         attribute=True, default=property(lambda s: s.compound_id))
+
+    backgroundcolor = twc.Param(
+        description='(string) background color of the jit container div',
+        default='#1a1a1a', attribute=True)
 
     width = twc.Param(
         description='(string) widget width', attribute=True, default='500')
