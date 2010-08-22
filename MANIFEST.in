@@ -1,2 +1,3 @@
+include README.md
 recursive-include tw2/jit/templates *
 recursive-include tw2/jit/static *
