@@ -1,10 +1,11 @@
 import tw2.core as twc
 from tw2.core.resources import JSLink, CSSLink
-from tw2.core.resources import JSSource
+from tw2.core.resources import JSSource, JSFuncCall
 from tw2.core.widgets import WidgetMeta
 
 from tw2.jit import jit_base
-from tw2.jit.notquitejson import NotQuiteJSONEncoder
+
+from simplejson import JSONEncoder
 
 # TODO -- the tw2 devtools are give me __name__ as tw2.jit.widgets but the resources are all in tw2.jit/static
 modname = ".".join(__name__.split('.')[:-1])
@@ -19,7 +20,7 @@ sunburst_css = CSSLink(modname=modname, filename="static/css/sunburst.css")
 icicle_css = CSSLink(modname=modname, filename="static/css/icicle.css")
 
 # TODO -- is this line going to get run over and over?  singleton?
-encoder = NotQuiteJSONEncoder() 
+encoder = JSONEncoder() 
 
 # TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
@@ -121,16 +122,12 @@ class JitWidget(twc.Widget):
 
     def prepare(self):
         super(JitWidget, self).prepare()
-        print "-" * 20
-        print "starting encoding"
-        for name, attr in self.attrs.iteritems():
-            print " checking pre-encode:", type(attr)
-            print "  ", name, type(attr)
-        self.config = encoder.encode(self.attrs)
-        print "type of config:", type(self.config)
-        print self.config
+        self.resources.append(JSFuncCall(
+            parent=self.__class__,
+            function=self.jitClassName,
+            args=[self.attrs]))
+        #self.config = encoder.encode(self.attrs)
         self.json = encoder.encode(self.data)
-        print "done encoding"
     
 class JitTreeOrGraphWidget(JitWidget):
     # TODO __
