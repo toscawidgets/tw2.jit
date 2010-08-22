@@ -9,8 +9,7 @@ setup(
     url='',
     install_requires=[
         "tw2.core",
-        ## Add other requirements here
-        # "Genshi",
+        "genshi",
         ],
     packages=find_packages(exclude=['ez_setup', 'tests']),
     namespace_packages = ['tw2'],
