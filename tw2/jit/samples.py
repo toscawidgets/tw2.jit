@@ -1,5 +1,5 @@
 
-from tw2.core.resources import JSSource
+from tw2.core.resources import JSSymbol
 
 from tw2.jit.widgets import AreaChart
 from tw2.jit.widgets import BarChart
@@ -45,14 +45,14 @@ class DemoRadialGraph(RadialGraph):
         'lineWidth':1.5,
     }
 
-    onCreateLabel = JSSource(src="""
+    onCreateLabel = JSSymbol(src="""
         (function(domElement, node){
             domElement.innerHTML = node.name;
             domElement.onclick = function(){
                 jitwidget.onClick(node.id);
             };
         })""")
-    onPlaceLabel = JSSource(src="""
+    onPlaceLabel = JSSymbol(src="""
         (function(domElement, node){
             var style = domElement.style;
             style.display = '';

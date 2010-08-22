@@ -1,5 +1,5 @@
 import tw2.core as twc
-from tw2.core.resources import JSSource
+from tw2.core.resources import JSSymbol
 
 from tw2.jit.widgets.core import JitTreeOrGraphWidget
 from tw2.jit.widgets.core import jit_js, jit_css, treemap_css, sunburst_css
@@ -61,8 +61,8 @@ class TreeMap(JitTree):
         '(dict) Of the form Options.Events in the jit docs.',
         default={
             'enable': True,
-            'onClick': JSSource(src='(function(node) {if (node) {jitwidget.enter(node);}})'),
-            'onRightClick': JSSource(src='(function() {jitwidget.out();})'),
+            'onClick': JSSymbol(src='(function(node) {if (node) {jitwidget.enter(node);}})'),
+            'onRightClick': JSSymbol(src='(function() {jitwidget.out();})'),
         }, attribute=True)
 
     Tips = twc.Param(
@@ -71,7 +71,7 @@ class TreeMap(JitTree):
             'enable' : True,
             'offsetX' : 20,  
             'offsetY' : 20,  
-            'onShow' : JSSource(src="""
+            'onShow' : JSSymbol(src="""
             (function(tip, node, isLeaf, domElement) {
                    var html = '<div class=\'tip-title\'>' + node.name   
                      + '</div><div class=\\'tip-text\\'>';  
@@ -89,7 +89,7 @@ class TreeMap(JitTree):
     
     onCreateLabel = twc.Param(
         '(string) Javascript callback definition.',
-        default=JSSource(src="""
+        default=JSSymbol(src="""
         (function(domElement, node){  
            domElement.innerHTML = node.name;  
            var style = domElement.style;  
@@ -149,7 +149,7 @@ class Sunburst(JitTree):
         '(dict)',
         default={
             'enable': True,  
-            'onShow': JSSource(src="""
+            'onShow': JSSymbol(src="""
             (function(tip, node) {  
                 var html = '<div class=\'tip-title\'>' + node.name + '</div>';
                 var data = node.data;  
@@ -164,7 +164,7 @@ class Sunburst(JitTree):
     Events = twc.Param(
         default= {
             'enable': True,
-            'onClick': JSSource(src="""
+            'onClick': JSSymbol(src="""
         (function(node) {  
          if(!node) return;  
          jitwidget.tips.hide();  
@@ -175,7 +175,7 @@ class Sunburst(JitTree):
        })""")}, attribute=True, request_local=False)
     onCreateLabel = twc.Param(
          '(string) javascript callback.',
-         default=JSSource(src="""
+         default=JSSymbol(src="""
          (function(domElement, node){
        var labels = jitwidget.config.Label.type;
        var aw = node.getData('angularWidth');  
@@ -188,7 +188,7 @@ class Sunburst(JitTree):
 
     onPlaceLabel = twc.Param(
          '(string) javascript callback.',
-         default=JSSource(src="""
+         default=JSSymbol(src="""
      (function(domElement, node){  
        var labels = jitwidget.config.Label.type;  
        if (labels === 'SVG') {  
@@ -248,7 +248,7 @@ class HyperTree(JitTree):
         }, attribute=True, request_local=False)
     onCreateLabel = twc.Param(
          '(string) javascript callback.',
-         default=JSSource(src="""
+         default=JSSymbol(src="""
             ( function(domElement, node){
                   domElement.innerHTML = node.name;
                   $jit.util.addEvent(domElement, 'click', function () {
@@ -257,7 +257,7 @@ class HyperTree(JitTree):
             })"""), attribute=True, request_local=False)
     onPlaceLabel = twc.Param(
         '(string) javascript callback.',
-        default=JSSource(src="""
+        default=JSSymbol(src="""
             ( function(domElement, node){
                   var style = domElement.style;
                   style.display = '';
@@ -285,7 +285,7 @@ class SpaceTree(JitTree):
     
     data = twc.Param(default=SpaceTreeJSONDefaults)
    
-    # TODO -- try wrapping this in a JSSource to see if it works like its supposed to.
+    # TODO -- try wrapping this in a JSSymbol to see if it works like its supposed to.
     postinitJS = twc.Param(
         'whatever',
         default="""
@@ -293,7 +293,7 @@ class SpaceTree(JitTree):
 
     transition = twc.Param(
         'javascript',
-        default=JSSource(src='$jit.Trans.Quart.easeInOut'),
+        default=JSSymbol(src='$jit.Trans.Quart.easeInOut'),
         attribute=True, request_local=False)
 
     levelDistance = twc.Param(
@@ -326,7 +326,7 @@ class SpaceTree(JitTree):
 
     onCreateLabel = twc.Param(
         'dofalsdkjfadf',
-        default=JSSource(src="""
+        default=JSSymbol(src="""
         (function(label, node){
             label.id = node.id;            
             label.innerHTML = node.name;
@@ -344,7 +344,7 @@ class SpaceTree(JitTree):
         })"""), attribute=True, request_local=False)
     onBeforePlotNode = twc.Param(
         'asdlfkjasdlkfj',
-        default=JSSource(src="""
+        default=JSSymbol(src="""
         (function(node){
             if (node.selected) {
                 node.data.$color = \'#ff7\';
@@ -360,7 +360,7 @@ class SpaceTree(JitTree):
         })"""), attribute=True, request_local=False)
     onBeforePlotLine = twc.Param(
         'asdlkfjasldfjka',
-        default=JSSource(src="""
+        default=JSSymbol(src="""
         (function(adj){
             if (adj.nodeFrom.selected && adj.nodeTo.selected) {
                 adj.data.$color = \'#eed\';
@@ -390,7 +390,7 @@ class Icicle(JitTree):
             'type' : 'HTML',
             'offsetX' : 20,
             'offsetY' : 20,
-            'onShow': JSSource(src="""
+            'onShow': JSSymbol(src="""
             (function(tip, node){
                 var count = 0;
                 node.eachSubnode(function(){
@@ -403,18 +403,18 @@ class Icicle(JitTree):
     Events = twc.Param(
         default= {
             'enable': True,
-            'onMouseEnter': JSSource(src="""
+            'onMouseEnter': JSSymbol(src="""
             (function(node) {
                 node.setData('border', '#33dddd');
                 jitwidget.fx.plotNode(node, jitwidget.canvas);
                 jitwidget.labels.plotLabel(jitwidget.canvas, node, jitwidget.controller);
             })"""),
-            'onMouseLeave': JSSource(src="""
+            'onMouseLeave': JSSymbol(src="""
             (function(node) {
                 node.removeData('border');
                 jitwidget.fx.plot();
             })"""),
-            'onClick': JSSource(src="""
+            'onClick': JSSymbol(src="""
             (function(node){
                 if (node) {
                     jitwidget.tips.hide();
@@ -424,7 +424,7 @@ class Icicle(JitTree):
                     jitwidget.enter(node);
                }
             })"""),
-            'onRightClick': JSSource(src="""
+            'onRightClick': JSSymbol(src="""
             (function(){
                 jitwidget.tips.hide();
                 if(jitwidget.events.hoveredNode) {
@@ -435,7 +435,7 @@ class Icicle(JitTree):
       }, attribute=True, request_local=False)
     onCreateLabel = twc.Param(
          '(string) javascript callback.',
-         default=JSSource(src="""
+         default=JSSymbol(src="""
          (function(domElement, node){
               domElement.innerHTML = node.name;
               var style = domElement.style;
@@ -447,7 +447,7 @@ class Icicle(JitTree):
         })"""), attribute=True, request_local=False)
     onPlaceLabel = twc.Param(
          '(string) javascript callback.',
-         default=JSSource(src="""
+         default=JSSymbol(src="""
             (function(domElement, node){
                   var style = domElement.style,
                       width = node.getData('width'),

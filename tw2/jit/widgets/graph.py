@@ -1,5 +1,5 @@
 import tw2.core as twc
-from tw2.core.resources import JSSource
+from tw2.core.resources import JSSymbol
 
 from tw2.jit.widgets.core import JitTreeOrGraphWidget
 from tw2.jit.widgets.core import jit_js
@@ -12,7 +12,6 @@ class JitGraph(JitTreeOrGraphWidget):
 
 #Radial Graph
 class RadialGraph(JitGraph):
-    resources = [jit_js]
     template = "genshi:tw2.jit.templates.jitwidget"
 
     jitClassName = twc.Variable(default='RGraph')
@@ -22,7 +21,6 @@ class RadialGraph(JitGraph):
         attribute=True, request_local=False)
    
 class ForceDirectedGraph(JitGraph):
-    resources = [jit_js]
     template = "genshi:tw2.jit.templates.jitwidget"
     
     jitClassName = twc.Variable(default='ForceDirected')
@@ -70,7 +68,7 @@ class ForceDirectedGraph(JitGraph):
         '(dict) As per Options.Tips.',
         default={
             'enable' : True,
-            'onShow' : JSSource(src="""
+            'onShow' : JSSymbol(src="""
             (function(tip, node) {
                 var count = 0;
                 node.eachAdjacency(function() { count++; });
@@ -85,26 +83,26 @@ class ForceDirectedGraph(JitGraph):
         '(dict) As per usual.',
         default={
             'enable' : True,
-            'onMouseEnter' : JSSource(src="""
+            'onMouseEnter' : JSSymbol(src="""
             (function() { 
                 jitwidget.canvas.getElement().style.cursor = \'move\';
             })"""),
-            'onMouseLeave' : JSSource(src="""
+            'onMouseLeave' : JSSymbol(src="""
             (function() {
                 jitwidget.canvas.getElement().style.cursor = \'\';
             })"""),
-            'onDragMove' : JSSource(src="""
+            'onDragMove' : JSSymbol(src="""
             (function(node, eventInfo, e) {
                 var pos = eventInfo.getPos();
                 node.pos.setc(pos.x, pos.y);
                 jitwidget.plot();
             })"""),
-            'onTouchMove' : JSSource(src="""
+            'onTouchMove' : JSSymbol(src="""
             (function(node, eventInfo, e) {
                 $jit.util.event.stop(e);
                 this.onDragMove(node, eventInfo, e);
             })"""),
-            'onClick' : JSSource(src="""
+            'onClick' : JSSymbol(src="""
             (function(node) {
                 if(!node) return;
                 var html = "<h4>" + node.name + "</h4><b> connections:</b><ul><li>",
@@ -118,7 +116,7 @@ class ForceDirectedGraph(JitGraph):
 
     onCreateLabel = twc.Param(
         '(string) Javascript callback bizniz',
-        default=JSSource(src="""
+        default=JSSymbol(src="""
         (function(domElement, node){
               domElement.innerHTML = node.name;
               var style = domElement.style;
@@ -127,7 +125,7 @@ class ForceDirectedGraph(JitGraph):
         })"""), attribute=True, request_local=False)
     onPlaceLabel = twc.Param(
         '(string) Javascript callback bizzzzniz',
-        default=JSSource(src="""
+        default=JSSymbol(src="""
         (function(domElement, node){
             var style = domElement.style;
             var left = parseInt(style.left);
