@@ -158,8 +158,8 @@ class JitTreeOrGraphWidget(JitWidget):
         'Provides Node rendering options for ' +
         'Tree and Graph based visualizations.',
         default = {
-            'overridable': False,  
-            'type': 'circle',  
+    #        'overridable': False,  
+    #        'type': 'circle',  
             'color': '#ccb',  
             'alpha': 1,  
             'dim': 3,  
@@ -178,8 +178,8 @@ class JitTreeOrGraphWidget(JitWidget):
         "Provides Edge rendering options for " +
         "Tree and Graph based visualizations.",
         default = {
-            'overridable': False,
-            'type': 'line',  
+    #        'overridable': False,
+    #        'type': 'line',  
             'color': '#ccb',  
             'lineWidth': 1,  
             'dim':15,  
