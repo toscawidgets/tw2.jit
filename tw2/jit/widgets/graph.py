@@ -26,7 +26,8 @@ class ForceDirectedGraph(JitGraph):
     jitClassName = twc.Variable(default='ForceDirected')
     
     data = twc.Param(default=ForceDirectedGraphJSONDefaults)
-    postinitJS = twc.Param(default="""
+    postInitJSCallback = twc.Param(default="""
+(function (jitwidget) {
   jitwidget.computeIncremental({
     iter: 40,
     property: 'end',
@@ -37,7 +38,8 @@ class ForceDirectedGraph(JitGraph):
         duration: 2500
       });
     }
-  });""", attribute=True, request_local=False)
+  });
+})""", attribute=True, request_local=False)
 
     Navigation = twc.Param(
         '(dict) As per Options.Navigation.',

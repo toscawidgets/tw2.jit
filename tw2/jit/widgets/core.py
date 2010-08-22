@@ -27,10 +27,12 @@ encoder = JSONEncoder()
 class JitWidget(twc.Widget):
     resources = [jit_js, jit_glue_js]
 
-    preinitJS = twc.Param(
-        'javascript to run before init of the widget', default='')
-    postinitJS = twc.Param(
-        'javascript to run after init of the widget', default='')
+    preInitJSCallback = twc.Param(
+        'javascript to run before init of the widget',
+        default=JSSymbol(src='(function(jitwidget){})'))
+    postInitJSCallback = twc.Param(
+        'javascript to run after init of the widget',
+        default=JSSymbol(src='(function(jitwidget){})'))
     
     jitClassName = twc.Variable('Name of the Jit class for this widget')
 
@@ -128,7 +130,7 @@ class JitWidget(twc.Widget):
         self.resources.append(JSFuncCall(
             parent=self.__class__,
             function='var jitwidget = setupTW2JitWidget',
-            args=[JSSymbol(src='jitwidget'), self.jitClassName, self.attrs, self.data]))
+            args=[JSSymbol(src='jitwidget'), self.jitClassName, self.attrs, self.data, self.preInitJSCallback, self.postInitJSCallback]))
     
 class JitTreeOrGraphWidget(JitWidget):
     # TODO __

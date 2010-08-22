@@ -24,7 +24,8 @@ class DemoPieChart(PieChart):
 class DemoRadialGraph(RadialGraph):
     data = RadialGraphJSONDefaults
     background = { 'CanvasStyles':{ 'strokeStyle' : '#555' } }
-    postinitJS = """
+    postInitJSCallback = JSSymbol(src="""
+        (function (jitwidget) {
             //trigger small animation for kicks
             jitwidget.graph.eachNode(function(n) {
                 var pos = n.getPos();
@@ -34,7 +35,8 @@ class DemoRadialGraph(RadialGraph):
             jitwidget.fx.animate({
                 modes:['polar'],
                 duration: 2000
-            });"""
+            });
+         })""")
     
     Node = {
         'color' : '#ddeeff',
