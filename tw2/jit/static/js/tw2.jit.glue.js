@@ -1,15 +1,17 @@
-function setupAnotherTW2JitWidget(
+function setupTW2JitWidget(
+                jitwidget,
                 jitClassName, attrs, data,
                 preInitCallback, postInitCallback ) {
     if ( preInitCallback ) {
-        preInitCallback();
+        preInitCallback(jitwidget);
     }
 
     var jitwidget = new $jit[jitClassName](attrs);
     jitwidget.loadJSON(data);
-    jitwidget.refresh();
-
+    
     if ( postInitCallback ) {
-        postInitCallback();
+        postInitCallback(jitwidget);
     }
+
+    return jitwidget;
 }

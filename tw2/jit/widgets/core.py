@@ -127,8 +127,8 @@ class JitWidget(twc.Widget):
         super(JitWidget, self).prepare()
         self.resources.append(JSFuncCall(
             parent=self.__class__,
-            function='setupAnotherTW2JitWidget',
-            args=[self.jitClassName, self.attrs, self.data]))
+            function='var jitwidget = setupTW2JitWidget',
+            args=[JSSymbol(src='jitwidget'), self.jitClassName, self.attrs, self.data]))
     
 class JitTreeOrGraphWidget(JitWidget):
     # TODO __
