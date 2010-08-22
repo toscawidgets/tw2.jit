@@ -35,6 +35,8 @@ class JitWidget(twc.Widget):
         default=JSSymbol(src='(function(jitwidget){})'))
     
     jitClassName = twc.Variable('Name of the Jit class for this widget')
+    jitSecondaryClassName = twc.Variable(
+        'Secondary Jit class for this widget', default=None)
 
     injectInto = twc.Variable(
         description='name of the DOM element containing the canvas',
@@ -130,7 +132,14 @@ class JitWidget(twc.Widget):
         self.resources.append(JSFuncCall(
             parent=self.__class__,
             function='var jitwidget = setupTW2JitWidget',
-            args=[JSSymbol(src='jitwidget'), self.jitClassName, self.attrs, self.data, self.preInitJSCallback, self.postInitJSCallback]))
+            args=[
+                JSSymbol(src='jitwidget'),
+                self.jitClassName,
+                self.jitSecondaryClassName,
+                self.attrs,
+                self.data,
+                self.preInitJSCallback,
+                self.postInitJSCallback]))
     
 class JitTreeOrGraphWidget(JitWidget):
     # TODO __
