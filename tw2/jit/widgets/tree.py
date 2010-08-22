@@ -40,7 +40,8 @@ class TreeMap(JitTree):
         self.resources.extend([jit_css, treemap_css])
     template = "genshi:tw2.jit.templates.jitwidget"
     
-    jitClassName = twc.Variable(default='TM.Squarified')
+    jitClassName = 'TM'
+    jitSecondaryClassName = 'Squarified'
     
     data = twc.Param(default=TreeMapJSONDefaults)
 
