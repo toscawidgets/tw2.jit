@@ -42,11 +42,7 @@ class TreeMap(JitTree):
     
     jitClassName = 'TM'
     jitSecondaryClassName = 'Squarified'
-    
-    data = twc.Param(default=TreeMapJSONDefaults)
 
-    postinitJS = twc.Param(default="jitwidget.refresh();")
-   
     # Just a note -- this is different from the parents' "offset"
     #  Bad thejit.. bad.
     offset = twc.Param(
