@@ -365,3 +365,80 @@ class DemoHyperTree(HyperTree):
               })""")
 
 
+from tw2.jit.widgets import SpaceTree
+from tw2.jit.defaults import SpaceTreeJSONDefaults
+class DemoSpaceTree(SpaceTree):
+    data = SpaceTreeJSONDefaults
+    
+    postInitJSCallback = JSSymbol(
+        src="""
+        (function (jitwidget) {
+            jitwidget.compute();
+            jitwidget.geom.translate(
+                new $jit.Complex(-200, 0), "current");
+            jitwidget.onClick(jitwidget.root);
+            jitwidget.refresh(); 
+    })""")
+
+    Navigation = {
+        'enable' : True,
+        'panning' : True,
+    }
+    Node = {
+        'overridable' : True,
+        'height' : 20,
+        'width' : 60,
+        'type' : 'rectangle',
+        'color' : '#aaa',
+    }
+            
+    Edge = {
+        'type' : 'bezier',
+        'overridable' : True
+    }
+
+    onCreateLabel = JSSymbol(src="""
+        (function(label, node){
+            label.id = node.id;            
+            label.innerHTML = node.name;
+            label.onclick = function(){
+                jitwidget.onClick(node.id);
+            };
+            var style = label.style;
+            style.width = 60 + 'px';
+            style.height = 17 + 'px';            
+            style.cursor = 'pointer';
+            style.color = '#333';
+            style.fontSize = '0.8em';
+            style.textAlign= 'center';
+            style.paddingTop = '3px';
+        })""")
+
+    onBeforePlotNode = JSSymbol(src="""
+        (function(node){
+            if (node.selected) {
+                node.data.$color = \'#ff7\';
+            }
+            else {
+                delete node.data.$color;
+                if(!node.anySubnode(\'exist\')) {
+                    var count = 0;
+                    node.eachSubnode(function(n) { count++; });
+                    node.data.$color = [
+                                '#aaa', '#baa', '#caa', 
+                                '#daa', '#eaa', '#faa'][count];                    
+                }
+            }
+        })""")
+    onBeforePlotLine = JSSymbol(src="""
+        (function(adj){
+            if (adj.nodeFrom.selected && adj.nodeTo.selected) {
+                adj.data.$color = \'#eed\';
+                adj.data.$lineWidth = 3;
+            }
+            else {
+                delete adj.data.$color;
+                delete adj.data.$lineWidth;
+            }
+        })""")
+

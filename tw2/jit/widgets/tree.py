@@ -99,99 +99,18 @@ class HyperTree(JitTree):
         '(number)', default=0, attribute=True, request_local=False)
 
 class SpaceTree(JitTree):
-    resources = [jit_js]
     template = "genshi:tw2.jit.templates.jitwidget"
     
-    jitClassName = twc.Variable(default='ST')
-    
-    data = twc.Param(default=SpaceTreeJSONDefaults)
+    jitClassName = 'ST'
    
-    # TODO -- try wrapping this in a JSSymbol to see if it works like its supposed to.
-    postinitJS = twc.Param(
-        'whatever',
-        default="""
-        jitwidget.compute();jitwidget.geom.translate(new $jit.Complex(-200, 0), "current");jitwidget.onClick(jitwidget.root);""", attribute=True, request_local=False)
-
     transition = twc.Param(
-        'javascript',
+        'javascript _TODO',
         default=JSSymbol(src='$jit.Trans.Quart.easeInOut'),
         attribute=True, request_local=False)
 
     levelDistance = twc.Param(
-        'foo',
+        'foo TODO',
         default=50, attribute=True, request_local=False)
-
-    Navigation = twc.Param(
-        'alsdkfjalsdjkfalskfj',
-        default={
-            'enable' : True,
-            'panning' : True,
-        }, attribute=True, request_local=False)
-
-    Node = twc.Param(
-        '(dict)',
-        default = {
-            'height' : 20,
-            'width' : 60,
-            'type' : 'rectangle',
-            'color' : '#aaa',
-            'overridable' : True
-        }, attribute=True, request_local=False)
-
-    Edge = twc.Param(
-        '(dict)',
-        default = {
-            'type' : 'bezier',
-            'overridable' : True
-        }, attribute=True, request_local=False)
-
-    onCreateLabel = twc.Param(
-        'dofalsdkjfadf',
-        default=JSSymbol(src="""
-        (function(label, node){
-            label.id = node.id;            
-            label.innerHTML = node.name;
-            label.onclick = function(){
-                jitwidget.onClick(node.id);
-            };
-            var style = label.style;
-            style.width = 60 + 'px';
-            style.height = 17 + 'px';            
-            style.cursor = 'pointer';
-            style.color = '#333';
-            style.fontSize = '0.8em';
-            style.textAlign= 'center';
-            style.paddingTop = '3px';
-        })"""), attribute=True, request_local=False)
-    onBeforePlotNode = twc.Param(
-        'asdlfkjasdlkfj',
-        default=JSSymbol(src="""
-        (function(node){
-            if (node.selected) {
-                node.data.$color = \'#ff7\';
-            }
-            else {
-                delete node.data.$color;
-                if(!node.anySubnode(\'exist\')) {
-                    var count = 0;
-                    node.eachSubnode(function(n) { count++; });
-                    node.data.$color = ['#aaa', '#baa', '#caa', '#daa', '#eaa', '#faa'][count];                    
-                }
-            }
-        })"""), attribute=True, request_local=False)
-    onBeforePlotLine = twc.Param(
-        'asdlkfjasldfjka',
-        default=JSSymbol(src="""
-        (function(adj){
-            if (adj.nodeFrom.selected && adj.nodeTo.selected) {
-                adj.data.$color = \'#eed\';
-                adj.data.$lineWidth = 3;
-            }
-            else {
-                delete adj.data.$color;
-                delete adj.data.$lineWidth;
-            }
-        })"""), attribute=True, request_local=False)
 
 class Icicle(JitTree):
     resources = [jit_js]
