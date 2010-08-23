@@ -239,6 +239,8 @@ class DemoSunburst(Sunburst):
     
     postInitJSCallback = JSSymbol(
         src="(function (jitwidget) { jitwidget.refresh(); })")
+    #postInitJSCallback = JSSymbol(
+    #    src="(function (jitwidget) { console.log('123');jitwidget.refresh();console.log('456'); })")
 
     #Node = {
     #    'overridable' : True,
@@ -257,37 +259,40 @@ class DemoSunburst(Sunburst):
             }
     }
 
-    #onCreateLabel = JSSymbol(src="""
-    #(function(domElement, node){
-    #   var labels = jitwidget.config.Label.type;
-    #   var aw = node.getData('angularWidth');  
-    #   if (labels === 'HTML' && (node._depth < 2 || aw > 2000)) {  
-    #     domElement.innerHTML = node.name;  
-    #   } else if (labels === 'SVG' && (node._depth < 2 || aw > 2000)) {  
-    #     domElement.firstChild.appendChild(document.createTextNode(node.name));  
-    #   }  
-    # })""")
-    onPlaceLabel = JSSymbol(src="""
-        (function(domElement, node){  
-            var labels = jitwidget.config.Label.type;  
-            if (labels === 'SVG') {  
-                var fch = domElement.firstChild;  
-                var style = fch.style;  
-                style.display = '';  
-                style.cursor = 'pointer';  
-                style.fontSize = '0.8em';  
-                fch.setAttribute('fill', '#fff');  
-            } else if (labels === 'HTML') {  
-                var style = domElement.style;  
-                style.display = '';  
-                style.cursor = 'pointer';  
-                style.fontSize = '0.8em';  
-                style.color = '#ddd';  
-                var left = parseInt(style.left);  
-                var w = domElement.offsetWidth;  
-                style.left = (left - w / 2) + 'px';  
-            }  
-        })""")
+    onCreateLabel = JSSymbol(src="""
+    (function(domElement, node){
+                             console.log(domElement);
+                             console.log(node);
+                             console.log(jitwidget);
+       var labels = jitwidget.config.Label.type;
+       var aw = node.getData('angularWidth');  
+       if (labels === 'HTML' && (node._depth < 2 || aw > 2000)) {  
+         domElement.innerHTML = node.name;  
+       } else if (labels === 'SVG' && (node._depth < 2 || aw > 2000)) {  
+         domElement.firstChild.appendChild(document.createTextNode(node.name));  
+       }  
+     })""")
+    #onPlaceLabel = JSSymbol(src="""
+    #    (function(domElement, node){  
+    #        var labels = jitwidget.config.Label.type;  
+    #        if (labels === 'SVG') {  
+    #            var fch = domElement.firstChild;  
+    #            var style = fch.style;  
+    #            style.display = '';  
+    #            style.cursor = 'pointer';  
+    #            style.fontSize = '0.8em';  
+    #            fch.setAttribute('fill', '#fff');  
+    #        } else if (labels === 'HTML') {  
+    #            var style = domElement.style;  
+    #            style.display = '';  
+    #            style.cursor = 'pointer';  
+    #            style.fontSize = '0.8em';  
+    #            style.color = '#ddd';  
+    #            var left = parseInt(style.left);  
+    #            var w = domElement.offsetWidth;  
+    #            style.left = (left - w / 2) + 'px';  
+    #        }  
+    #    })""")
 
     Tips = {
         'enable': True,  

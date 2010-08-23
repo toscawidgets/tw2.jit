@@ -1,7 +1,4 @@
-function setupTW2JitWidget(
-                jitClassName, jitSecondaryClassName,
-                attrs, data,
-                preInitCallback, postInitCallback ) {
+function setupTW2JitWidget(jitClassName, jitSecondaryClassName, attrs) {
     
     debug = true;
     if ( debug ) {
@@ -16,12 +13,6 @@ function setupTW2JitWidget(
         console.log('------------');
     }
         
-
-    if ( preInitCallback ) {
-        preInitCallback();
-    }
-
-    console.log('pre...');
     if ( jitSecondaryClassName ) {
         // Then use it!
         var jitwidget = new $jit[jitClassName][jitSecondaryClassName](attrs);
@@ -30,14 +21,7 @@ function setupTW2JitWidget(
         //  has "secondary classes"
         var jitwidget = new $jit[jitClassName](attrs);
     }
-    console.log('pre-post');
-    jitwidget.loadJSON(data);
-    console.log('post...');
+    //jitwidget.loadJSON(data);
     
-    
-    if ( postInitCallback ) {
-        postInitCallback(jitwidget);
-    }
-
     return jitwidget;
 }

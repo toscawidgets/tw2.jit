@@ -1,6 +1,7 @@
 import tw2.core as twc
 from tw2.core.resources import JSLink, CSSLink
 from tw2.core.resources import JSSymbol, JSFuncCall
+from tw2.core.resources import JSSource
 from tw2.core.widgets import WidgetMeta
 
 from tw2.jit import jit_base
@@ -129,17 +130,34 @@ class JitWidget(twc.Widget):
 
     def prepare(self):
         super(JitWidget, self).prepare()
-        self.resources.append(JSFuncCall(
-            parent=self.__class__,
-            function='var jitwidget = setupTW2JitWidget',
-            args=[
-                #JSSymbol(src='jitwidget'),
-                self.jitClassName,
-                self.jitSecondaryClassName,
-                self.attrs,
-                self.data,
-                self.preInitJSCallback,
-                self.postInitJSCallback]))
+
+        class JSFunctionWrapper(JSSource):
+            template='tw2.jit.templates.jswrapper'
+
+            class F1(JSFuncCall):
+                template="tw2.jit.templates.jscontent"
+                parent=self.__class__
+                function='var jitwidget = setupTW2JitWidget'
+                args=[
+                    self.jitClassName,
+                    self.jitSecondaryClassName,
+                    self.attrs]
+                attribute=True
+
+            class F2(JSFuncCall):
+                template="tw2.jit.templates.jscontent"
+                parent=self.__class__
+                function='jitwidget.loadJSON'
+                args=[self.data]
+                attribute=True
+
+            class F3(JSFuncCall):
+                template="tw2.jit.templates.jscontent"
+                parent=self.__class__
+                function=self.postInitJSCallback.src
+                args=[]
+                attribute=True
+        self.resources.append(JSFunctionWrapper())
     
 class JitTreeOrGraphWidget(JitWidget):
     # TODO __
