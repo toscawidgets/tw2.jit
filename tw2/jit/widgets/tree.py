@@ -82,70 +82,21 @@ class Sunburst(JitTree):
         default=90, attribute=True, request_local=False)
 
 class HyperTree(JitTree):
-    resources = [jit_js]
     template = "genshi:tw2.jit.templates.jitwidget"
     
-    jitClassName = twc.Variable(default='Hypertree')
-    
-    data = twc.Param(default=HyperTreeJSONDefaults)
+    jitClassName = 'Hypertree'
     
     w = twc.Variable( 'width of the canvas.', default=500 )
     h = twc.Variable( 'height of the canvas.', default=500 )
-
+    
     def prepare(self):
         super(HyperTree, self).prepare()
         self.w = self.width
         self.h = self.height
+
     
     offset = twc.Param(
         '(number)', default=0, attribute=True, request_local=False)
-    
-    postinitJS = twc.Param(
-        'whatevs',
-        default="jitwidget.refresh();", attribute=True, request_local=False)
-
-    Node = twc.Param(
-        '(dict)',
-        default = {
-            'dim' : 9,
-            'color' : '#f00',
-        }, attribute=True, request_local=False)
-    Edge = twc.Param(
-        '(dict)',
-        default = {
-            'lineWidth' : 2,
-            'color' : '#088',
-        }, attribute=True, request_local=False)
-    onCreateLabel = twc.Param(
-         '(string) javascript callback.',
-         default=JSSymbol(src="""
-            ( function(domElement, node){
-                  domElement.innerHTML = node.name;
-                  $jit.util.addEvent(domElement, 'click', function () {
-                      jitwidget.onClick(node.id);
-                  });
-            })"""), attribute=True, request_local=False)
-    onPlaceLabel = twc.Param(
-        '(string) javascript callback.',
-        default=JSSymbol(src="""
-            ( function(domElement, node){
-                  var style = domElement.style;
-                  style.display = '';
-                  style.cursor = 'pointer';
-                  if (node._depth <= 1) {
-                      style.fontSize = '0.8em';
-                      style.color = '#ddd';
-                  } else if(node._depth == 2){
-                      style.fontSize = '0.7em';
-                      style.color = '#555';
-                  } else {
-                      style.display = 'none';
-                  }
-                  var left = parseInt(style.left);
-                  var w = domElement.offsetWidth;
-                  style.left = (left - w / 2) + 'px';
-              })"""), attribute=True, request_local=False)
-
 
 class SpaceTree(JitTree):
     resources = [jit_js]

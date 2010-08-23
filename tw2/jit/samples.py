@@ -318,3 +318,50 @@ class DemoSunburst(Sunburst):
     }
 
 
+
+from tw2.jit.widgets import HyperTree
+from tw2.jit.defaults import HyperTreeJSONDefaults
+class DemoHyperTree(HyperTree):
+    data = HyperTreeJSONDefaults
+    
+    postInitJSCallback = JSSymbol(
+        src="(function (jitwidget) { jitwidget.refresh(); })")
+
+    Node = {
+        'dim' : 9,
+        'color' : '#f00',
+    }
+
+    Edge = {
+        'lineWidth' : 2,
+        'color' : '#088',
+    }
+    
+    onCreateLabel = JSSymbol(src="""
+            ( function(domElement, node){
+                  domElement.innerHTML = node.name;
+                  $jit.util.addEvent(domElement, 'click', function () {
+                      jitwidget.onClick(node.id);
+                  });
+            })""")
+
+    onPlaceLabel = JSSymbol(src="""
+            ( function(domElement, node){
+                  var style = domElement.style;
+                  style.display = '';
+                  style.cursor = 'pointer';
+                  if (node._depth <= 1) {
+                      style.fontSize = '0.8em';
+                      style.color = '#ddd';
+                  } else if(node._depth == 2){
+                      style.fontSize = '0.7em';
+                      style.color = '#555';
+                  } else {
+                      style.display = 'none';
+                  }
+                  var left = parseInt(style.left);
+                  var w = domElement.offsetWidth;
+                  style.left = (left - w / 2) + 'px';
+              })""")
+
+
