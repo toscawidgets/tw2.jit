@@ -133,7 +133,7 @@ class JitWidget(twc.Widget):
             parent=self.__class__,
             function='var jitwidget = setupTW2JitWidget',
             args=[
-                JSSymbol(src='jitwidget'),
+                #JSSymbol(src='jitwidget'),
                 self.jitClassName,
                 self.jitSecondaryClassName,
                 self.attrs,

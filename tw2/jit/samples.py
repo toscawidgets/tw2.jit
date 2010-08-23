@@ -232,3 +232,89 @@ class DemoTreeMap(TreeMap):
         """)
     
 
+from tw2.jit.widgets import Sunburst
+from tw2.jit.defaults import SunburstJSONDefaults
+class DemoSunburst(Sunburst):
+    data = SunburstJSONDefaults
+    
+    postInitJSCallback = JSSymbol(
+        src="(function (jitwidget) { jitwidget.refresh(); })")
+
+    #Node = {
+    #    'overridable' : True,
+    #    'type' : 'gradient-multiple',
+    #}
+
+    Label = { 'type' : 'HTML' }
+    NodeStyles = {
+            'enable': True,
+            'type': 'HTML',
+            'stylesClick': {
+                'color': '#33dddd'
+            },
+            'stylesHover': {
+                'color': '#dd3333'
+            }
+    }
+
+    #onCreateLabel = JSSymbol(src="""
+    #(function(domElement, node){
+    #   var labels = jitwidget.config.Label.type;
+    #   var aw = node.getData('angularWidth');  
+    #   if (labels === 'HTML' && (node._depth < 2 || aw > 2000)) {  
+    #     domElement.innerHTML = node.name;  
+    #   } else if (labels === 'SVG' && (node._depth < 2 || aw > 2000)) {  
+    #     domElement.firstChild.appendChild(document.createTextNode(node.name));  
+    #   }  
+    # })""")
+    onPlaceLabel = JSSymbol(src="""
+        (function(domElement, node){  
+            var labels = jitwidget.config.Label.type;  
+            if (labels === 'SVG') {  
+                var fch = domElement.firstChild;  
+                var style = fch.style;  
+                style.display = '';  
+                style.cursor = 'pointer';  
+                style.fontSize = '0.8em';  
+                fch.setAttribute('fill', '#fff');  
+            } else if (labels === 'HTML') {  
+                var style = domElement.style;  
+                style.display = '';  
+                style.cursor = 'pointer';  
+                style.fontSize = '0.8em';  
+                style.color = '#ddd';  
+                var left = parseInt(style.left);  
+                var w = domElement.offsetWidth;  
+                style.left = (left - w / 2) + 'px';  
+            }  
+        })""")
+
+    Tips = {
+        'enable': True,  
+        'onShow': JSSymbol(src="""
+            (function(tip, node) {  
+                var html = '<div class="tip-title">' + node.name + '</div>';
+                var data = node.data;  
+                if('days' in data) {  
+                    html += '<b>Last modified:</b> ' + data.days + ' days ago';
+                }  
+                if('size' in data) {  
+                    html += '<br /><b>File size:</b> ' + Math.round(data.size / 1024) + 'KB';
+                }
+                tip.innerHTML = html;  
+            })""")
+    }
+    Events = {
+        'enable': True,
+        'onClick': JSSymbol(src="""
+            (function(node) {  
+                if(!node) return;  
+                jitwidget.tips.hide();  
+                jitwidget.rotate(node, 'animate', {  
+                    duration: 1000,  
+                    transition: $jit.Trans.Quart.easeInOut  
+                });  
+            })""")
+    }
+
+
