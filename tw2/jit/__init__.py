@@ -8,4 +8,4 @@ jit_base = "static/Jit-2.0.0a"
 #from widgets import (AreaChart, BarChart, PieChart,
 #                     TreeMap, ForceDirectedGraph, RadialGraph,
 #                     Sunburst, Icicle, SpaceTree, HyperTree)
-from widgets import SpaceTree
+from widgets import Icicle 

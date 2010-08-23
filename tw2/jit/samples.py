@@ -442,3 +442,88 @@ class DemoSpaceTree(SpaceTree):
             }
         })""")
 
+from tw2.jit.widgets import Icicle 
+from tw2.jit.defaults import IcicleJSONDefaults
+class DemoIcicle(Icicle):
+    data = IcicleJSONDefaults
+    
+    postInitJSCallback = JSSymbol(
+        src="(function (jitwidget) { jitwidget.refresh(); })")
+
+    Tips = {
+        'enable': True,  
+        'type' : 'HTML',
+        'offsetX' : 20,
+        'offsetY' : 20,
+        'onShow': JSSymbol(src="""
+            (function(tip, node){
+                var count = 0;
+                node.eachSubnode(function(){
+                  count++;
+                }); // TODO -- working here.. quotes are broke.
+                tip.innerHTML = '<div class="tip-title"><b>Name:</b> ' 
+                    + node.name + '</div><div class=\\'tip-text\\'>' 
+                    + count + ' children</div>';
+            })"""),
+    }
+
+    Events = {
+        'enable': True,
+        'onMouseEnter': JSSymbol(src="""
+            (function(node) {
+                node.setData('border', '#33dddd');
+                jitwidget.fx.plotNode(node, jitwidget.canvas);
+                jitwidget.labels.plotLabel(
+                                 jitwidget.canvas,
+                                 node,
+                                 jitwidget.controller);
+            })"""),
+        'onMouseLeave': JSSymbol(src="""
+            (function(node) {
+                node.removeData('border');
+                jitwidget.fx.plot();
+            })"""),
+        'onClick': JSSymbol(src="""
+            (function(node){
+                if (node) {
+                    jitwidget.tips.hide();
+                    if(jitwidget.events.hoveredNode){
+                        this.onMouseLeave(jitwidget.events.hoveredNode);
+                    }
+                    jitwidget.enter(node);
+               }
+            })"""),
+        'onRightClick': JSSymbol(src="""
+            (function(){
+                jitwidget.tips.hide();
+                if(jitwidget.events.hoveredNode) {
+                    this.onMouseLeave(jitwidget.events.hoveredNode);
+                }
+                jitwidget.out();
+            })"""),
+    }
+    onCreateLabel = JSSymbol(src="""
+         (function(domElement, node){
+              domElement.innerHTML = node.name;
+              var style = domElement.style;
+              style.fontSize = '0.9em';
+              style.display = '';
+              style.cursor = 'pointer';
+              style.color = '#CCC';
+              style.overflow = 'hidden';
+        })""")
+    onPlaceLabel = JSSymbol(src="""
+            (function(domElement, node){
+                  var style = domElement.style,
+                      width = node.getData('width'),
+                      height = node.getData('height');
+                  if(width < 7 || height < 7) {
+                    style.display = 'none';
+                  } else {
+                    style.display = '';
+                    style.width = width + 'px';
+                    style.height = height + 'px';
+                  }
+        })""")
+
+
