@@ -1,22 +1,22 @@
 
 from tw2.core.resources import JSSymbol
 
+
+
 from tw2.jit.widgets import AreaChart
-from tw2.jit.widgets import BarChart
-from tw2.jit.widgets import PieChart
-from tw2.jit.widgets import RadialGraph
-
 from tw2.jit.defaults import AreaChartJSONDefaults
-from tw2.jit.defaults import BarChartJSONDefaults
-from tw2.jit.defaults import PieChartJSONDefaults
-from tw2.jit.defaults import RadialGraphJSONDefaults
-
 class DemoAreaChart(AreaChart):
     data = AreaChartJSONDefaults
 
+
+from tw2.jit.widgets import BarChart
+from tw2.jit.defaults import BarChartJSONDefaults
 class DemoBarChart(BarChart):
     data = BarChartJSONDefaults
 
+
+from tw2.jit.widgets import PieChart
+from tw2.jit.defaults import PieChartJSONDefaults
 class DemoPieChart(PieChart):
     data = PieChartJSONDefaults
     sliceOffset = 5 
@@ -24,7 +24,6 @@ class DemoPieChart(PieChart):
 
 from tw2.jit.widgets import RadialGraph
 from tw2.jit.defaults import RadialGraphJSONDefaults
-
 class DemoRadialGraph(RadialGraph):
     data = RadialGraphJSONDefaults
 
@@ -86,7 +85,6 @@ class DemoRadialGraph(RadialGraph):
 
 from tw2.jit.widgets import ForceDirectedGraph
 from tw2.jit.defaults import ForceDirectedGraphJSONDefaults
-
 class DemoForceDirectedGraph(ForceDirectedGraph):
     data = ForceDirectedGraphJSONDefaults
 
@@ -187,6 +185,7 @@ class DemoForceDirectedGraph(ForceDirectedGraph):
             style.top = (top + 10) + 'px';
             style.display = '';
         })""")
+
 
 from tw2.jit.widgets import TreeMap
 from tw2.jit.defaults import TreeMapJSONDefaults
@@ -441,6 +440,7 @@ class DemoSpaceTree(SpaceTree):
                 delete adj.data.$lineWidth;
             }
         })""")
+
 
 from tw2.jit.widgets import Icicle 
 from tw2.jit.defaults import IcicleJSONDefaults
