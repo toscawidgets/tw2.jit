@@ -1,22 +1,6 @@
 function setupTW2JitWidget(jitClassName, jitSecondaryClassName, attrs) {
-    
-    debug = true;
-    if ( debug ) {
-        console.log('------------');
-        console.log(jitClassName);
-        console.log(jitSecondaryClassName);
-        console.log(attrs);
-        console.log('------------');
-    }
-        
     if ( jitSecondaryClassName ) {
-        // Then use it!
-        var jitwidget = new $jit[jitClassName][jitSecondaryClassName](attrs);
-    } else {
-        // Otherwise don't... I think only the 'TM' class
-        //  has "secondary classes"
-        var jitwidget = new $jit[jitClassName](attrs);
+        return new $jit[jitClassName][jitSecondaryClassName](attrs);
     }
-    
-    return jitwidget;
+    return new $jit[jitClassName](attrs);
 }
