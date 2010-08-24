@@ -240,10 +240,10 @@ class DemoSunburst(Sunburst):
     postInitJSCallback = JSSymbol(
         src="(function (jitwidget) { jitwidget.refresh(); })")
 
-    #Node = {
-    #    'overridable' : True,
-    #    'type' : 'gradient-multiple',
-    #}
+    Node = {
+        'overridable' : True,
+        'type' : 'gradient-multipie',
+    }
 
     Label = { 'type' : 'HTML' }
     NodeStyles = {
