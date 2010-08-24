@@ -130,34 +130,29 @@ class JitWidget(twc.Widget):
 
     def prepare(self):
         super(JitWidget, self).prepare()
-
-        class JSFunctionWrapper(JSSource):
-            template='tw2.jit.templates.jswrapper'
-
-            class F1(JSFuncCall):
-                template="tw2.jit.templates.jscontent"
-                parent=self.__class__
-                function='var jitwidget = setupTW2JitWidget'
+        self.resources.append(
+            JSFuncCall(
+                parent=self.__class__,
+                function='var jitwidget = setupTW2JitWidget',
                 args=[
                     self.jitClassName,
                     self.jitSecondaryClassName,
-                    self.attrs]
-                attribute=True
-
-            class F2(JSFuncCall):
-                template="tw2.jit.templates.jscontent"
-                parent=self.__class__
-                function='jitwidget.loadJSON'
+                    self.attrs
+                ]
+            )
+        )
+        self.resources.append(
+            JSFuncCall(
+                parent=self.__class__,
+                function='jitwidget.loadJSON',
                 args=[self.data]
-                attribute=True
-
-            class F3(JSFuncCall):
-                template="tw2.jit.templates.jscontent"
-                parent=self.__class__
-                function=self.postInitJSCallback.src
-                args=[]
-                attribute=True
-        self.resources.append(JSFunctionWrapper())
+            )
+        )
+        self.resources.append(
+            JSSource(
+                src=self.postInitJSCallback.src+"(jitwidget);"
+            )
+        )
     
 class JitTreeOrGraphWidget(JitWidget):
     # TODO __
