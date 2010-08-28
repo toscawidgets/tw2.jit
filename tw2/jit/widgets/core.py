@@ -3,6 +3,7 @@ from tw2.core.resources import JSLink, CSSLink
 from tw2.core.resources import JSSymbol, JSFuncCall
 from tw2.core.resources import JSSource
 from tw2.core.widgets import WidgetMeta
+from tw2.core.widgets import Widget
 
 from tw2.jit import jit_base
 
@@ -130,8 +131,8 @@ class JitWidget(twc.Widget):
 
     def prepare(self):
         super(JitWidget, self).prepare()
-        self.resources.append(
-            JSFuncCall(
+        class _JitJSSetup(JitJSSetup):
+            setupcall = JSFuncCall(
                 parent=self.__class__,
                 function='var jitwidget = setupTW2JitWidget',
                 args=[
@@ -139,20 +140,29 @@ class JitWidget(twc.Widget):
                     self.jitSecondaryClassName,
                     self.attrs
                 ]
-            )
-        )
-        self.resources.append(
-            JSFuncCall(
+            ).display()
+            loadcall = JSFuncCall(
                 parent=self.__class__,
                 function='jitwidget.loadJSON',
                 args=[self.data]
-            )
-        )
-        self.resources.append(
-            JSSource(
+            ).display()
+            postinitcall = JSSource(
                 src=self.postInitJSCallback.src+"(jitwidget);"
-            )
-        )
+            ).display()
+        self.resources.append(_JitJSSetup)
+        
+class JitJSSetup(JSSource):
+    setupcall = twc.Param('some thing')
+    loadcall = twc.Param('another thing')
+    postinitcall = twc.Param('alskdjf')
+    def prepare(self):
+        setupcall = str(self.setupcall)[31:-9]
+        print "setup: ", setupcall
+        loadcall = str(self.loadcall)[31:-9]
+        postinitcall = str(self.postinitcall)[31:-9]
+        self.src = "%s %s %s" % (setupcall, loadcall, postinitcall)
+        super(JitJSSetup, self).prepare()
+    
     
 class JitTreeOrGraphWidget(JitWidget):
     # TODO __
