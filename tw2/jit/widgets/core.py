@@ -130,10 +130,8 @@ class JitWidget(twc.Widget):
     data = twc.Param('python data to be jsonified and passed to the widget')
 
     def prepare(self):
-        super(JitWidget, self).prepare()
         class _JitJSSetup(JitJSSetup):
             setupcall = JSFuncCall(
-                parent=self.__class__,
                 function='var jitwidget = setupTW2JitWidget',
                 args=[
                     self.jitClassName,
@@ -142,25 +140,25 @@ class JitWidget(twc.Widget):
                 ]
             ).display()
             loadcall = JSFuncCall(
-                parent=self.__class__,
                 function='jitwidget.loadJSON',
                 args=[self.data]
             ).display()
             postinitcall = JSSource(
                 src=self.postInitJSCallback.src+"(jitwidget);"
             ).display()
+        print "Ready to append"
         self.resources.append(_JitJSSetup)
+        super(JitWidget, self).prepare()
         
 class JitJSSetup(JSSource):
-    setupcall = twc.Param('some thing')
-    loadcall = twc.Param('another thing')
-    postinitcall = twc.Param('alskdjf')
+    setupcall = twc.Param()
+    loadcall = twc.Param()
+    postinitcall = twc.Param()
     def prepare(self):
-        setupcall = str(self.setupcall)[31:-9]
-        print "setup: ", setupcall
-        loadcall = str(self.loadcall)[31:-9]
         postinitcall = str(self.postinitcall)[31:-9]
-        self.src = "%s %s %s" % (setupcall, loadcall, postinitcall)
+        setupcall = str(self.setupcall)[31:-9]
+        loadcall = str(self.loadcall)[31:-9]
+        self.src = "\n%s;\n%s;\n%s\n" % (setupcall, loadcall, postinitcall)
         super(JitJSSetup, self).prepare()
     
     
