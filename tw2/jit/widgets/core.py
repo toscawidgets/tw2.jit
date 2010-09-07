@@ -144,6 +144,10 @@ class JitWidget(twc.Widget):
         self.resources.append(composite_js_call)
 
 
+# TODO -- can this be made more generic?
+# I crapped it out based on specific needs to make multiple calls that would
+#   share the same jitwidget js variable in the same scope, but not conflict
+#   with other JitWidget's js space.
 class CompositeJSFuncCall(JSSource):
     """
     Two inline javascript function calls and a jssource
@@ -168,7 +172,8 @@ class CompositeJSFuncCall(JSSource):
             elif self.args2:
                 args2 = ', '.join(encoder.encode(a) for a in self.args2)
             self.src2 = '%s(%s)' % (self.func2, args2)
-            self.src = "\n%s;\n%s;\n%s\n" % (self.src1, self.src2, self.ext_src)
+            self.src = "(function(){\n%s;\n%s;\n%s\n})();" % \
+                    (self.src1, self.src2, self.ext_src)
         super(CompositeJSFuncCall, self).prepare()
         
     
