@@ -2,6 +2,7 @@ import tw2.core as twc
 from tw2.core.resources import JSLink, CSSLink
 from tw2.core.resources import JSSymbol, JSFuncCall
 from tw2.core.resources import JSSource
+from tw2.core.resources import encoder
 from tw2.core.widgets import WidgetMeta
 from tw2.core.widgets import Widget
 
@@ -21,9 +22,6 @@ jit_css = CSSLink(modname=modname, filename="static/css/jit_base.css")
 treemap_css = CSSLink(modname=modname, filename="static/css/treemap.css")
 sunburst_css = CSSLink(modname=modname, filename="static/css/sunburst.css")
 icicle_css = CSSLink(modname=modname, filename="static/css/icicle.css")
-
-# TODO -- is this line going to get run over and over?  singleton?
-encoder = JSONEncoder() 
 
 # TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
@@ -130,6 +128,8 @@ class JitWidget(twc.Widget):
     data = twc.Param('python data to be jsonified and passed to the widget')
 
     def prepare(self):
+        super(JitWidget, self).prepare()
+
         composite_js_call = CompositeJSFuncCall(
             func1='var jitwidget = setupTW2JitWidget',
             args1=[
@@ -141,9 +141,9 @@ class JitWidget(twc.Widget):
             args2=[self.data],
             ext_src=self.postInitJSCallback.src+"(jitwidget);"
         )
-
         self.resources.append(composite_js_call)
-        super(JitWidget, self).prepare()
+
+
 class CompositeJSFuncCall(JSSource):
     """
     Two inline javascript function calls and a jssource
