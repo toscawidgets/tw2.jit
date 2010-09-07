@@ -130,36 +130,47 @@ class JitWidget(twc.Widget):
     data = twc.Param('python data to be jsonified and passed to the widget')
 
     def prepare(self):
-        class _JitJSSetup(JitJSSetup):
-            setupcall = JSFuncCall(
-                function='var jitwidget = setupTW2JitWidget',
-                args=[
-                    self.jitClassName,
-                    self.jitSecondaryClassName,
-                    self.attrs
-                ]
-            ).display()
-            loadcall = JSFuncCall(
-                function='jitwidget.loadJSON',
-                args=[self.data]
-            ).display()
-            postinitcall = JSSource(
-                src=self.postInitJSCallback.src+"(jitwidget);"
-            ).display()
-        self.resources.append(_JitJSSetup)
+        composite_js_call = CompositeJSFuncCall(
+            func1='var jitwidget = setupTW2JitWidget',
+            args1=[
+                self.jitClassName,
+                self.jitSecondaryClassName,
+                self.attrs
+            ],
+            func2='jitwidget.loadJSON',
+            args2=[self.data],
+            ext_src=self.postInitJSCallback.src+"(jitwidget);"
+        )
+
+        self.resources.append(composite_js_call)
         super(JitWidget, self).prepare()
-        
-class JitJSSetup(JSSource):
-    setupcall = twc.Param()
-    loadcall = twc.Param()
-    postinitcall = twc.Param()
+class CompositeJSFuncCall(JSSource):
+    """
+    Two inline javascript function calls and a jssource
+    """
+    func1 = twc.Param('Function 1 name')
+    args1 = twc.Param('Function 1 args')
+    func2 = twc.Param('Function 2 name')
+    args2 = twc.Param('Function 2 args')
+    ext_src = twc.Param('Third Inline javascript')
+    src = None
+    location = 'bodybottom'
+
     def prepare(self):
-        postinitcall = str(self.postinitcall)[31:-9]
-        setupcall = str(self.setupcall)[31:-9]
-        loadcall = str(self.loadcall)[31:-9]
-        self.src = "\n%s;\n%s;\n%s\n" % (setupcall, loadcall, postinitcall)
-        super(JitJSSetup, self).prepare()
-    
+        if not self.src:
+            if isinstance(self.args1, dict):
+                args1 = encoder.encode(self.args)
+            elif self.args1:
+                args1 = ', '.join(encoder.encode(a) for a in self.args1)
+            self.src1 = '%s(%s)' % (self.func1, args1)
+            if isinstance(self.args2, dict):
+                args2 = encoder.encode(self.args)
+            elif self.args2:
+                args2 = ', '.join(encoder.encode(a) for a in self.args2)
+            self.src2 = '%s(%s)' % (self.func2, args2)
+            self.src = "\n%s;\n%s;\n%s\n" % (self.src1, self.src2, self.ext_src)
+        super(CompositeJSFuncCall, self).prepare()
+        
     
 class JitTreeOrGraphWidget(JitWidget):
     # TODO __
