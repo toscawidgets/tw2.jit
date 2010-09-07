@@ -8,10 +8,15 @@ virtualenv $venv --no-site-packages
 
 source $venv/bin/activate
 
-pip install genshi && \
-        cd tw2core && \
-        python setup.py develop && \
-        cd - && \
-        cd tw2devtools && \
-        python setup.py develop && \
-        cd -
+hg clone http://bitbucket.org/paj/tw2core
+hg clone http://bitbucket.org/paj/tw2devtools
+
+pip install genshi
+
+cd tw2core
+python setup.py develop
+cd -
+
+cd tw2devtools
+python setup.py develop
+cd -

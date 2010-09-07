@@ -2,3 +2,4 @@ build
 tw2.jit.egg-info
 *.pyc
 *.swp
+virtualenv-tw2.jit
