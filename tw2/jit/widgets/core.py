@@ -146,7 +146,6 @@ class JitWidget(twc.Widget):
             postinitcall = JSSource(
                 src=self.postInitJSCallback.src+"(jitwidget);"
             ).display()
-        print "Ready to append"
         self.resources.append(_JitJSSetup)
         super(JitWidget, self).prepare()
         
