@@ -7,8 +7,8 @@ tw2.jit
     :alt: An examle of the RadialGraph widget
     :target: http://github.com/ralphbean/tw2.jit
 
-    An example of the ``tw2.jit.widgets.RadialGraph`` widget in action.
-    Its interactive!
+    A screenshot of the ``tw2.jit.widgets.RadialGraph`` widget in action.
+    Its crazy interactive when its not just a screenshot!
 
 .. comment: split here
 
