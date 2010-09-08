@@ -3,6 +3,9 @@ This file contains baseclasses for thejit widgets
  - JitWidget - contains parameters common to all jit widgets
  - JitTreeOrGraphWidget - contains parameters common to Tree and Graph Widgets
 """
+import weakref
+import types
+
 import tw2.core as twc
 from tw2.core.resources import JSLink, CSSLink
 from tw2.core.resources import JSSymbol, JSFuncCall
@@ -136,47 +139,85 @@ class JitWidget(twc.Widget):
         # I crapped it out based on specific needs to make multiple
         #   calls that would share the same jitwidget js variable in
         #   the same scope, but not conflict with other JitWidget's js space.
-        class CompositeJSFuncCall(JSSource):
-            """
-            Two inline javascript function calls and a jssource
-
-            Sounds like a bad movie.
-            """
-            func1 = twc.Param('Function 1 name')
-            args1 = twc.Param('Function 1 args')
-            func2 = twc.Param('Function 2 name')
-            args2 = twc.Param('Function 2 args')
-            ext_src = twc.Param('Third Inline javascript')
+        class CompoundJSSource(JSSource):
+            children = twc.Param('An iterable of twc.JSSource objects')
+            c = twc.Variable('Alias for children',
+                             default=property(lambda s: s.children))
             src = None
             location = 'bodybottom'
-        
+
+            @classmethod
+            def post_define(cls):
+                """
+                Check children are valid;  update them to have a parent link.
+                """
+                cls._sub_compound = not getattr(cls, 'id', None)
+                if not hasattr(cls, 'children'):
+                    return
+                joined_cld = []
+                for c in cls.children:
+                    if not isinstance(c, type) or not issubclass(c, JSSource):
+                        raise twc.ParameterError("Children must be JSSources")
+                    # Override children's display method so they don't go
+                    #  rendering on their own.  We want to aggregate their
+                    #  sources into our own wrapped js call.
+                    class DisabledJSSource(c):
+                        def display(self, displays_on):
+                            return ''
+                    joined_cld.append(DisabledJSSource(parent=cls))
+                ids = set()
+                for c in cls.children_deep():
+                    if getattr(c, 'id', None):
+                        if c.id in ids:
+                            raise twc.WidgetError("Duplicate id %s" % c.id)
+                        ids.add(c.id)
+
+                cls.children = twc.widgets.WidgetBunch(joined_cld)
+
+            def __init__(self, **kw):
+                super(CompoundJSSource, self).__init__(**kw)
+                self.children = twc.widgets.WidgetBunch(
+                    c.req(parent=weakref.proxy(self)) for c in self.children)
+
+            @classmethod
+            def children_deep(cls):
+                if getattr(cls, 'id', None):
+                    yield cls
+                else:
+                    for c in getattr(cls, 'children', []):
+                        for cc in c.children_deep():
+                            yield cc
+
             def prepare(self):
+                """
+                Combine the children's `src` into our own.
+                """
                 if not self.src:
-                    if isinstance(self.args1, dict):
-                        args1 = encoder.encode(self.args)
-                    elif self.args1:
-                        args1 = ', '.join(encoder.encode(a) for a in self.args1)
-                    self.src1 = '%s(%s)' % (self.func1, args1)
-                    if isinstance(self.args2, dict):
-                        args2 = encoder.encode(self.args)
-                    elif self.args2:
-                        args2 = ', '.join(encoder.encode(a) for a in self.args2)
-                    self.src2 = '%s(%s)' % (self.func2, args2)
-                    self.src = "(function(){\n%s;\n%s;\n%s\n})();" % \
-                            (self.src1, self.src2, self.ext_src)
-                super(CompositeJSFuncCall, self).prepare()
+                    for c in self.children:
+                        # But prepare them to generate their .src attr
+                        c.prepare()
+
+                    # Gather the .srcs of my children and render that.
+                    self.src = """
+                        (function(){
+                            %s
+                        })();
+                    """ % ';\n'.join(c.src for c in self.children)
+                super(CompoundJSSource, self).prepare()
 
         # Use the above defined class
-        composite_js_call = CompositeJSFuncCall(
-            func1='var jitwidget = setupTW2JitWidget',
-            args1=[
-                self.jitClassName,
-                self.jitSecondaryClassName,
-                self.attrs
-            ],
-            func2='jitwidget.loadJSON',
-            args2=[self.data],
-            ext_src=self.postInitJSCallback.src+"(jitwidget);"
+        composite_js_call = CompoundJSSource(
+            setupcall = JSFuncCall(
+                function='var jitwidget = setupTW2JitWidget',
+                args=[
+                    self.jitClassName,
+                    self.jitSecondaryClassName,
+                    self.attrs
+                ]),
+            loadcall = JSFuncCall(
+                function='jitwidget.loadJSON',
+                args=[self.data],),
+            postcall = JSSource(src=self.postInitJSCallback.src+'(jitwidget)')
         )
         self.resources.append(composite_js_call)
 
