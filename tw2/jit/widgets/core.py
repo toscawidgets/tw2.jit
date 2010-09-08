@@ -135,10 +135,6 @@ class JitWidget(twc.Widget):
     def prepare(self):
         super(JitWidget, self).prepare()
 
-        # TODO -- can this class be made more generic?
-        # I crapped it out based on specific needs to make multiple
-        #   calls that would share the same jitwidget js variable in
-        #   the same scope, but not conflict with other JitWidget's js space.
         class CompoundJSSource(JSSource):
             children = twc.Param('An iterable of twc.JSSource objects')
             c = twc.Variable('Alias for children',
