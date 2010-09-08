@@ -6,11 +6,9 @@ from tw2.jit.widgets.core import jit_js
 
 from tw2.jit.defaults import ForceDirectedGraphJSONDefaults
 
-# TODO -- PANIC -- what should thsi include from JitChart??? or JitTree?
 class JitGraph(JitTreeOrGraphWidget):
     pass
 
-#Radial Graph
 class RadialGraph(JitGraph):
     jitClassName = twc.Variable(default='RGraph')
 
