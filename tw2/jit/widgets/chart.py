@@ -22,7 +22,8 @@ class AreaChart(JitChart):
     See thejit API documentation on AreaChart:
         http://thejit.org/static/v20/Docs/files/Visualizations/AreaChart-js.html
     """
-    jitClassName = twc.Variable(default='AreaChart')
+
+    jitClassName = 'AreaChart'
     
     selectOnHover = twc.Param(
         '(boolean) Add a mark to the hovered stack.',
@@ -47,7 +48,8 @@ class BarChart(JitChart):
     See thejit API documentation on BarChart:
         http://thejit.org/static/v20/Docs/files/Visualizations/BarChart-js.html
     """
-    jitClassName = twc.Variable(default='BarChart')
+
+    jitClassName = 'BarChart'
     
     barsOffset = twc.Param(
         '(number) Separation between bars.', default=0, attribute=True)
@@ -72,7 +74,8 @@ class PieChart(JitChart):
     See thejit API documentation on PieChart:
         http://thejit.org/static/v20/Docs/files/Visualizations/PieChart-js.html
     """
-    jitClassName = twc.Variable(default='PieChart')
+
+    jitClassName = 'PieChart'
     
     sliceOffset = twc.Param(
         '(number) Separation between slices.', default=0, attribute=True)
