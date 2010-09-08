@@ -27,11 +27,8 @@ icicle_css = CSSLink(modname=modname, filename="static/css/icicle.css")
 class JitWidget(twc.Widget):
     resources = [jit_js, jit_glue_js]
 
-    preInitJSCallback = twc.Param(
-        'javascript to run before init of the widget',
-        default=JSSymbol(src='(function(jitwidget){})'))
     postInitJSCallback = twc.Param(
-        'javascript to run after init of the widget',
+        'javascript to run after client-side initialization of the widget',
         default=JSSymbol(src='(function(jitwidget){})'))
     
     jitClassName = twc.Variable('Name of the Jit class for this widget')
@@ -130,6 +127,39 @@ class JitWidget(twc.Widget):
     def prepare(self):
         super(JitWidget, self).prepare()
 
+        # TODO -- can this class be made more generic?
+        # I crapped it out based on specific needs to make multiple
+        #   calls that would share the same jitwidget js variable in
+        #   the same scope, but not conflict with other JitWidget's js space.
+        class CompositeJSFuncCall(JSSource):
+            """
+            Two inline javascript function calls and a jssource
+            """
+            func1 = twc.Param('Function 1 name')
+            args1 = twc.Param('Function 1 args')
+            func2 = twc.Param('Function 2 name')
+            args2 = twc.Param('Function 2 args')
+            ext_src = twc.Param('Third Inline javascript')
+            src = None
+            location = 'bodybottom'
+        
+            def prepare(self):
+                if not self.src:
+                    if isinstance(self.args1, dict):
+                        args1 = encoder.encode(self.args)
+                    elif self.args1:
+                        args1 = ', '.join(encoder.encode(a) for a in self.args1)
+                    self.src1 = '%s(%s)' % (self.func1, args1)
+                    if isinstance(self.args2, dict):
+                        args2 = encoder.encode(self.args)
+                    elif self.args2:
+                        args2 = ', '.join(encoder.encode(a) for a in self.args2)
+                    self.src2 = '%s(%s)' % (self.func2, args2)
+                    self.src = "(function(){\n%s;\n%s;\n%s\n})();" % \
+                            (self.src1, self.src2, self.ext_src)
+                super(CompositeJSFuncCall, self).prepare()
+
+        # Use the above defined class
         composite_js_call = CompositeJSFuncCall(
             func1='var jitwidget = setupTW2JitWidget',
             args1=[
@@ -144,38 +174,6 @@ class JitWidget(twc.Widget):
         self.resources.append(composite_js_call)
 
 
-# TODO -- can this be made more generic?
-# I crapped it out based on specific needs to make multiple calls that would
-#   share the same jitwidget js variable in the same scope, but not conflict
-#   with other JitWidget's js space.
-class CompositeJSFuncCall(JSSource):
-    """
-    Two inline javascript function calls and a jssource
-    """
-    func1 = twc.Param('Function 1 name')
-    args1 = twc.Param('Function 1 args')
-    func2 = twc.Param('Function 2 name')
-    args2 = twc.Param('Function 2 args')
-    ext_src = twc.Param('Third Inline javascript')
-    src = None
-    location = 'bodybottom'
-
-    def prepare(self):
-        if not self.src:
-            if isinstance(self.args1, dict):
-                args1 = encoder.encode(self.args)
-            elif self.args1:
-                args1 = ', '.join(encoder.encode(a) for a in self.args1)
-            self.src1 = '%s(%s)' % (self.func1, args1)
-            if isinstance(self.args2, dict):
-                args2 = encoder.encode(self.args)
-            elif self.args2:
-                args2 = ', '.join(encoder.encode(a) for a in self.args2)
-            self.src2 = '%s(%s)' % (self.func2, args2)
-            self.src = "(function(){\n%s;\n%s;\n%s\n})();" % \
-                    (self.src1, self.src2, self.ext_src)
-        super(CompositeJSFuncCall, self).prepare()
-        
     
 class JitTreeOrGraphWidget(JitWidget):
     # TODO __
