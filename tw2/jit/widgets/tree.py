@@ -42,7 +42,7 @@ class JitTree(JitTreeOrGraphWidget):
 class TreeMap(JitTree):
     """ A squarified TreeMap visualization.
 
-    'strip' and 'sliceanddice' variations not yet supported.
+    'Strip' and 'SliceAndDice' variations not yet supported.
 
     See thejit API documentation on TreeMap:
         http://thejit.org/static/v20/Docs/files/Visualizations/Treemap-js.html
