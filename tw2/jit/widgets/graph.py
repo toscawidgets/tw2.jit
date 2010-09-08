@@ -17,7 +17,7 @@ class RadialGraph(JitGraph):
         http://thejit.org/static/v20/Docs/files/Visualizations/RGraph-js.html
     """
 
-    jitClassName = twc.Variable(default='RGraph')
+    jitClassName = 'RGraph'
 
     background = twc.Param(
         '(dict) see sample (TODO).', default={},
@@ -30,7 +30,7 @@ class ForceDirectedGraph(JitGraph):
         http://thejit.org/static/v20/Docs/files/Visualizations/ForceDirected-js.html
     """
 
-    jitClassName = twc.Variable(default='ForceDirected')
+    jitClassName = 'ForceDirected'
     
     iterations = twc.Param(
         '(number) The number of iterations for the spring ' +
