@@ -29,11 +29,8 @@ jit_css = CSSLink(modname=modname, filename="static/css/jit_base.css")
 class JitWidget(twc.Widget):
     template = "genshi:tw2.jit.templates.jitwidget"
     resources = [jit_js, jit_glue_js]
-
-    postInitJSCallback = twc.Param(
-        'javascript to run after client-side initialization of the widget',
-        default=JSSymbol(src='(function(jitwidget){})'))
-    
+   
+    # Internal twc Variables:
     jitClassName = twc.Variable('Name of the Jit class for this widget')
     jitSecondaryClassName = twc.Variable(
         'Secondary Jit class for this widget', default=None)
@@ -41,7 +38,19 @@ class JitWidget(twc.Widget):
     injectInto = twc.Variable(
         'name of the DOM element containing the canvas',
         attribute=True, default=property(lambda s: s.compound_id))
+    config = twc.Variable( 'jsonified version of other attrs.', default={} )
+    # End internal twc Variables
 
+
+    # Start twc Params
+    postInitJSCallback = twc.Param(
+        'javascript to run after client-side initialization of the widget',
+        default=JSSymbol(src='(function(jitwidget){})'))
+    
+    data = twc.Param('python data to be jsonified and passed to the widget')
+    # End twc Params
+
+    # Start twc Attributes
     backgroundcolor = twc.Param(
         '(string) background color of the jit container div',
         default='#3a3a3a', attribute=True)
@@ -65,10 +74,6 @@ class JitWidget(twc.Widget):
     offset = twc.Param(
         '(number) Margin between the display and the canvas.',
         default=25, attribute=True)
-
-    config = twc.Variable( 'jsonified version of other attrs.', default={} )
-
-
 
     Canvas = twc.Param(
         '(dict) Of the form Options.Canvas in the jit docs.', attribute=True,
@@ -123,7 +128,6 @@ class JitWidget(twc.Widget):
             'onMouseWheel': '(function() {})' 
         })
 
-    data = twc.Param('python data to be jsonified and passed to the widget')
 
     def prepare(self):
         super(JitWidget, self).prepare()
@@ -177,9 +181,7 @@ class JitWidget(twc.Widget):
 
     
 class JitTreeOrGraphWidget(JitWidget):
-    # TODO __
-    # http://thejit.org/static/v20/Docs/files/Options/Options-Controller-js.html#Options.Controller
-    # Trees and graphs have Navigation
+    # TODO - http://thejit.org/static/v20/Docs/files/Options/Options-Controller-js.html#Options.Controller
     Navigation = twc.Param(
         'Panning and zooming options for Graph/Tree visualziations.',
         default={
@@ -209,6 +211,7 @@ class JitTreeOrGraphWidget(JitWidget):
             'span':1,  
             'CanvasStyles': {}  
         }, attribute=True)
+
     Edge = twc.Param(
         "Provides Edge rendering options for " +
         "Tree and Graph based visualizations.",
@@ -221,15 +224,18 @@ class JitTreeOrGraphWidget(JitWidget):
             'alpha': 1,  
             'CanvasStyles': {} 
         }, attribute=True)
+
     onBeforeCompute = twc.Param(
         "(javascript) This method is called right before performing all " +
         "computations and animations.  The selected Graph.Node " +
         "is passed as parameter.",
         default=JSSymbol(src="(function(node) {})"), attribute=True)
+
     onAfterCompute = twc.Param(
         "(javascript) This method is triggered after all animations " +
         "or computations ended.",
         default=JSSymbol(src="(function(node) {})"), attribute=True)
+
     onCreateLabel = twc.Param(
         "(javascript) This method receives a new label DIV element as " +
         "first parameter, and the corresponding Graph.Node  as second " +
@@ -237,6 +243,7 @@ class JitTreeOrGraphWidget(JitWidget):
         "This method is useful when adding events or styles to the labels " +
         "used by the JIT.",
         default=JSSymbol(src="(function(node) {})"), attribute=True)
+
     onPlaceLabel = twc.Param(
         "(javascript) This method receives a label DIV element as first " +
         "parameter and the corresponding Graph.Node  as second parameter.  " +
@@ -248,20 +255,24 @@ class JitTreeOrGraphWidget(JitWidget):
         "top css properties are already updated to match the nodes " +
         "positions.  Width and height properties are not set however.",
         default=JSSymbol(src="(function(node) {})"), attribute=True)
+
     onBeforePlotNode = twc.Param(
         "(javascript) This method is triggered right before plotting " +
         "each Graph.Node.  This method is useful for changing a node " +
         "style right before plotting it.",
         default=JSSymbol(src="(function(node) {})"), attribute=True)
+
     onAfterPlotNode = twc.Param(
         "(javascript) This method is triggered right after plotting " +
         "each Graph.Node.",
         default=JSSymbol(src="(function(node) {})"), attribute=True)
+
     onBeforePlotLine = twc.Param(
         "(javascript) This method is triggered right before plotting " +
         "a Graph.Adjacence.  This method is useful for adding some " +
         "styles to a particular edge before being plotted.",
         default=JSSymbol(src="(function(node) {})"), attribute=True)
+
     onAfterPlotLine = twc.Param(
         "(javascript) This method is triggered right after plotting " +
         "a Graph.Adjacence.",
