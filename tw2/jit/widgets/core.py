@@ -1,3 +1,8 @@
+"""
+This file contains baseclasses for thejit widgets
+ - JitWidget - contains parameters common to all jit widgets
+ - JitTreeOrGraphWidget - contains parameters common to Tree and Graph Widgets
+"""
 import tw2.core as twc
 from tw2.core.resources import JSLink, CSSLink
 from tw2.core.resources import JSSymbol, JSFuncCall
@@ -14,7 +19,7 @@ from simplejson import JSONEncoder
 modname = ".".join(__name__.split('.')[:-1])
 modname = "tw2.jit"
 
-# TODO -- what's the right way to choose minified or not in tw2
+# TODO -- what's the right way to choose minified or not in tw2?
 jit_yc_js = JSLink(modname=modname, filename="%s/jit-yc.js" % jit_base)
 jit_js = JSLink(modname=modname, filename="%s/jit.js" % jit_base)
 jit_glue_js = JSLink(modname=modname, filename="static/js/tw2.jit.glue.js")
