@@ -1,7 +1,14 @@
 tw2.jit
 =======
 
-:Author: Ralph Bean <ralph.bean@gmail.com
+:Author: Ralph Bean <ralph.bean@gmail.com>
+
+.. figure:: tw2.jit/raw/master/doc/images/screenshot1.png
+    :alt: An examle of the RadialGraph widget
+    :target: http://github.com/ralphbean/tw2.jit
+
+    An example of the ``tw2.jit.widgets.RadialGraph`` widget in action.
+    Its interactive!
 
 .. comment: split here
 
