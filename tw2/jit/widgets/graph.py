@@ -20,7 +20,7 @@ class RadialGraph(JitGraph):
     jitClassName = 'RGraph'
 
     background = twc.Param(
-        '(dict) see sample (TODO).', default={},
+        '(dict) see sample.', default={},
         attribute=True, request_local=False)
    
 class ForceDirectedGraph(JitGraph):
