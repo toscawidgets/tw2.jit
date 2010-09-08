@@ -29,6 +29,13 @@ jit_css = CSSLink(modname=modname, filename="static/css/jit_base.css")
 
 # TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
+    """ Baseclass for all other tw2.jit.widgets
+    
+    Provides a set of parameters common to widgets in the library.
+
+    Uses tw2.jit.resources.CompoundJSSource for client-side initialization
+    """
+
     template = "genshi:tw2.jit.templates.jitwidget"
     resources = [jit_js, jit_glue_js]
    
@@ -42,7 +49,6 @@ class JitWidget(twc.Widget):
         attribute=True, default=property(lambda s: s.compound_id))
     config = twc.Variable( 'jsonified version of other attrs.', default={} )
     # End internal twc Variables
-
 
     # Start twc Params
     postInitJSCallback = twc.Param(
@@ -129,7 +135,7 @@ class JitWidget(twc.Widget):
             'onTouchCancel': '(function() {})',  
             'onMouseWheel': '(function() {})' 
         })
-
+    # End twc attrs
 
     def prepare(self):
         super(JitWidget, self).prepare()
@@ -147,11 +153,14 @@ class JitWidget(twc.Widget):
                 args=[self.data],),
             postcall = JSSource(src=self.postInitJSCallback.src+'(jitwidget)')
         )
+
         self.resources.append(composite_js_call)
 
 
     
 class JitTreeOrGraphWidget(JitWidget):
+    """ Baseclass common to all Tree and Graph JitWidgets """
+
     # TODO - http://thejit.org/static/v20/Docs/files/Options/Options-Controller-js.html#Options.Controller
     Navigation = twc.Param(
         '(dict) Panning and zooming options for Graph/Tree visualziations.',
