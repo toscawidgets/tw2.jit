@@ -7,9 +7,16 @@ from tw2.jit.widgets.core import jit_js
 from tw2.jit.defaults import ForceDirectedGraphJSONDefaults
 
 class JitGraph(JitTreeOrGraphWidget):
+    """ Baseclass for graph widgets """
     pass
 
 class RadialGraph(JitGraph):
+    """ A radial graph visualization with advanced animations.
+
+    See thejit API documentation on RadialGraph:
+        http://thejit.org/static/v20/Docs/files/Visualizations/RGraph-js.html
+    """
+
     jitClassName = twc.Variable(default='RGraph')
 
     background = twc.Param(
@@ -17,6 +24,12 @@ class RadialGraph(JitGraph):
         attribute=True, request_local=False)
    
 class ForceDirectedGraph(JitGraph):
+    """ A visualization that lays graphs using a Force-Directed layout algorithm.
+
+    See thejit API documentation on ForceDirectedGraph:
+        http://thejit.org/static/v20/Docs/files/Visualizations/ForceDirected-js.html
+    """
+
     jitClassName = twc.Variable(default='ForceDirected')
     
     iterations = twc.Param(
