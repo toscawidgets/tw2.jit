@@ -39,18 +39,16 @@ class JitWidget(twc.Widget):
         'Secondary Jit class for this widget', default=None)
 
     injectInto = twc.Variable(
-        description='name of the DOM element containing the canvas',
+        'name of the DOM element containing the canvas',
         attribute=True, default=property(lambda s: s.compound_id))
 
     backgroundcolor = twc.Param(
-        description='(string) background color of the jit container div',
+        '(string) background color of the jit container div',
         default='#3a3a3a', attribute=True)
 
-    width = twc.Param(
-        description='(string) widget width', attribute=True, default='500')
+    width = twc.Param('(string) widget width', default='500', attribute=True)
 
-    height = twc.Param(
-        description='(string) widget height', attribute=True, default='500')
+    height = twc.Param('(string) widget height', default='500', attribute=True)
     
     animate = twc.Param(
         '(boolean) Whether to add animated transitions.',
