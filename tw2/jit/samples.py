@@ -4,7 +4,7 @@ from tw2.core.resources import JSSymbol
 
 
 from tw2.jit.widgets import AreaChart
-from tw2.jit.defaults import AreaChartJSONDefaults
+from tw2.jit.samples_data import AreaChartJSONDefaults
 class DemoAreaChart(AreaChart):
     data = AreaChartJSONDefaults
     offset = 0
@@ -28,20 +28,20 @@ class DemoAreaChart(AreaChart):
 
 
 from tw2.jit.widgets import BarChart
-from tw2.jit.defaults import BarChartJSONDefaults
+from tw2.jit.samples_data import BarChartJSONDefaults
 class DemoBarChart(BarChart):
     data = BarChartJSONDefaults
 
 
 from tw2.jit.widgets import PieChart
-from tw2.jit.defaults import PieChartJSONDefaults
+from tw2.jit.samples_data import PieChartJSONDefaults
 class DemoPieChart(PieChart):
     data = PieChartJSONDefaults
     sliceOffset = 5 
 
 
 from tw2.jit.widgets import RadialGraph
-from tw2.jit.defaults import RadialGraphJSONDefaults
+from tw2.jit.samples_data import RadialGraphJSONDefaults
 class DemoRadialGraph(RadialGraph):
     data = RadialGraphJSONDefaults
 
@@ -104,7 +104,7 @@ class DemoRadialGraph(RadialGraph):
 
 
 from tw2.jit.widgets import ForceDirectedGraph
-from tw2.jit.defaults import ForceDirectedGraphJSONDefaults
+from tw2.jit.samples_data import ForceDirectedGraphJSONDefaults
 class DemoForceDirectedGraph(ForceDirectedGraph):
     data = ForceDirectedGraphJSONDefaults
 
@@ -208,7 +208,7 @@ class DemoForceDirectedGraph(ForceDirectedGraph):
 
 
 from tw2.jit.widgets import TreeMap
-from tw2.jit.defaults import TreeMapJSONDefaults
+from tw2.jit.samples_data import TreeMapJSONDefaults
 class DemoTreeMap(TreeMap):
     data = TreeMapJSONDefaults
 
@@ -252,7 +252,7 @@ class DemoTreeMap(TreeMap):
     
 
 from tw2.jit.widgets import Sunburst
-from tw2.jit.defaults import SunburstJSONDefaults
+from tw2.jit.samples_data import SunburstJSONDefaults
 class DemoSunburst(Sunburst):
     data = SunburstJSONDefaults
     
@@ -339,7 +339,7 @@ class DemoSunburst(Sunburst):
 
 
 from tw2.jit.widgets import HyperTree
-from tw2.jit.defaults import HyperTreeJSONDefaults
+from tw2.jit.samples_data import HyperTreeJSONDefaults
 class DemoHyperTree(HyperTree):
     data = HyperTreeJSONDefaults
     
@@ -387,7 +387,7 @@ class DemoHyperTree(HyperTree):
 
 
 from tw2.jit.widgets import SpaceTree
-from tw2.jit.defaults import SpaceTreeJSONDefaults
+from tw2.jit.samples_data import SpaceTreeJSONDefaults
 class DemoSpaceTree(SpaceTree):
     data = SpaceTreeJSONDefaults
     
@@ -465,7 +465,7 @@ class DemoSpaceTree(SpaceTree):
 
 
 from tw2.jit.widgets import Icicle 
-from tw2.jit.defaults import IcicleJSONDefaults
+from tw2.jit.samples_data import IcicleJSONDefaults
 class DemoIcicle(Icicle):
     data = IcicleJSONDefaults
     
