@@ -6,6 +6,7 @@ tw2.jit
 .. figure:: tw2.jit/raw/master/doc/images/screenshot1.png
     :alt: An examle of the RadialGraph widget
     :target: http://github.com/ralphbean/tw2.jit
+    :align: center
 
     A screenshot of the ``tw2.jit.widgets.RadialGraph`` widget in action.
     Its crazy interactive when its not just a screenshot!
