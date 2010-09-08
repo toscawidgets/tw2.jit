@@ -139,6 +139,8 @@ class JitWidget(twc.Widget):
         class CompositeJSFuncCall(JSSource):
             """
             Two inline javascript function calls and a jssource
+
+            Sounds like a bad movie.
             """
             func1 = twc.Param('Function 1 name')
             args1 = twc.Param('Function 1 args')
