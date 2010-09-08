@@ -1,5 +1,5 @@
 # This module just contains some of the more lengthy constants used in
-# widgets.py that would otherwise clutter that file.
+# samples.py that would otherwise clutter that file.
 from random import randint, random
 
 AreaChartJSONDefaults = {
