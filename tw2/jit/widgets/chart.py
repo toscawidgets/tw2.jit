@@ -6,11 +6,14 @@ class JitChart(JitWidget):
         '(string) Stack style.  Possible values are ' + 
         '"stacked", "stacked:gradient" to add gradients.',
         default='stacked:gradient', attribute=True)
+
     showLabels = twc.Param(
         '(boolean) Display the slot names.', default=True, attribute=True)
+
     labelOffset = twc.Param(
         '(number) Adds margin between the label and the ' +
-        'default place where it should be drawn.', default=3, attribute=True)
+        'default place where it should be drawn.',
+        default=3, attribute=True)
 
 class AreaChart(JitChart):
     jitClassName = twc.Variable(default='AreaChart')
@@ -36,8 +39,7 @@ class BarChart(JitChart):
     jitClassName = twc.Variable(default='BarChart')
     
     barsOffset = twc.Param(
-        '(number) Separation between bars.',
-        default=0, attribute=True)
+        '(number) Separation between bars.', default=0, attribute=True)
 
     hoveredColor = twc.Param(
         '(string) The color for a hovered bar stack.',
