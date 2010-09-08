@@ -1,20 +1,18 @@
 tw2.jit
 =======
 
-
-
 :Author: Ralph Bean <ralph.bean@gmail.com
 
 .. comment: split here
-
-`Screenshots <http://github.com/ralphbean/tw2.jit/raw/master/doc/images/screenshot1.png>`_
-
-`Bugs <http://github.com/ralphbean/tw2.jit/issues/>`_
 
 .. _toscawidgets2 (tw2): http://toscawidgets.org/documentation/tw2.core/
 .. _thejit: http://thejit.org
 
 tw2.jit is a `toscawidgets2 (tw2)`_ wrapper for `thejit`_.
+
+`Screenshots <http://github.com/ralphbean/tw2.jit/raw/master/doc/images/screenshot1.png>`_
+
+`Bugs <http://github.com/ralphbean/tw2.jit/issues/>`_
 
 Sampling tw2.jit in the WidgetBrowser
 -------------------------------------
