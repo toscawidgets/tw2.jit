@@ -1,3 +1,4 @@
+""" Special tw2.jit resource types """
 
 import weakref
 import types
@@ -7,6 +8,15 @@ import tw2.core as twc
 from tw2.core.resources import JSSource
 
 class CompoundJSSource(JSSource):
+    """ Takes multiple JSSource/JSFuncCall params and displays them
+    all within the same <script> tag and javascript scope.
+
+    Used by tw2.jit to separate the namespaces of different widgets on the
+    same page.  widget variable names (like ``var jitwidget``) can be shared
+    between different calls of a certain widget, but not come into conflict
+    with other widgets.
+    """
+
     children = twc.Param('An iterable of twc.JSSource objects')
     src = None
     location = 'bodybottom'
@@ -14,8 +24,11 @@ class CompoundJSSource(JSSource):
     @classmethod
     def post_define(cls):
         """
-        Check children are valid;  update them to have a parent link.
+        1) Check children are valid
+        2) Disable their 'display' method
+        3) Update them to have a parent link.
         """
+
         cls._sub_compound = not getattr(cls, 'id', None)
         if not hasattr(cls, 'children'):
             return
