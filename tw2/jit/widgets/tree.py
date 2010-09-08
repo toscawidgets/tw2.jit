@@ -1,8 +1,8 @@
 import tw2.core as twc
-from tw2.core.resources import JSSymbol
+from tw2.core.resources import JSSymbol, CSSLink
 
 from tw2.jit.widgets.core import JitTreeOrGraphWidget
-from tw2.jit.widgets.core import jit_js, jit_css, treemap_css, sunburst_css
+from tw2.jit.widgets.core import jit_js, jit_css, modname
 
 from tw2.jit.defaults import TreeMapJSONDefaults
 from tw2.jit.defaults import SunburstJSONDefaults
@@ -10,6 +10,8 @@ from tw2.jit.defaults import IcicleJSONDefaults
 from tw2.jit.defaults import SpaceTreeJSONDefaults
 from tw2.jit.defaults import HyperTreeJSONDefaults
 
+treemap_css = CSSLink(modname=modname, filename="static/css/Treemap.css")
+sunburst_css = CSSLink(modname=modname, filename="static/css/Sunburst.css")
 
 class JitTree(JitTreeOrGraphWidget):
     constrained = twc.Param(
@@ -33,6 +35,7 @@ class JitTree(JitTreeOrGraphWidget):
 
     levelsToShow = twc.Param(
         '(number)', default=3, attribute=True, request_local=False)
+
 
 class TreeMap(JitTree):
     def prepare(self):

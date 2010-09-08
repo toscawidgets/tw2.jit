@@ -7,6 +7,24 @@ from tw2.jit.widgets import AreaChart
 from tw2.jit.defaults import AreaChartJSONDefaults
 class DemoAreaChart(AreaChart):
     data = AreaChartJSONDefaults
+    offset = 0
+    labelOffset = 15
+    showAggregates = True
+    showLabels = True
+    type = 'stacked'
+    Label = {
+        'type': 'Native',
+        'size': 13,
+        'family': 'Arial',
+        'color': 'white'
+    }
+    Tips = {
+        'enable': True,
+        'onShow' : JSSymbol(src="""
+        (function(tip, elem) {
+            tip.innerHTML = "<b>" + elem.name + "</b>: " + elem.value;
+        })""")
+    }
 
 
 from tw2.jit.widgets import BarChart
@@ -28,6 +46,8 @@ class DemoRadialGraph(RadialGraph):
     data = RadialGraphJSONDefaults
 
     background = { 'CanvasStyles':{ 'strokeStyle' : '#555' } }
+    
+    backgroundcolor = '#0f0f0f'
 
     postInitJSCallback = JSSymbol(src="""
         (function (jitwidget) {
@@ -325,6 +345,8 @@ class DemoHyperTree(HyperTree):
     
     postInitJSCallback = JSSymbol(
         src="(function (jitwidget) { jitwidget.refresh(); })")
+
+    backgroundcolor = '#0f0f0f'
 
     Node = {
         'dim' : 9,

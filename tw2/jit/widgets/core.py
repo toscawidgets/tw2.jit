@@ -10,7 +10,7 @@ from tw2.jit import jit_base
 
 from simplejson import JSONEncoder
 
-# TODO -- the tw2 devtools are give me __name__ as tw2.jit.widgets but the resources are all in tw2.jit/static
+# TODO -- the tw2 devtools give me __name__ as tw2.jit.widgets but the resources are all in tw2.jit/static
 modname = ".".join(__name__.split('.')[:-1])
 modname = "tw2.jit"
 
@@ -19,9 +19,6 @@ jit_yc_js = JSLink(modname=modname, filename="%s/jit-yc.js" % jit_base)
 jit_js = JSLink(modname=modname, filename="%s/jit.js" % jit_base)
 jit_glue_js = JSLink(modname=modname, filename="static/js/tw2.jit.glue.js")
 jit_css = CSSLink(modname=modname, filename="static/css/jit_base.css")
-treemap_css = CSSLink(modname=modname, filename="static/css/treemap.css")
-sunburst_css = CSSLink(modname=modname, filename="static/css/sunburst.css")
-icicle_css = CSSLink(modname=modname, filename="static/css/icicle.css")
 
 # TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
@@ -41,7 +38,7 @@ class JitWidget(twc.Widget):
 
     backgroundcolor = twc.Param(
         description='(string) background color of the jit container div',
-        default='#1a1a1a', attribute=True)
+        default='#3a3a3a', attribute=True)
 
     width = twc.Param(
         description='(string) widget width', attribute=True, default='500')
