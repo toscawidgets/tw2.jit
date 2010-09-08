@@ -2,7 +2,7 @@
 # samples.py that would otherwise clutter that file.
 from random import randint, random
 
-AreaChartJSONDefaults = {
+AreaChartJSONSampleData = {
     'label': ['label A', 'label B', 'label C', 'label D'],
     'values': [
         {
@@ -66,12 +66,12 @@ def generateTree(total_levels=2, _level=0, _index=0, pid='', code=''):
     return this_node
 
 
-IcicleJSONDefaults = generateTree(5, code='icicle')
-SpaceTreeJSONDefaults = generateTree(3, code='spacetree')
+IcicleJSONSampleData = generateTree(5, code='icicle')
+SpaceTreeJSONSampleData = generateTree(3, code='spacetree')
 
-BarChartJSONDefaults = AreaChartJSONDefaults
-PieChartJSONDefaults = AreaChartJSONDefaults
-TreeMapJSONDefaults = {
+BarChartJSONSampleData = AreaChartJSONSampleData
+PieChartJSONSampleData = AreaChartJSONSampleData
+TreeMapJSONSampleData = {
   "children": [  
    {  
      "children": [  
@@ -929,7 +929,7 @@ TreeMapJSONDefaults = {
  "name": "Top Albums"  
 } 
 
-ForceDirectedGraphJSONDefaults = [
+ForceDirectedGraphJSONSampleData = [
 {
         "adjacencies": [
             "graphnode21", 
@@ -1367,7 +1367,7 @@ ForceDirectedGraphJSONDefaults = [
       }
 ]
 
-RadialGraphJSONDefaults = {
+RadialGraphJSONSampleData = {
 "id": "190_0",  
     "name": "Pearl Jamx0r",  
     "children": [{  
@@ -1725,7 +1725,7 @@ RadialGraphJSONDefaults = {
         "relation": "<h4>Pearl Jam</h4><b>Connections:</b><ul><li>Pearl Jam &amp; Cypress Hill <div>(relation: collaboration)</div></li><li>Neil Young &amp; Pearl Jam <div>(relation: collaboration)</div></li><li>Jeff Ament <div>(relation: member of band)</div></li><li>Stone Gossard <div>(relation: member of band)</div></li><li>Eddie Vedder <div>(relation: member of band)</div></li><li>Mike McCready <div>(relation: member of band)</div></li><li>Matt Cameron <div>(relation: member of band)</div></li><li>Dave Krusen <div>(relation: member of band)</div></li><li>Matt Chamberlain <div>(relation: member of band)</div></li><li>Dave Abbruzzese <div>(relation: member of band)</div></li><li>Jack Irons <div>(relation: member of band)</div></li></ul>"  
     } 
 }
-SunburstJSONDefaults = {
+SunburstJSONSampleData = {
  "children": [  
      {  
        "children": [  
@@ -2354,7 +2354,7 @@ SunburstJSONDefaults = {
    "id": "Source",   
    "name": "Source" 
 }
-HyperTreeJSONDefaults = {
+HyperTreeJSONSampleData = {
         "id": "347_0",
         "name": "Nine Inch Nails",
         "children": [{

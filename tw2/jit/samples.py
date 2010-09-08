@@ -4,9 +4,9 @@ from tw2.core.resources import JSSymbol
 
 
 from tw2.jit.widgets import AreaChart
-from tw2.jit.samples_data import AreaChartJSONDefaults
+from tw2.jit.samples_data import AreaChartJSONSampleData
 class DemoAreaChart(AreaChart):
-    data = AreaChartJSONDefaults
+    data = AreaChartJSONSampleData
     offset = 0
     labelOffset = 15
     showAggregates = True
@@ -28,22 +28,22 @@ class DemoAreaChart(AreaChart):
 
 
 from tw2.jit.widgets import BarChart
-from tw2.jit.samples_data import BarChartJSONDefaults
+from tw2.jit.samples_data import BarChartJSONSampleData
 class DemoBarChart(BarChart):
-    data = BarChartJSONDefaults
+    data = BarChartJSONSampleData
 
 
 from tw2.jit.widgets import PieChart
-from tw2.jit.samples_data import PieChartJSONDefaults
+from tw2.jit.samples_data import PieChartJSONSampleData
 class DemoPieChart(PieChart):
-    data = PieChartJSONDefaults
+    data = PieChartJSONSampleData
     sliceOffset = 5 
 
 
 from tw2.jit.widgets import RadialGraph
-from tw2.jit.samples_data import RadialGraphJSONDefaults
+from tw2.jit.samples_data import RadialGraphJSONSampleData
 class DemoRadialGraph(RadialGraph):
-    data = RadialGraphJSONDefaults
+    data = RadialGraphJSONSampleData
 
     background = { 'CanvasStyles':{ 'strokeStyle' : '#555' } }
     
@@ -104,9 +104,9 @@ class DemoRadialGraph(RadialGraph):
 
 
 from tw2.jit.widgets import ForceDirectedGraph
-from tw2.jit.samples_data import ForceDirectedGraphJSONDefaults
+from tw2.jit.samples_data import ForceDirectedGraphJSONSampleData
 class DemoForceDirectedGraph(ForceDirectedGraph):
-    data = ForceDirectedGraphJSONDefaults
+    data = ForceDirectedGraphJSONSampleData
 
     iterations = 25
 
@@ -208,9 +208,9 @@ class DemoForceDirectedGraph(ForceDirectedGraph):
 
 
 from tw2.jit.widgets import TreeMap
-from tw2.jit.samples_data import TreeMapJSONDefaults
+from tw2.jit.samples_data import TreeMapJSONSampleData
 class DemoTreeMap(TreeMap):
-    data = TreeMapJSONDefaults
+    data = TreeMapJSONSampleData
 
     postInitJSCallback = JSSymbol(
         src="(function (jitwidget) { jitwidget.refresh(); })")
@@ -252,9 +252,9 @@ class DemoTreeMap(TreeMap):
     
 
 from tw2.jit.widgets import Sunburst
-from tw2.jit.samples_data import SunburstJSONDefaults
+from tw2.jit.samples_data import SunburstJSONSampleData
 class DemoSunburst(Sunburst):
-    data = SunburstJSONDefaults
+    data = SunburstJSONSampleData
     
     postInitJSCallback = JSSymbol(
         src="(function (jitwidget) { jitwidget.refresh(); })")
@@ -339,9 +339,9 @@ class DemoSunburst(Sunburst):
 
 
 from tw2.jit.widgets import HyperTree
-from tw2.jit.samples_data import HyperTreeJSONDefaults
+from tw2.jit.samples_data import HyperTreeJSONSampleData
 class DemoHyperTree(HyperTree):
-    data = HyperTreeJSONDefaults
+    data = HyperTreeJSONSampleData
     
     postInitJSCallback = JSSymbol(
         src="(function (jitwidget) { jitwidget.refresh(); })")
@@ -387,9 +387,9 @@ class DemoHyperTree(HyperTree):
 
 
 from tw2.jit.widgets import SpaceTree
-from tw2.jit.samples_data import SpaceTreeJSONDefaults
+from tw2.jit.samples_data import SpaceTreeJSONSampleData
 class DemoSpaceTree(SpaceTree):
-    data = SpaceTreeJSONDefaults
+    data = SpaceTreeJSONSampleData
     
     postInitJSCallback = JSSymbol(
         src="""
@@ -465,9 +465,9 @@ class DemoSpaceTree(SpaceTree):
 
 
 from tw2.jit.widgets import Icicle 
-from tw2.jit.samples_data import IcicleJSONDefaults
+from tw2.jit.samples_data import IcicleJSONSampleData
 class DemoIcicle(Icicle):
-    data = IcicleJSONDefaults
+    data = IcicleJSONSampleData
     
     postInitJSCallback = JSSymbol(
         src="(function (jitwidget) { jitwidget.refresh(); })")
