@@ -185,20 +185,13 @@ class JitWidget(twc.Widget):
                             yield cc
 
             def prepare(self):
-                """
-                Combine the children's `src` into our own.
-                """
                 if not self.src:
                     for c in self.children:
-                        # But prepare them to generate their .src attr
                         c.prepare()
-
-                    # Gather the .srcs of my children and render that.
                     self.src = """
                         (function(){
                             %s
-                        })();
-                    """ % ';\n'.join(c.src for c in self.children)
+                        })();""" % ';\n'.join(c.src for c in self.children)
                 super(CompoundJSSource, self).prepare()
 
         # Use the above defined class
