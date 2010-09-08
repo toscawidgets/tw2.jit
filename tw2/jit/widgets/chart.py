@@ -12,10 +12,7 @@ class JitChart(JitWidget):
         '(number) Adds margin between the label and the ' +
         'default place where it should be drawn.', default=3, attribute=True)
 
-# TODO -- how to handle the black background always passed to the template?
 class AreaChart(JitChart):
-    template = "genshi:tw2.jit.templates.jitwidget"
-
     jitClassName = twc.Variable(default='AreaChart')
     
     selectOnHover = twc.Param(
@@ -36,8 +33,6 @@ class AreaChart(JitChart):
 
 
 class BarChart(JitChart):
-    template = "genshi:tw2.jit.templates.jitwidget"
-
     jitClassName = twc.Variable(default='BarChart')
     
     barsOffset = twc.Param(
@@ -59,8 +54,6 @@ class BarChart(JitChart):
 
 
 class PieChart(JitChart):
-    template = "genshi:tw2.jit.templates.jitwidget"
-
     jitClassName = twc.Variable(default='PieChart')
     
     sliceOffset = twc.Param(

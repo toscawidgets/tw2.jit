@@ -12,8 +12,6 @@ class JitGraph(JitTreeOrGraphWidget):
 
 #Radial Graph
 class RadialGraph(JitGraph):
-    template = "genshi:tw2.jit.templates.jitwidget"
-
     jitClassName = twc.Variable(default='RGraph')
 
     background = twc.Param(
@@ -21,8 +19,6 @@ class RadialGraph(JitGraph):
         attribute=True, request_local=False)
    
 class ForceDirectedGraph(JitGraph):
-    template = "genshi:tw2.jit.templates.jitwidget"
-    
     jitClassName = twc.Variable(default='ForceDirected')
     
     iterations = twc.Param(

@@ -42,8 +42,6 @@ class TreeMap(JitTree):
         super(TreeMap, self).prepare()
         self.resources.extend([jit_css, treemap_css])
     
-    template = "genshi:tw2.jit.templates.jitwidget"
-    
     jitClassName = 'TM'
     jitSecondaryClassName = 'Squarified'
 
@@ -76,8 +74,6 @@ class Sunburst(JitTree):
         super(Sunburst, self).prepare()
         self.resources.extend([jit_css, sunburst_css])
 
-    template = "genshi:tw2.jit.templates.jitwidget"
-    
     jitClassName = 'Sunburst'
 
     levelDistance = twc.Param(
@@ -85,8 +81,6 @@ class Sunburst(JitTree):
         default=90, attribute=True, request_local=False)
 
 class HyperTree(JitTree):
-    template = "genshi:tw2.jit.templates.jitwidget"
-    
     jitClassName = 'Hypertree'
     
     w = twc.Variable( 'width of the canvas.', default=500 )
@@ -102,8 +96,6 @@ class HyperTree(JitTree):
         '(number)', default=0, attribute=True, request_local=False)
 
 class SpaceTree(JitTree):
-    template = "genshi:tw2.jit.templates.jitwidget"
-    
     jitClassName = 'ST'
    
     transition = twc.Param(
@@ -116,6 +108,4 @@ class SpaceTree(JitTree):
         default=50, attribute=True, request_local=False)
 
 class Icicle(JitTree):
-    template = "genshi:tw2.jit.templates.jitwidget"
-    
     jitClassName = 'Icicle'

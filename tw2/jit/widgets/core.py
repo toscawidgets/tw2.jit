@@ -27,6 +27,7 @@ jit_css = CSSLink(modname=modname, filename="static/css/jit_base.css")
 
 # TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
+    template = "genshi:tw2.jit.templates.jitwidget"
     resources = [jit_js, jit_glue_js]
 
     postInitJSCallback = twc.Param(
