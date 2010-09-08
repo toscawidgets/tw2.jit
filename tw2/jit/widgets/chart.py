@@ -2,6 +2,7 @@ import tw2.core as twc
 from tw2.jit.widgets.core import JitWidget
 
 class JitChart(JitWidget):
+    """ Baseclass common to all chart widgets """
     type = twc.Param(
         '(string) Stack style.  Possible values are ' + 
         '"stacked", "stacked:gradient" to add gradients.',
@@ -16,6 +17,11 @@ class JitChart(JitWidget):
         default=3, attribute=True)
 
 class AreaChart(JitChart):
+    """ A visualization that displays stacked area charts.
+
+    See thejit API documentation on AreaChart:
+        http://thejit.org/static/v20/Docs/files/Visualizations/AreaChart-js.html
+    """
     jitClassName = twc.Variable(default='AreaChart')
     
     selectOnHover = twc.Param(
@@ -36,6 +42,11 @@ class AreaChart(JitChart):
 
 
 class BarChart(JitChart):
+    """ A visualization that displays stacked bar charts.
+
+    See thejit API documentation on BarChart:
+        http://thejit.org/static/v20/Docs/files/Visualizations/BarChart-js.html
+    """
     jitClassName = twc.Variable(default='BarChart')
     
     barsOffset = twc.Param(
@@ -56,6 +67,11 @@ class BarChart(JitChart):
 
 
 class PieChart(JitChart):
+    """ A visualization that displays stacked pie charts.
+
+    See thejit API documentation on PieChart:
+        http://thejit.org/static/v20/Docs/files/Visualizations/PieChart-js.html
+    """
     jitClassName = twc.Variable(default='PieChart')
     
     sliceOffset = twc.Param(
