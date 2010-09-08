@@ -34,7 +34,12 @@ To give it a try you'll need git, mercurial, python, and virtualenv.  Run:
 
     ``cd tw2.jit``
 
+The following script will set up all the necessary tw2 dependencies in a
+python virtualenv:
+
     ``./develop-tw2-destroy-and-setup.sh``
+
+The following will enter the virtualenv and start up ``paster tw2.browser``:
 
     ``./develop-tw2-start.sh``
 
