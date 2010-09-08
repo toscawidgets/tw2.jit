@@ -14,6 +14,8 @@ treemap_css = CSSLink(modname=modname, filename="static/css/Treemap.css")
 sunburst_css = CSSLink(modname=modname, filename="static/css/Sunburst.css")
 
 class JitTree(JitTreeOrGraphWidget):
+    """ Baseclass common to all jit tree widgets """
+
     constrained = twc.Param(
         '(boolean) Whether to show the entire tree when loaded ' +
         'or just the number of levels specified by levelsToShow.',
