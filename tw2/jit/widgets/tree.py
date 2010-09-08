@@ -91,7 +91,6 @@ class HyperTree(JitTree):
         self.w = self.width
         self.h = self.height
 
-    
     offset = twc.Param(
         '(number)', default=0, attribute=True, request_local=False)
 
