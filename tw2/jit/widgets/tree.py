@@ -40,6 +40,14 @@ class JitTree(JitTreeOrGraphWidget):
 
 
 class TreeMap(JitTree):
+    """ A squarified TreeMap visualization.
+
+    'strip' and 'sliceanddice' variations not yet supported.
+
+    See thejit API documentation on TreeMap:
+        http://thejit.org/static/v20/Docs/files/Visualizations/Treemap-js.html
+    """
+
     def prepare(self):
         super(TreeMap, self).prepare()
         self.resources.extend([jit_css, treemap_css])
@@ -72,6 +80,11 @@ class TreeMap(JitTree):
     #see http://thejit.org/static/v20/Docs/files/Visualizations/Treemap-js.html
 
 class Sunburst(JitTree):
+    """ A radial space filling tree visualization.
+
+    See thejit API documentation on Sunburst:
+        http://thejit.org/static/v20/Docs/files/Visualizations/Sunburst-js.html
+    """
     def prepare(self):
         super(Sunburst, self).prepare()
         self.resources.extend([jit_css, sunburst_css])
@@ -83,6 +96,12 @@ class Sunburst(JitTree):
         default=90, attribute=True, request_local=False)
 
 class HyperTree(JitTree):
+    """ A Hyperbolic Tree/Graph visualization.
+
+    See thejit API documentation on HyperTree:
+        http://thejit.org/static/v20/Docs/files/Visualizations/Hypertree-js.html
+    """
+
     jitClassName = 'Hypertree'
     
     w = twc.Variable( 'width of the canvas.', default=500 )
@@ -97,6 +116,12 @@ class HyperTree(JitTree):
         '(number)', default=0, attribute=True, request_local=False)
 
 class SpaceTree(JitTree):
+    """ A Tree layout with advanced contraction and expansion animations.
+
+    See thejit API documentation on SpaceTree:
+        http://thejit.org/static/v20/Docs/files/Visualizations/Spacetree-js.html
+    """
+
     jitClassName = 'ST'
    
     transition = twc.Param(
@@ -109,4 +134,10 @@ class SpaceTree(JitTree):
         default=50, attribute=True, request_local=False)
 
 class Icicle(JitTree):
+    """ Icicle space filling visualization.
+
+    See thejit API documentation on Icicle:
+        http://thejit.org/static/v20/Docs/files/Visualizations/Icicle-js.html
+    """
+
     jitClassName = 'Icicle'
