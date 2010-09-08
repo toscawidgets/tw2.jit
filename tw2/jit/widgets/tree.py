@@ -4,39 +4,21 @@ from tw2.core.resources import JSSymbol, CSSLink
 from tw2.jit.widgets.core import JitTreeOrGraphWidget
 from tw2.jit.widgets.core import jit_js, jit_css, modname
 
-from tw2.jit.defaults import TreeMapJSONDefaults
-from tw2.jit.defaults import SunburstJSONDefaults
-from tw2.jit.defaults import IcicleJSONDefaults
-from tw2.jit.defaults import SpaceTreeJSONDefaults
-from tw2.jit.defaults import HyperTreeJSONDefaults
-
 treemap_css = CSSLink(modname=modname, filename="static/css/Treemap.css")
 sunburst_css = CSSLink(modname=modname, filename="static/css/Sunburst.css")
 
 class JitTree(JitTreeOrGraphWidget):
     """ Baseclass common to all jit tree widgets """
-
+    
     constrained = twc.Param(
         '(boolean) Whether to show the entire tree when loaded ' +
         'or just the number of levels specified by levelsToShow.',
         default=False, attribute=True)
+
     levelsToShow = twc.Param(
         '(number) The number of levels to show for a subtree.  This ' +
         'number is relative to the selected node.',
         default=3, attribute=True)
-   
-    # TODO -- wait what?  which tree children do these belong to?
-    offset = twc.Param(
-        '(number)', default=1, attribute=True, request_local=False)
-
-    cushion = twc.Param(
-        '(boolean)', default=1, attribute=True, request_local=False)
-
-    constrained = twc.Param(
-        '(boolean)', default=True, attribute=True, request_local=False)
-
-    levelsToShow = twc.Param(
-        '(number)', default=3, attribute=True, request_local=False)
 
 
 class TreeMap(JitTree):
@@ -55,10 +37,15 @@ class TreeMap(JitTree):
     jitClassName = 'TM'
     jitSecondaryClassName = 'Squarified'
 
-    # Just a note -- this is different from the parents' "offset"
-    #  Bad thejit.. bad.
     offset = twc.Param(
-        '(number) Margin between boxes.', default=0, attribute=True)
+        '(number) Margin between boxes.', default=2, attribute=True)
+    
+    cushion = twc.Param(
+        '(boolean) Cushion Gradients', default=False, attribute=True)
+
+    titleHeight = twc.Param(
+        '(number) The height of the title rectangle for non-leaf nodes.',
+        default=13, attribute=True)
     
     orientation = twc.Param(
         '(string) Whether to set horizontal or vertical layout.  ' +
@@ -113,7 +100,11 @@ class HyperTree(JitTree):
         self.h = self.height
 
     offset = twc.Param(
-        '(number)', default=0, attribute=True, request_local=False)
+        '(number) A number in the range [0, 1) that will be subtracted to ' +
+        'each node position to make a more compact HyperTree.  This will ' +
+        'avoid placing nodes too far from each other when there is a ' +
+        'selected node.',
+        default=0, attribute=True)
 
 class SpaceTree(JitTree):
     """ A Tree layout with advanced contraction and expansion animations.
@@ -125,13 +116,22 @@ class SpaceTree(JitTree):
     jitClassName = 'ST'
    
     transition = twc.Param(
-        'javascript _TODO',
-        default=JSSymbol(src='$jit.Trans.Quart.easeInOut'),
-        attribute=True, request_local=False)
+        '(javascript) Javascript to perform transition.',
+        default=JSSymbol(src='$jit.Trans.Quart.easeInOut'), attribute=True)
 
     levelDistance = twc.Param(
-        'foo TODO',
-        default=50, attribute=True, request_local=False)
+        '(number) The distance between two consecutive levels of the tree.',
+        default=30, attribute=True)
+
+    offsetX = twc.Param(
+        '(number) The x-offset distance from the' +
+        'selected node to the center of the canvas.',
+        default=0, attribute=True)
+
+    offsetY = twc.Param(
+        '(number) The y-offset distance from the' +
+        'selected node to the center of the canvas.',
+        default=0, attribute=True)
 
 class Icicle(JitTree):
     """ Icicle space filling visualization.
@@ -141,3 +141,6 @@ class Icicle(JitTree):
     """
 
     jitClassName = 'Icicle'
+    
+    offset = twc.Param('(number) Boxes offset', default=2, attribute=True)
+

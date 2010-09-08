@@ -4,8 +4,6 @@ from tw2.core.resources import JSSymbol
 from tw2.jit.widgets.core import JitTreeOrGraphWidget
 from tw2.jit.widgets.core import jit_js
 
-from tw2.jit.defaults import ForceDirectedGraphJSONDefaults
-
 class JitGraph(JitTreeOrGraphWidget):
     """ Baseclass for graph widgets """
     pass
