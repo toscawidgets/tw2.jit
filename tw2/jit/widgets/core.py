@@ -185,7 +185,7 @@ class JitWidget(twc.Widget):
 class JitTreeOrGraphWidget(JitWidget):
     # TODO - http://thejit.org/static/v20/Docs/files/Options/Options-Controller-js.html#Options.Controller
     Navigation = twc.Param(
-        'Panning and zooming options for Graph/Tree visualziations.',
+        '(dict) Panning and zooming options for Graph/Tree visualziations.',
         default={
             'enable': False,
             'type': 'auto',
@@ -194,7 +194,7 @@ class JitTreeOrGraphWidget(JitWidget):
         }, attribute=True)
  
     Node = twc.Param(
-        'Provides Node rendering options for ' +
+        '(dict) Provides Node rendering options for ' +
         'Tree and Graph based visualizations.',
         default = {
     #        'overridable': False,  
@@ -215,7 +215,7 @@ class JitTreeOrGraphWidget(JitWidget):
         }, attribute=True)
 
     Edge = twc.Param(
-        "Provides Edge rendering options for " +
+        "(dict) Provides Edge rendering options for " +
         "Tree and Graph based visualizations.",
         default = {
     #        'overridable': False,
