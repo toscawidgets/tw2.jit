@@ -18,16 +18,31 @@ tw2.jit
 
 tw2.jit is a `toscawidgets2 (tw2)`_ wrapper for `thejit`_.
 
+.. comment: TODO -- add a link to a live demo here.
+
 `Screenshots <http://github.com/ralphbean/tw2.jit/raw/master/doc/images/screenshot1.png>`_
 
 `Bugs <http://github.com/ralphbean/tw2.jit/issues/>`_
+
+`toscawidgets2 (tw2)`_ aims to be a practical and useful widgets framework
+that helps people build interactive websites with compelling features, faster
+and easier. Widgets are re-usable web components that can include a template,
+server-side code and JavaScripts/CSS resources. The library aims to be:
+flexible, reliable, documented, performant, and as simple as possible.
+
+The JavaScript InfoVis Toolkit (`thejit`_) is a javascript library that
+provides web standard based tools to create interactive data visualizations
+for the Web.  It is pretty, interactive, and fast.
+
+This module, tw2.jit, provides `toscawidgets2 (tw2)`_ widgets that render `thejit`_ data visualizations.
+
 
 Sampling tw2.jit in the WidgetBrowser
 -------------------------------------
 
 The best way to scope out ``tw2.jit`` is to load its widgets in the 
 ``tw2.devtools`` WidgetBrowser.  To see the source code that configures them,
-check out ``tw2.jit.samples``
+check out ``tw2/jit/samples.py``
 
 To give it a try you'll need git, mercurial, python, and virtualenv.  Run:
 
