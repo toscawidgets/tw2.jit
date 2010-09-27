@@ -18,11 +18,21 @@ tw2.jit
 
 tw2.jit is a `toscawidgets2 (tw2)`_ wrapper for `thejit`_.
 
-`Live Demo <http://craftsman.rc.rit.edu/module?module=tw2.jit>`_
+Live Demo
+---------
 
-`Screenshots <http://github.com/ralphbean/tw2.jit/raw/master/doc/images/screenshot1.png>`_
+Peep the `live demonstration <http://craftsman.rc.rit.edu/module?module=tw2.jit>`_ and
+`screenshots <http://github.com/ralphbean/tw2.jit/raw/master/doc/images/screenshot1.png>`_.
 
-`Bugs <http://github.com/ralphbean/tw2.jit/issues/>`_
+Links
+-----
+
+You can `get the source from github <http://github.com/ralphbean/tw2.jit`,
+check out `the PyPI page <http://pypi.python.org/pypi/tw2.jit`, and
+report or look into `bugs <http://github.com/ralphbean/tw2.jit/issues/>`_.
+
+Description
+-----------
 
 `toscawidgets2 (tw2)`_ aims to be a practical and useful widgets framework
 that helps people build interactive websites with compelling features, faster
