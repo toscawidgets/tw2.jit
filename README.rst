@@ -27,8 +27,8 @@ Peep the `live demonstration <http://craftsman.rc.rit.edu/module?module=tw2.jit>
 Links
 -----
 
-You can `get the source from github <http://github.com/ralphbean/tw2.jit`,
-check out `the PyPI page <http://pypi.python.org/pypi/tw2.jit`, and
+You can `get the source from github <http://github.com/ralphbean/tw2.jit>`_,
+check out `the PyPI page <http://pypi.python.org/pypi/tw2.jit>`_, and
 report or look into `bugs <http://github.com/ralphbean/tw2.jit/issues/>`_.
 
 Description
