@@ -1,3 +1,4 @@
 include README.rst
+include pylint.output
 recursive-include tw2/jit/templates *
 recursive-include tw2/jit/static *
