@@ -1,4 +1,3 @@
-from tw2.jquery_core.widgets import JQueryWidget
 from webob import Request
 from webob.multidict import NestedMultiDict
 from tw2.core.testbase import assert_in_xml, assert_eq_xml, WidgetTest
@@ -16,40 +15,15 @@ else:
 
 import tw2.jit.widgets as w
 
+## TODO - this is a super-weak test.  so much more is done after the fact to
+##  create the javascript calls.
 class TestAreaChartWidget(WidgetTest):
-    widget = w.AreaChartWidget
+    widget = w.AreaChart
     attrs = {'id' : 'foo'}
-    params = {}
-    expected = """
-<div id="foo-wrapper">
-<div id="blahah-wrapper">
-<button id="blahah"></button>
-<script type="text/javascript">
-$(function() {
-    $("#blahah").button({});
-});
-</script>
-</div>
-<div id="foo-target" class="hidden">
-    <ul>
-        <li><a href="#">Breaking News</a>
-            <ul>
-                <li><a href="#">Entertainment</a></li>
-                <li><a href="#">Politics</a></li>
-                <li><a href="#">A&amp;E</a></li>
-                <li><a href="#">Sports</a></li>
-            </ul>
-        </li>
-    </ul>
-</div>
-<script type="text/javascript">
-$(function() {
-    $(document).ready( function () {
-        var opts = {};
-        opts['content'] = $('#foo-target').html();
-        $("#foo").fgmenu(opts);
-    });
-});
-</script>
-</div>
-"""
+    params = {
+        'data' : [
+            { 'label': 'date A','values': [20, 40, 15, 5] },
+            { 'label': 'date B', 'values': [30, 10, 45, 10] }
+        ]
+    }
+    expected = """<div style="text-align:center; overflow:hidden; background-color:#3a3a3a; width: 500; height: 500;" id="foo"></div>"""

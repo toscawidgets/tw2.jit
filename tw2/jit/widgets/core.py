@@ -36,7 +36,7 @@ class JitWidget(twc.Widget):
     Uses tw2.jit.resources.CompoundJSSource for client-side initialization
     """
 
-    template = "mako:tw2.jit.templates.jitwidget"
+    template = "tw2.jit.templates.jitwidget"
     resources = [jit_js, jit_glue_js]
    
     # Internal twc Variables:
