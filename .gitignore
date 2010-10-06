@@ -7,3 +7,4 @@ tw2core
 tw2devtools
 README.pdf
 dist
+*.egg
