@@ -13,6 +13,8 @@ from tw2.jit.widgets import AreaChart
 from tw2.jit.samples_data import AreaChartJSONSampleData
 class DemoAreaChart(AreaChart):
     data = AreaChartJSONSampleData
+    width='750'
+    height='750'
     offset = 0
     labelOffset = 15
     showAggregates = True
@@ -20,7 +22,7 @@ class DemoAreaChart(AreaChart):
     type = 'stacked'
     Label = {
         'type': 'Native',
-        'size': 13,
+        'size': 15,
         'family': 'Arial',
         'color': 'white'
     }
@@ -28,7 +30,7 @@ class DemoAreaChart(AreaChart):
         'enable': True,
         'onShow' : JSSymbol(src="""
         (function(tip, elem) {
-            tip.innerHTML = "<b>" + elem.name + "</b>: " + elem.value;
+            tip.innerHTML = "<b>" + elem.name + "</b>: $" + elem.value + " per year income (adjusted for inflation)";
         })""")
     }
 

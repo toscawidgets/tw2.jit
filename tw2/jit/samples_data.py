@@ -1,8 +1,7 @@
 # This module just contains some of the more lengthy constants used in
 # samples.py that would otherwise clutter that file.
 from random import randint, random
-
-AreaChartJSONSampleData = {
+BarChartJSONSampleData = {
     'label': ['label A', 'label B', 'label C', 'label D'],
     'values': [
         {
@@ -27,9 +26,149 @@ AreaChartJSONSampleData = {
         },
         {
             'label': 'date C',
-            'values': [26, 40, 25, 40]
+            'values': [26, 40, 25, 40],
         }
     ]
+}
+
+AreaChartJSONSampleData = {
+    'label' : ['Top income of the lowest quintile (%20) in the US',
+               'Top income of the second quintile',
+               'Top income of the third quintile',
+               'Top income of the fourth quintile',
+               'Bottom of top %5'],
+    'values' : [entry for entry in reversed([
+        { 
+            'label': '09',
+            'values': [20453,38550,61801,100000,180001]
+        }, { 
+            'label': '08',
+            'values': [20633,38852,62487,99860,179317]
+        }, { 
+            'label': '07',
+            'values': [20991,40448,64138,103448,183103]
+        }, { 
+            'label': '06',
+            'values': [21314,40185,63830,103226,185119]
+        }, { 
+            'label': '05',
+            'values': [21071,39554,63352,100757,182386]
+        }, { 
+            'label': '04',
+            'values': [20992,39375,62716,99930,178453]
+        }, { 
+            'label': '03',
+            'values': [20974,39652,63505,101307,179740]
+        }, { 
+            'label': '02',
+            'values': [21361,39795,63384,100170,178844]
+        }, { 
+            'label': '01',
+            'values': [21771,40361,64212,101163,182335]
+        }, { 
+            'label': '00',
+            'values': [22320,41103,64985,101844,180879]
+        }, { 
+            'label': '99',
+            'values': [22059,41090,64859,101995,182795]
+        }, { 
+            'label': '98',
+            'values': [21179,39960,63522,98561,173728]
+        }, { 
+            'label': '97',
+            'values': [20520,38909,61294,95273,168626]
+        }, { 
+            'label': '96',
+            'values': [20103,37789,59904,92587,162727]
+        }, { 
+            'label': '95',
+            'values': [20124,37613,58698,91012,157919]
+        }, { 
+            'label': '94',
+            'values': [19215,36065,57390,89936,157172]
+        }, { 
+            'label': '93',
+            'values': [18954,36074,56704,88142,152953]
+        }, { 
+            'label': '92',
+            'values': [18873,36158,56769,86886,148318]
+        }, { 
+            'label': '91',
+            'values': [19338,36860,56933,87173,148055]
+        }, { 
+            'label': '90',
+            'values': [19886,37644,57591,87826,150735]
+        }, { 
+            'label': '89',
+            'values': [20203,38415,59042,89707,153241]
+        }, { 
+            'label': '88',
+            'values': [19830,37459,58376,88146,149207]
+        }, { 
+            'label': '87',
+            'values': [19507,37027,57798,87353,146172]
+        }, { 
+            'label': '86',
+            'values': [19133,36598,56799,85859,143974]
+        }, { 
+            'label': '85',
+            'values': [18898,35557,55082,82843,136881]
+        }, { 
+            'label': '84',
+            'values': [18680,34961,53863,81365,134691]
+        }, { 
+            'label': '83',
+            'values': [18317,34058,52273,78998,129971]
+        }, { 
+            'label': '82',
+            'values': [17927,34095,52095,77683,128232]
+        }, { 
+            'label': '81',
+            'values': [18158,33944,52500,77619,124914]
+        }, { 
+            'label': '80',
+            'values': [18533,34757,53285,78019,125556]
+        }, { 
+            'label': '79',
+            'values': [19274,35795,55073,79851,129029]
+        }, { 
+            'label': '78',
+            'values': [19063,36044,54537,79317,126890]
+        }, { 
+            'label': '77',
+            'values': [18487,34821,53076,77380,122518]
+        }, { 
+            'label': '76',
+            'values': [18526,34516,52580,75648,119967]
+        }, { 
+            'label': '75',
+            'values': [18124,34016,51400,73802,116463]
+        }, { 
+            'label': '74',
+            'values': [19065,35364,52255,75839,120037]
+        }, { 
+            'label': '73',
+            'values': [18973,36484,53982,77723,124921]
+        }, { 
+            'label': '72',
+            'values': [18570,35764,52858,75655,121759]
+        }, { 
+            'label': '71',
+            'values': [17946,34211,50343,71784,113995]
+        }, { 
+            'label': '70',
+            'values': [18180,34827,50656,72273,114243]
+        }, { 
+            'label': '69',
+            'values': [18491,35483,51316,71897,112759]
+        }, { 
+            'label': '68',
+            'values': [17954,34039,48790,68554,107251]
+        }, { 
+            'label': '67',
+            'values': [16845,32848,46621,66481,106684]
+        }
+    ])]
 }
 
 def icicleColor(level, total, val):
@@ -69,8 +208,7 @@ def generateTree(total_levels=2, _level=0, _index=0, pid='', code=''):
 IcicleJSONSampleData = generateTree(5, code='icicle')
 SpaceTreeJSONSampleData = generateTree(3, code='spacetree')
 
-BarChartJSONSampleData = AreaChartJSONSampleData
-PieChartJSONSampleData = AreaChartJSONSampleData
+PieChartJSONSampleData = BarChartJSONSampleData
 TreeMapJSONSampleData = {
   "children": [  
    {  
