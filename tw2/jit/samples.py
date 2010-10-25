@@ -12,7 +12,7 @@ from tw2.core.resources import JSSymbol
 from tw2.jit.widgets import AreaChart
 from tw2.jit.samples_data import AreaChartJSONSampleData
 class DemoAreaChart(AreaChart):
-    data = AreaChartJSONSampleData
+    """ This is the only sample that loads its data asynchronously """
     width='750'
     height='750'
     offset = 0
@@ -34,6 +34,16 @@ class DemoAreaChart(AreaChart):
         })""")
     }
 
+    from tw2.core.jsonify import jsonify
+    @classmethod
+    @jsonify
+    def request(cls, req):
+        return AreaChartJSONSampleData
+    url = '/area_chart_data/'
+
+import tw2.core as twc
+twc.core.request_local()['middleware'].controllers.register(DemoAreaChart,
+                                                            'area_chart_data')
 
 from tw2.jit.widgets import BarChart
 from tw2.jit.samples_data import BarChartJSONSampleData

@@ -142,6 +142,11 @@ class JitWidget(twc.Widget):
         })
     # End twc attrs
 
+    @classmethod
+    def request(cls, req):
+        msg = "Subclass of %s must override 'request' for ajax." % cls.__name__
+        raise UnimplementedError, msg
+
     def prepare(self):
         super(JitWidget, self).prepare()
 
