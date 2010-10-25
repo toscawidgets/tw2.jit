@@ -16,7 +16,6 @@ setup(
     install_requires=[
         "tw2.core",
         "tw2.jquery",
-        "formencode",
         "genshi",
         "mako",
         ],
