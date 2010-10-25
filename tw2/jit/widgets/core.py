@@ -14,6 +14,8 @@ from tw2.core.widgets import Widget
 
 from tw2.jit import jit_base
 from tw2.jit.resources import CompoundJSSource
+            
+import tw2.jquery
 
 from simplejson import JSONEncoder
 
@@ -55,7 +57,10 @@ class JitWidget(twc.Widget):
         'javascript to run after client-side initialization of the widget',
         default=JSSymbol(src='(function(jitwidget){})'))
     
-    data = twc.Param('python data to be jsonified and passed to the widget')
+    data = twc.Param('python data to be jsonified and passed to the widget',
+                    default=None )
+    url = twc.Param('url to json data to be loaded into the widget',
+                   default=None )
     # End twc Params
 
     # Start twc Attributes
@@ -139,23 +144,44 @@ class JitWidget(twc.Widget):
 
     def prepare(self):
         super(JitWidget, self).prepare()
+
+        # Some validation
+        if not self.data and not self.url:
+            msg = "%s requires 'data' or 'url' param." % self.__class__.__name__
+            raise ValueError, msg
         
-        composite_js_call = CompoundJSSource(
-            setupcall = JSFuncCall(
-                function='var jitwidget = setupTW2JitWidget',
-                args=[
-                    self.jitClassName,
-                    self.jitSecondaryClassName,
-                    self.attrs
-                ]),
+        setupcall = JSFuncCall(
+            function='var jitwidget = setupTW2JitWidget',
+            args=[
+                self.jitClassName,
+                self.jitSecondaryClassName,
+                self.attrs
+            ])
+        if self.data:
+            # For normal loading
             loadcall = JSFuncCall(
                 function='jitwidget.loadJSON',
-                args=[self.data],),
+                args=[self.data],)
             postcall = JSSource(src=self.postInitJSCallback.src+'(jitwidget)')
-        )
+        else:
+            # For asynchronous loading
+            self.resources.append(tw2.jquery.jquery_js)
+            loadcall = None
+            postcall = JSSource(src="""
+                                $.getJSON(
+                                    '%s',
+                                    function (data) {
+                                        // load data when we get it
+                                        jitwidget.loadJSON(data);
+                                        // Do post-init stuff
+                                        %s(jitwidget);
+                                    }
+                               );""" % (self.url, self.postInitJSCallback.src))
+
+        composite_js_call = CompoundJSSource(
+            setupcall=setupcall, loadcall=loadcall, postcall=postcall)
 
         self.resources.append(composite_js_call)
-
 
     
 class JitTreeOrGraphWidget(JitWidget):
