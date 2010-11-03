@@ -164,6 +164,7 @@ class JitWidget(twc.Widget):
             args=[
                 self.jitClassName,
                 self.jitSecondaryClassName,
+                self.id,
                 self.attrs
             ])
         if self.data:
