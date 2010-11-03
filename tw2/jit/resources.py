@@ -18,6 +18,7 @@ class CompoundJSSource(JSSource):
     """
 
     children = twc.Param('An iterable of twc.JSSource objects')
+    exec_delay = twc.Param('Value in milliseconds to delay execution',default=0)
     src = None
     location = 'bodybottom'
 
@@ -71,8 +72,11 @@ class CompoundJSSource(JSSource):
             for c in self.children:
                 c.prepare()
             self.src = """
+            window.setTimeout(
                 (function(){
                     %s
-                })();""" % ';\n'.join(c.src for c in self.children)
+                }), %i);""" % (
+                    ';\n'.join(c.src for c in self.children),
+                    self.exec_delay)
         super(CompoundJSSource, self).prepare()
 

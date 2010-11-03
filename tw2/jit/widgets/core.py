@@ -53,6 +53,10 @@ class JitWidget(twc.Widget):
     # End internal twc Variables
 
     # Start twc Params
+    init_delay = twc.Param(
+        'value in milliseconds to delay js initialization and rendering',
+        default=0)
+
     postInitJSCallback = twc.Param(
         'javascript to run after client-side initialization of the widget',
         default=JSSymbol(src='(function(jitwidget){})'))
@@ -184,7 +188,10 @@ class JitWidget(twc.Widget):
                                );""" % (self.url, self.postInitJSCallback.src))
 
         composite_js_call = CompoundJSSource(
-            setupcall=setupcall, loadcall=loadcall, postcall=postcall)
+            exec_delay=self.init_delay,
+            setupcall=setupcall,
+            loadcall=loadcall,
+            postcall=postcall)
 
         self.resources.append(composite_js_call)
 
