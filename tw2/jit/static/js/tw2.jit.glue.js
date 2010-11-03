@@ -9,7 +9,7 @@ function setupTW2JitWidget(jitClassName, jitSecondaryClassName, id, attrs) {
     }
     // Singleton:
     if ( window._jitwidgets === undefined ) {
-        window._jitwidgets = [];
+        window._jitwidgets = {};
     }
     window._jitwidgets[id] = w;
     return w;
