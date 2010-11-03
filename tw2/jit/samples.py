@@ -13,8 +13,8 @@ from tw2.jit.widgets import AreaChart
 from tw2.jit.samples_data import AreaChartJSONSampleData
 class DemoAreaChart(AreaChart):
     """ This is the only sample that loads its data asynchronously """
-    width='750'
-    height='750'
+    width='750px'
+    height='750px'
     offset = 0
     labelOffset = 15
     showAggregates = True
