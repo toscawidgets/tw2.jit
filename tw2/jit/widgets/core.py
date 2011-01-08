@@ -8,7 +8,6 @@ import tw2.core as twc
 from tw2.core.resources import JSLink, CSSLink
 from tw2.core.resources import JSSymbol, JSFuncCall
 from tw2.core.resources import JSSource
-from tw2.core.resources import encoder
 from tw2.core.widgets import WidgetMeta
 from tw2.core.widgets import Widget
 
@@ -17,7 +16,7 @@ from tw2.jit.resources import CompoundJSSource
             
 import tw2.jquery
 
-from simplejson import JSONEncoder
+from string import Formatter
 
 # TODO -- the tw2 devtools give me __name__ as tw2.jit.widgets but the resources are all in tw2.jit/static
 modname = ".".join(__name__.split('.')[:-1])
@@ -41,7 +40,7 @@ class JitWidget(twc.Widget):
     template = "tw2.jit.templates.jitwidget"
     resources = [jit_js, jit_glue_js]
    
-    # Internal twc Variables:
+    # Internal twc Variables
     jitClassName = twc.Variable('Name of the Jit class for this widget')
     jitSecondaryClassName = twc.Variable(
         'Secondary Jit class for this widget', default=None)
@@ -59,12 +58,12 @@ class JitWidget(twc.Widget):
 
     postInitJSCallback = twc.Param(
         'javascript to run after client-side initialization of the widget',
-        default=JSSymbol(src='(function(jitwidget){})'))
+        default=JSSymbol(src='(function(jitwidget){})'), attribute=True)
     
     data = twc.Param('python data to be jsonified and passed to the widget',
-                    default=None )
+                    default=None, attribute=True)
     url = twc.Param('url to json data to be loaded into the widget',
-                   default=None )
+                   default=None, attribute=True)
     # End twc Params
 
     # Start twc Attributes
@@ -144,7 +143,16 @@ class JitWidget(twc.Widget):
             'onTouchCancel': '(function() {})',  
             'onMouseWheel': '(function() {})' 
         })
+
+    jsVariables = twc.Param(
+        'A dictionary of special jsVariables for substitution',
+        default={
+            '$$url': lambda s: s.url,
+            '$$jitwidget': lambda s:'window._jitwidgets["%s"]' % s.compound_id,
+        }
+    )
     # End twc attrs
+
 
     @classmethod
     def request(cls, req):
@@ -155,16 +163,27 @@ class JitWidget(twc.Widget):
         super(JitWidget, self).prepare()
 
         # Some validation
+        if not self.jitClassName:
+            msg = "{0.__name__} requires a 'jitClassName'.".format(type(self))
+            raise ValueError, msg
+
         if not self.data and not self.url:
             msg = "%s requires 'data' or 'url' param." % self.__class__.__name__
             raise ValueError, msg
-        
+
+        for k, v in self.attrs.iteritems():
+            if type(v) in [JSSymbol]:
+                for var, fun in jsVariables.iteritems():
+                    res = fun(self)
+                    if res:
+                        self.attrs[k].src = v.src.replace(var, res)
+
         setupcall = JSFuncCall(
             function='var jitwidget = setupTW2JitWidget',
             args=[
                 self.jitClassName,
                 self.jitSecondaryClassName,
-                self.id,
+                self.compound_id,
                 self.attrs
             ])
         if self.data:
