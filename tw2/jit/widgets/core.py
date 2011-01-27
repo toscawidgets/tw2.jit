@@ -173,7 +173,7 @@ class JitWidget(twc.Widget):
 
         for k, v in self.attrs.iteritems():
             if type(v) in [JSSymbol]:
-                for var, fun in jsVariables.iteritems():
+                for var, fun in self.jsVariables.iteritems():
                     res = fun(self)
                     if res:
                         self.attrs[k].src = v.src.replace(var, res)
