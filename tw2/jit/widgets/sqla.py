@@ -13,5 +13,17 @@ class DbRadialGraph(RadialGraph):
 
     See thejit API documentation on RadialGraph:
         http://thejit.org/static/v20/Docs/files/Visualizations/RGraph-js.html
+
     """
+
+    url = twc.Param(""" TODO """)
+
+    preprocessTree = twc.Param(
+        """ TODO """,
+        default=JSSymbol(src="(function(node) {})"), attribute=True)
+
+    requestGraph = twc.Param(
+        """ TODO """,
+        default=JSSymbol(src="(function(node) {})"), attribute=True)
+
     pass
