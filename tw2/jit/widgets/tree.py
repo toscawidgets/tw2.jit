@@ -2,7 +2,7 @@ import tw2.core as twc
 from tw2.core.resources import JSSymbol, CSSLink
 
 from tw2.jit.widgets.core import JitTreeOrGraphWidget
-from tw2.jit.widgets.core import jit_js, jit_css, modname
+from tw2.jit.widgets.core import jit_css, modname
 
 treemap_css = CSSLink(modname=modname, filename="static/css/Treemap.css")
 sunburst_css = CSSLink(modname=modname, filename="static/css/Sunburst.css")

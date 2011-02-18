@@ -2,7 +2,6 @@ import tw2.core as twc
 from tw2.core.resources import JSSymbol
 
 from tw2.jit.widgets.core import JitTreeOrGraphWidget
-from tw2.jit.widgets.core import jit_js
 
 class JitGraph(JitTreeOrGraphWidget):
     """ Baseclass for graph widgets """
