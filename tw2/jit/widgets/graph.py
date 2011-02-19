@@ -19,6 +19,10 @@ class RadialGraph(JitGraph):
     background = twc.Param(
         '(dict) see sample.', default={},
         attribute=True, request_local=False)
+
+    levelDistance = twc.Param(
+        '(number) Distance between levels',
+        default=100, attribute=True, request_local=False)
    
 class ForceDirectedGraph(JitGraph):
     """ A visualization that lays graphs using a Force-Directed layout algorithm.
