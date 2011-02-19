@@ -12,57 +12,45 @@ from tw2.core.resources import JSSymbol
 from tw2.jit.widgets import DbRadialGraph
 from tw2.jit.samples_data import RadialGraphJSONSampleData
 
+import commands
+
+def make_node(package, prefix):
+    return {
+        'id': prefix + "___" + package,
+        'name': package,
+        'children': [],
+        'data': []
+    }
+
+def get_dependency_tree(package, n=1, prefix=''):
+    package = package.strip()
+    print "Working on", package
+    out = commands.getoutput(
+        "yum deplist %s | grep dependency | awk ' { print $2 } '" % package)
+    out = list(set([dep.split('(')[0] for dep in out.split('\n') if dep]))
+
+    root = make_node(package, prefix)
+    prefix = "%s_%s" % (prefix, package)
+
+    if n > 0:
+        [root['children'].append(
+            get_dependency_tree(dep, n-1, prefix)) for dep in out]
+    else:
+        [root['children'].append(make_node(dep, prefix)) for dep in out]
+    return root
+
 
 class DemoDbRadialGraph(DbRadialGraph):
     from tw2.core.jsonify import jsonify
     @classmethod
     @jsonify
     def request(cls, req):
-
-        def subtree_of(id, graph):
-            print id, "versus", graph['id']
-            if unicode(graph['id']) == id:
-                return graph
-
-            for subtree in graph.get('children', []):
-                result = subtree_of(id, subtree)
-                if result:
-                    # Found it!
-                    import copy
-                    # This is so ugly ;; works for now
-                    parent = copy.deepcopy(graph)
-                    del parent['children']
-                    result['children'].append(parent)
-                    return result
-
-            return {}
-
-        if 'id' not in req.params or req.params['id'] == 'undefined':
-            result = RadialGraphJSONSampleData
+        if 'id' not in req.params:
+            id = 'wine'
         else:
-            result = subtree_of(req.params['id'], RadialGraphJSONSampleData)
-        if not result:
-            print "NO SUBTREE FOUND AT ALL"
-        def tighten_up_children(graph):
-            if not 'children' in graph:
-                graph['children'] = []
-
-            for i in range(len(graph['children'])):
-                graph['children'][i] = tighten_up_children(graph['children'][i])
-
-            return graph
-
-        result = tighten_up_children(result)
-
-        def prune_result(graph):
-            import copy
-            newgraph = copy.deepcopy(graph)
-            for i in range(len(newgraph['children'])):
-                del newgraph['children'][i]['children']
-            return newgraph
-
-        result = prune_result(result) 
-        return result
+            id = req.params['id'].split('___')[-1]
+        json = get_dependency_tree(id)
+        return json
 
     url = '/db_radialgraph_demo/'
 
@@ -82,16 +70,9 @@ class DemoDbRadialGraph(DbRadialGraph):
 
     postInitJSCallback = JSSymbol(src="""
         (function (jitwidget) {
-            //trigger small animation for kicks
-            jitwidget.graph.eachNode(function(n) {
-                var pos = n.getPos();
-                pos.setc(-200, -200);
-            });
-            jitwidget.compute('end');
-            jitwidget.fx.animate({
-                modes:['polar'],
-                duration: 2000
-            });
+                                  jitwidget.compute();
+                                  jitwidget.plot();
+              $('#wine').click();
          })""")
     
     Node = {
@@ -137,7 +118,12 @@ class DemoDbRadialGraph(DbRadialGraph):
                 url: '%s?id=' + encodeURIComponent(id),
                 dataType: 'json',
                 success:  function (json) {
-                    that.preprocessTree(json);
+                    //that.preprocessTree(json);
+                            console.log('morphing on success here');
+                            if ( id == undefined ) {
+                                console.log ("WTF WTF WTF");
+                           }
+                            console.log(id);
                     jitwidget.op.morph(json, {
                         'id': id,
                         'type': 'fade',
@@ -146,6 +132,8 @@ class DemoDbRadialGraph(DbRadialGraph):
                         onAfterCompute: (function(){}),
                         onBeforeCompute: (function(){}),
                     });
+                    jitwidget.compute();
+                    jitwidget.plot();
                 },
             });
                             console.log('request graph out');
@@ -183,7 +171,7 @@ class DemoDbRadialGraph(DbRadialGraph):
                 // This should all be moved to a css file
                 domElement.style.color = 'white';
                 domElement.style.backgroundcolor = '#222';
-                domElement.style.cursor = 'pointer;'
+                domElement.style.cursor = 'pointer';
             }
         })""")
 
