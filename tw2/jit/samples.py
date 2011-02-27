@@ -70,8 +70,8 @@ class DemoDbRadialGraph(DbRadialGraph):
 
     postInitJSCallback = JSSymbol(src="""
         (function (jitwidget) {
-                                  jitwidget.compute();
-                                  jitwidget.plot();
+              jitwidget.compute();
+              jitwidget.plot();
               $('#wine').click();
          })""")
     
@@ -86,7 +86,6 @@ class DemoDbRadialGraph(DbRadialGraph):
 
     preprocessTree = JSSymbol(src="""
         (function(json) {
-                              console.log('innnit');
             var ch = json.children;
             var getNode = function(nodeName) {
                 for(var i=0; i<ch.length; i++) {
@@ -94,38 +93,23 @@ class DemoDbRadialGraph(DbRadialGraph):
                 }
                 return false;
             };
-                              console.log(json.id);
             json.id = jitwidget.root;
-                              console.log(json.id);
-                              console.log("whadddup");
             $jit.Graph.Util.eachAdjacency(
                 jitwidget.graph.getNode(jitwidget.root),
                 function(elem) {
                     var nodeTo = elem.nodeTo, jsonNode = getNode(nodeTo.name);
-                    if(jsonNode) {
-                        // This is pretty crazy when thinking about shared
-                        // dependencies.
-                        console.log(jsonNode.id + "  " + nodeTo.id);
-                        jsonNode.id = nodeTo.id;
-                    }
+                    if(jsonNode) {  jsonNode.id = nodeTo.id; }
                 }
             );
-                                console.log("outties");
         })""")
     requestGraph = JSSymbol(src="""
         (function() {
-                            console.log('request graph in');
             var that = this, id = this.clickedNodeId;
             var jsonRequest = $.ajax({
                 url: '%s?id=' + encodeURIComponent(id),
                 dataType: 'json',
                 success:  function (json) {
                     that.preprocessTree(json);
-                            console.log('morphing on success here');
-                            if ( id == undefined ) {
-                                console.log ("WTF WTF WTF");
-                            }
-                            console.log(id);
                     jitwidget.op.morph(json, {
                         id: id,
                         type: 'fade',
@@ -140,19 +124,9 @@ class DemoDbRadialGraph(DbRadialGraph):
                     var subnodes = old.getSubnodes(0);
                     var map = [];
                     for ( var i = 0; i < subnodes.length; i++ ) {
-                        // TODO -- think about how to prune or not prune old stuff
-                        //if ( ! subnodes[i].isDescendantOf(jitwidget.root) )
-                        //{
-                            map.push(subnodes[i].id);
-                        //   } else {
-                        //   console.log('ohhhhhh.');
-                        // }
+                        map.push(subnodes[i].id);
                     }
-                    //if ( ! jitwidget.graph.getNode(
-                    //       jitwidget.oldRootToRemove).isDescendantOf(
-                    //          jitwidget.root)) {
-                        map.push(jitwidget.oldRootToRemove);
-                    //}
+                    map.push(jitwidget.oldRootToRemove);
 
                     jitwidget.op.removeNode(map.reverse(), {
                         type: 'fade:seq',
@@ -162,12 +136,10 @@ class DemoDbRadialGraph(DbRadialGraph):
                     });
                 },
             });
-                            console.log('request graph out');
         })""")
 
     onBeforeCompute = JSSymbol(src="""
         (function (node) {
-           // TODO -- track history here.
            this.clickedNodeId = node.id;
          })""")
 
