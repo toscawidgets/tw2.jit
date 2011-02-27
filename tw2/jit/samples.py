@@ -9,7 +9,7 @@ WidgetBrowser.
 
 from tw2.core.resources import JSSymbol
 
-from tw2.jit.widgets import DbRadialGraph
+from tw2.jit.widgets import AjaxRadialGraph
 from tw2.jit.samples_data import RadialGraphJSONSampleData
 
 import commands
@@ -40,7 +40,7 @@ def get_dependency_tree(package, n=1, prefix=''):
     return root
 
 
-class DemoDbRadialGraph(DbRadialGraph):
+class DemoAjaxRadialGraph(AjaxRadialGraph):
     from tw2.core.jsonify import jsonify
     @classmethod
     @jsonify
@@ -55,7 +55,7 @@ class DemoDbRadialGraph(DbRadialGraph):
     url = '/db_radialgraph_demo/'
 
     def prepare(self):
-        super(DemoDbRadialGraph, self).prepare()
+        super(DemoAjaxRadialGraph, self).prepare()
         # Used for doing ajax stuff
         import tw2.jquery
         self.resources.append(tw2.jquery.jquery_js)
@@ -175,4 +175,4 @@ class DemoDbRadialGraph(DbRadialGraph):
 
 import tw2.core as twc
 mw = twc.core.request_local()['middleware']
-mw.controllers.register(DemoDbRadialGraph, 'db_radialgraph_demo')
+mw.controllers.register(DemoAjaxRadialGraph, 'db_radialgraph_demo')

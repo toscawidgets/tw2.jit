@@ -5,7 +5,7 @@ from tw2.jit.widgets.core import JitTreeOrGraphWidget
 from tw2.jit.widgets.core import jit_js
 from tw2.jit.widgets.graph import RadialGraph
 
-class DbRadialGraph(RadialGraph):
+class AjaxRadialGraph(RadialGraph):
     """ A radial graph that pulls nodes on demand.
 
     Based off of the following demo:
