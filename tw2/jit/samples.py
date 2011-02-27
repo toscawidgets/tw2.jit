@@ -157,6 +157,8 @@ class DemoDbRadialGraph(DbRadialGraph):
                     jitwidget.op.removeNode(map.reverse(), {
                         type: 'fade:seq',
                         duration: 2000,
+                        onAfterCompute: (function(){}),
+                        onBeforeCompute: (function(){}),
                     });
                 },
             });
