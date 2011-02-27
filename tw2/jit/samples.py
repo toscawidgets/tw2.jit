@@ -103,6 +103,8 @@ class DemoDbRadialGraph(DbRadialGraph):
                 function(elem) {
                     var nodeTo = elem.nodeTo, jsonNode = getNode(nodeTo.name);
                     if(jsonNode) {
+                        // This is pretty crazy when thinking about shared
+                        // dependencies.
                         console.log(jsonNode.id + "  " + nodeTo.id);
                         jsonNode.id = nodeTo.id;
                     }
@@ -118,22 +120,44 @@ class DemoDbRadialGraph(DbRadialGraph):
                 url: '%s?id=' + encodeURIComponent(id),
                 dataType: 'json',
                 success:  function (json) {
-                    //that.preprocessTree(json);
+                    that.preprocessTree(json);
                             console.log('morphing on success here');
                             if ( id == undefined ) {
                                 console.log ("WTF WTF WTF");
-                           }
+                            }
                             console.log(id);
                     jitwidget.op.morph(json, {
-                        'id': id,
-                        'type': 'fade',
-                        'duration':2000,
+                        id: id,
+                        type: 'fade',
+                        duration:2000,
+                        transition: $jit.Trans.Quart.easeOut,
                         hideLabels:true,
                         onAfterCompute: (function(){}),
                         onBeforeCompute: (function(){}),
                     });
-                    jitwidget.compute();
-                    jitwidget.plot();
+                    var old = jitwidget.graph.getNode(jitwidget.oldRootToRemove);
+                    if ( !old ) return;
+                    var subnodes = old.getSubnodes(0);
+                    var map = [];
+                    for ( var i = 0; i < subnodes.length; i++ ) {
+                        // TODO -- think about how to prune or not prune old stuff
+                        //if ( ! subnodes[i].isDescendantOf(jitwidget.root) )
+                        //{
+                            map.push(subnodes[i].id);
+                        //   } else {
+                        //   console.log('ohhhhhh.');
+                        // }
+                    }
+                    //if ( ! jitwidget.graph.getNode(
+                    //       jitwidget.oldRootToRemove).isDescendantOf(
+                    //          jitwidget.root)) {
+                        map.push(jitwidget.oldRootToRemove);
+                    //}
+
+                    jitwidget.op.removeNode(map.reverse(), {
+                        type: 'fade:seq',
+                        duration: 2000,
+                    });
                 },
             });
                             console.log('request graph out');
@@ -149,11 +173,11 @@ class DemoDbRadialGraph(DbRadialGraph):
 
     onCreateLabel = JSSymbol(src="""
         (function(domElement, node) {
-            console.log("create label...");
-                             console.log(domElement);
-                             console.log(domElement.id);
             $(domElement).html(node.name);
-            $(domElement).click(function() {jitwidget.onClick(domElement.id);});
+            $(domElement).click(function() {
+                jitwidget.oldRootToRemove = jitwidget.root;
+                jitwidget.onClick(domElement.id);
+            });
         })""")
 
     onPlaceLabel = JSSymbol(src="""
