@@ -154,6 +154,7 @@ transaction.commit()
 
 class DemoSQLARadialGraph(SQLARadialGraph):
     entities = [Person, Pet]
+    excluded_columns = ['id', 'owner_id']
 
     url = '/db_radialgraph_demo/'
 

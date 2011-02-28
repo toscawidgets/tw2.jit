@@ -16,9 +16,12 @@ class SQLARadialGraph(AjaxRadialGraph):
         "sqlalchemy classes to which this graph is mapped",
         request_local=False)
 
+    excluded_columns = twc.Param(
+        "list of names of columns to be excluded from the visualization",
+        default=[])
+
     # TBD -- show_relations?
     # TBD -- show_attributes?
-    # TBD -- excluded attributes
     # TBD -- specified depth
 
     from tw2.core.jsonify import jsonify
@@ -73,7 +76,9 @@ class SQLARadialGraph(AjaxRadialGraph):
             children = []
             if depth < 2:
                 props = dict([(p.key, getattr(obj, p.key))
-                              for p in obj.__mapper__.iterate_properties])
+                              for p in obj.__mapper__.iterate_properties
+                              if not p.key in cls.excluded_columns
+                             ])
                 children = [make_node_from_property(prefix, obj, k, v, depth+1)
                             for k, v in props.iteritems()]
 
