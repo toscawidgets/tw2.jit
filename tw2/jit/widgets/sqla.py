@@ -38,7 +38,6 @@ class SQLARadialGraph(AjaxRadialGraph):
             entity = filter(lambda x : x.__name__ == entkey, cls.entities)[0]
         except IndexError, e:
             raise ValueError, "No such sqla class '%s' in 'entities'." % entkey
-
         pkey = get_pkey(entity)
 
         obj = entity.query.filter_by(**{pkey:key}).one()
@@ -51,9 +50,13 @@ class SQLARadialGraph(AjaxRadialGraph):
             return s.replace(' ', '_').replace('#', '___')
 
         def make_node_from_property(prefix, parent, key, value, depth):
-            if type(value) != sqlalchemy.orm.collections.InstrumentedList:
-                node_id = SEP.join([prefix, key, value])
-                name = "%s:<br/>%s" % (key, value),
+            if type(value) in cls.entities:
+                result = make_node_from_object(value, depth, prefix)
+                result['name'] = "%s:<br/>%s" % (key, result['name'])
+                return result
+            elif type(value) != sqlalchemy.orm.collections.InstrumentedList:
+                node_id = SEP.join([prefix, key, unicode(value)])
+                name = "%s:<br/>%s" % (key, unicode(value)),
                 children = []
             else:
                 node_id = SEP.join([prefix, key])
