@@ -157,20 +157,21 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
     onPlaceLabel = JSSymbol(src="""
         (function(domElement, node){
             domElement.style.display = "none";
-            if(node._depth <= 1) {
-                domElement.innerHTML = node.name;
-                domElement.style.display = "";
-                var left = parseInt(domElement.style.left);
-                domElement.style.width = '';
-                domElement.style.height = '';
-                var w = domElement.offsetWidth;
-                domElement.style.left = (left - w /2) + 'px';
+            domElement.innerHTML = node.name;
+            domElement.style.display = "";
+            var left = parseInt(domElement.style.left);
+            domElement.style.width = '';
+            domElement.style.height = '';
+            var w = domElement.offsetWidth;
+            domElement.style.left = (left - w /2) + 'px';
 
-                // This should all be moved to a css file
+            // This should all be moved to a css file
+            domElement.style.backgroundcolor = '#222';
+            domElement.style.cursor = 'pointer';
+            if ( node._depth <= 1 )
                 domElement.style.color = 'white';
-                domElement.style.backgroundcolor = '#222';
-                domElement.style.cursor = 'pointer';
-            }
+            else
+                domElement.style.color = 'grey';
         })""")
 
 import tw2.core as twc
