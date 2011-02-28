@@ -23,7 +23,7 @@ class SQLARadialGraph(AjaxRadialGraph):
     show_relations = twc.Param("(bool) show relationships?", default=True)
     show_attributes = twc.Param("(bool) show attributes?", default=True)
 
-    # TBD -- specified depth
+    depth = twc.Param("(int) number of levels of relations to show.", default=3)
 
     from tw2.core.jsonify import jsonify
     @classmethod
@@ -47,22 +47,32 @@ class SQLARadialGraph(AjaxRadialGraph):
 
         obj = entity.query.filter_by(**{pkey:key}).one()
 
+        def exclude_property(p):
+            is_attribute = lambda x: type(x) is sqlalchemy.orm.properties.ColumnProperty
+            is_relation = lambda x: type(x) is sqlalchemy.orm.properties.RelationshipProperty
+
+            explicitly_excluded = p.key in cls.excluded_columns
+            excluded_by_attribute = is_attribute(p) and not cls.show_attributes
+            excluded_by_relation  = is_relation(p) and not cls.show_relations
+            return explicitly_excluded or excluded_by_attribute or excluded_by_relation
+
         def safe_id(s):
             return s.replace(' ', '_').replace('#', '___')
 
         def make_node_from_property(prefix, parent, key, value, depth):
+            node_id = safe_id(SEP.join([prefix, key, unicode(value)]))
+            children = []
             if type(value) in cls.entities:
-                result = make_node_from_object(value, depth, prefix)
+                result = make_node_from_object(value, depth, node_id)
                 result['name'] = "%s:<br/>%s" % (key, result['name'])
                 return result
             elif type(value) != sqlalchemy.orm.collections.InstrumentedList:
-                node_id = SEP.join([prefix, key, unicode(value)])
                 name = "%s:<br/>%s" % (key, unicode(value)),
-                children = []
             else:
-                node_id = SEP.join([prefix, key])
+                node_id = SEP.join([prefix, key, unicode(uuid.uuid4())])
                 name = "%s of %s (%i)" % (key, unicode(parent), len(value))
-                children = [make_node_from_object(o, depth+1, node_id) for o in value]
+                if depth < cls.depth:
+                    children = [make_node_from_object(o, depth+1, node_id) for o in value]
 
             node_id = safe_id(node_id)
 
@@ -70,26 +80,16 @@ class SQLARadialGraph(AjaxRadialGraph):
                 'id' : node_id, 'name' : name, 'children' : children, 'data' : {},
             }
 
-        def include_property(p):
-            is_attribute = lambda x: type(x) is sqlalchemy.orm.properties.ColumnProperty
-            is_relation = lambda x: type(x) is sqlalchemy.orm.properties.RelationshipProperty
-
-            explicitly_excluded = p.key in cls.excluded_columns
-            excluded_due_to_attribute = is_attribute(p) and not cls.show_attributes
-            excluded_due_to_relation  = is_relation(p) and not cls.show_relations
-            return not(explicitly_excluded or
-                       excluded_due_to_attribute or
-                       excluded_due_to_relation)
-
-        def make_node_from_object(obj, depth, prefix=''):
-            node_id = SEP.join([prefix, type(obj).__name__,
-                                str(getattr(obj, get_pkey(type(obj))))])
+        def make_node_from_object(obj, depth=0, prefix=''):
+            node_id = safe_id(
+                SEP.join([prefix, type(obj).__name__,
+                          unicode(getattr(obj, get_pkey(type(obj))))]))
             prefix = node_id
             children = []
-            if depth < 2:
+            if depth < cls.depth:
                 props = dict([(p.key, getattr(obj, p.key))
                               for p in obj.__mapper__.iterate_properties
-                              if include_property(p) ])
+                              if not exclude_property(p) ])
 
                 children = [make_node_from_property(prefix, obj, k, v, depth+1)
                             for k, v in props.iteritems()]
@@ -104,7 +104,7 @@ class SQLARadialGraph(AjaxRadialGraph):
                 'data' : data,
             }
 
-        json = make_node_from_object(obj, 0)
+        json = make_node_from_object(obj)
 
         return json
 
