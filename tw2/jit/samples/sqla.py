@@ -65,6 +65,10 @@ class Person(Base):
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)
 
+    def __data__(self):
+        return {"some_attr" : self.some_attribute}
+
+
 class Pet(Base):
     __tablename__ = 'pets'
     id = Column(Integer, primary_key=True)
@@ -147,6 +151,7 @@ transaction.commit()
 
 class DemoSQLARadialGraph(SQLARadialGraph):
     entities = [Person, Pet]
+
     url = '/db_radialgraph_demo/'
 
     background = { 'CanvasStyles':{ 'strokeStyle' : '#C73B0B' } }

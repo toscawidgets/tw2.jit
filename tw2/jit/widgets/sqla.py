@@ -75,12 +75,15 @@ class SQLARadialGraph(AjaxRadialGraph):
                               for p in obj.__mapper__.iterate_properties])
                 children = [make_node_from_property(prefix, obj, k, v, depth+1)
                             for k, v in props.iteritems()]
+
+            data = getattr(obj, '__data__', lambda : {})()
+
             return {
                 'id' : node_id,
                 'name' : "%s: %s" % (
                     tw2.core.util.name2label(type(obj).__name__), unicode(obj)),
                 'children' : children,
-                'data' : {},
+                'data' : data,
             }
 
         json = make_node_from_object(obj, 0)
