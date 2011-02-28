@@ -10,7 +10,7 @@ WidgetBrowser.
 from tw2.core.resources import JSSymbol
 
 from tw2.jit.widgets import AjaxRadialGraph
-from tw2.jit.samples_data import RadialGraphJSONSampleData
+from tw2.jit.samples.samples_data import RadialGraphJSONSampleData
 
 import commands
 
