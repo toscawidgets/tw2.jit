@@ -51,7 +51,7 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
         json = get_dependency_tree(key)
         return json
 
-    url = '/db_radialgraph_demo/?key=wine'
+    url = '/ajax_radialgraph_demo/?key=wine'
 
     background = { 'CanvasStyles':{ 'strokeStyle' : '#C73B0B' } }
     
@@ -75,4 +75,4 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
 
 import tw2.core as twc
 mw = twc.core.request_local()['middleware']
-mw.controllers.register(DemoAjaxRadialGraph, 'db_radialgraph_demo')
+mw.controllers.register(DemoAjaxRadialGraph, 'ajax_radialgraph_demo')
