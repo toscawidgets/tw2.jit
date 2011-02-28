@@ -32,6 +32,7 @@ def get_dependency_tree(package, n=1, prefix=''):
             get_dependency_tree(dep, n-1, prefix)) for dep in out]
     else:
         [root['children'].append(make_node(dep, prefix)) for dep in out]
+
     return root
 
 import transaction
@@ -64,6 +65,19 @@ class Person(Base):
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)
 
+class Pet(Base):
+    __tablename__ = 'pets'
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(255), nullable=False)
+    variety = Column(Unicode(255), nullable=False)
+    owner_id = Column(Integer, ForeignKey('persons.id'))
+    owner = relation(
+        Person, primaryjoin=owner_id==Person.id,
+        backref=backref('pets'))
+
+    def __unicode__(self):
+        return "%s the %s" % (self.name, self.variety)
+
 Person.__mapper__.add_property('friends', relation(
     Person,
     primaryjoin=Person.id==friends_mapping.c.friendee_id,
@@ -89,6 +103,18 @@ def populateDB(sess):
                 some_attribute="Fun fact #%i" % random.randint(0,255)
             )
             sess.add(p)
+
+    pet_names = ["Spot", "Mack", "Cracker", "Fluffy", "Alabaster",
+                 "Slim Pickins", "Lil' bit", "Balthazaar", "Hadoop"]
+    varieties = ["dog", "cat", "bird", "fish", "hermit crab", "lizard"]
+
+    for person in Person.query.all():
+        for i in range(random.randint(0,7)):
+            pet = Pet(name=pet_names[random.randint(0,len(pet_names)-1)],
+                      variety=varieties[random.randint(0,len(varieties)-1)])
+            sess.add(pet)
+            person.pets.append(pet)
+
 
     qadafis = Person.query.filter_by(last_name='Qadafi').all()
     mubaraks = Person.query.filter_by(last_name='Mubarak').all()
@@ -120,23 +146,24 @@ transaction.commit()
 
 
 class DemoSQLARadialGraph(SQLARadialGraph):
-    entities = [Person]
+    entities = [Person, Pet]
     url = '/db_radialgraph_demo/'
 
     background = { 'CanvasStyles':{ 'strokeStyle' : '#C73B0B' } }
-    
+
     backgroundcolor = '#350608'
 
-    postInitJSCallback = JSSymbol(src="""
+    postInitJSCallback = JSSymbol(
+        src="""
         (function (jitwidget) {
-              jitwidget.compute();
-              jitwidget.plot();
-         })""")
-    
+        jitwidget.compute();
+        jitwidget.plot();
+    })""")
+
     Node = {
         'color' : '#C73B0B',
     }
-            
+
     Edge = {
         'color': '#F2C545',
         'lineWidth':1.5,
