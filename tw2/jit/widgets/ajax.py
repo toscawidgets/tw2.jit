@@ -63,7 +63,7 @@ class AjaxRadialGraph(RadialGraph):
                     jitwidget.op.morph(json, {
                         id: id,
                         type: 'fade',
-                        duration:2000,
+                        duration:100,
                         transition: $jit.Trans.Quart.easeOut,
                         hideLabels:true,
                         onAfterCompute: (function(){}),
@@ -80,7 +80,7 @@ class AjaxRadialGraph(RadialGraph):
 
                     jitwidget.op.removeNode(map.reverse(), {
                         type: 'fade:seq',
-                        duration: 2000,
+                        duration: 100,
                         onAfterCompute: (function(){}),
                         onBeforeCompute: (function(){}),
                     });
@@ -102,6 +102,9 @@ class AjaxRadialGraph(RadialGraph):
                 jQuery(domElement).html(node.name);
                 jQuery(domElement).click(function() {
                     jitwidget.onClick(domElement.id);
+                    // TODO -- figure out something to really do with data here.
+                    // Here's one example:
+                    //if ( node.data.url ) window.location = node.data.url;
                 });
             } catch(err) {}
         })""")

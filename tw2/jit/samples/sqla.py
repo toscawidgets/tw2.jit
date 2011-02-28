@@ -82,6 +82,9 @@ class Pet(Base):
     def __unicode__(self):
         return "%s the %s" % (self.name, self.variety)
 
+    def __data__(self):
+        return {"url" : "http://www.google.com/search?q=%s" % self.name}
+
 Person.__mapper__.add_property('friends', relation(
     Person,
     primaryjoin=Person.id==friends_mapping.c.friendee_id,
