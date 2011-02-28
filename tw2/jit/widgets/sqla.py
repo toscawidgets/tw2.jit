@@ -41,10 +41,6 @@ class SQLARadialGraph(AjaxRadialGraph):
         pkey = get_pkey(entity)
 
         obj = entity.query.filter_by(**{pkey:key}).one()
-        props = dict([(p.key, getattr(obj, p.key)) for p in obj.__mapper__.iterate_properties])
-
-        # TBD -- is this necessary?
-        del props[pkey]
 
         def safe_id(s):
             return s.replace(' ', '_').replace('#', '___')
@@ -60,7 +56,7 @@ class SQLARadialGraph(AjaxRadialGraph):
                 children = []
             else:
                 node_id = SEP.join([prefix, key])
-                name = "%s of %s (%i)" % (key, unicode(obj), len(value))
+                name = "%s of %s (%i)" % (key, unicode(parent), len(value))
                 children = [make_node_from_object(o, depth+1, node_id) for o in value]
 
             node_id = safe_id(node_id)
@@ -75,7 +71,10 @@ class SQLARadialGraph(AjaxRadialGraph):
             prefix = node_id
             children = []
             if depth < 2:
-                children = [make_node_from_property(prefix, obj, k, v, depth+1) for k, v in props.iteritems()]
+                props = dict([(p.key, getattr(obj, p.key))
+                              for p in obj.__mapper__.iterate_properties])
+                children = [make_node_from_property(prefix, obj, k, v, depth+1)
+                            for k, v in props.iteritems()]
             return {
                 'id' : node_id,
                 'name' : "%s: %s" % (
