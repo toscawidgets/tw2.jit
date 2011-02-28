@@ -20,8 +20,9 @@ class SQLARadialGraph(AjaxRadialGraph):
         "list of names of columns to be excluded from the visualization",
         default=[])
 
-    # TBD -- show_relations?
-    # TBD -- show_attributes?
+    show_relations = twc.Param("(bool) show relationships?", default=True)
+    show_attributes = twc.Param("(bool) show attributes?", default=True)
+
     # TBD -- specified depth
 
     from tw2.core.jsonify import jsonify
@@ -69,6 +70,17 @@ class SQLARadialGraph(AjaxRadialGraph):
                 'id' : node_id, 'name' : name, 'children' : children, 'data' : {},
             }
 
+        def include_property(p):
+            is_attribute = lambda x: type(x) is sqlalchemy.orm.properties.ColumnProperty
+            is_relation = lambda x: type(x) is sqlalchemy.orm.properties.RelationshipProperty
+
+            explicitly_excluded = p.key in cls.excluded_columns
+            excluded_due_to_attribute = is_attribute(p) and not cls.show_attributes
+            excluded_due_to_relation  = is_relation(p) and not cls.show_relations
+            return not(explicitly_excluded or
+                       excluded_due_to_attribute or
+                       excluded_due_to_relation)
+
         def make_node_from_object(obj, depth, prefix=''):
             node_id = SEP.join([prefix, type(obj).__name__,
                                 str(getattr(obj, get_pkey(type(obj))))])
@@ -77,8 +89,8 @@ class SQLARadialGraph(AjaxRadialGraph):
             if depth < 2:
                 props = dict([(p.key, getattr(obj, p.key))
                               for p in obj.__mapper__.iterate_properties
-                              if not p.key in cls.excluded_columns
-                             ])
+                              if include_property(p) ])
+
                 children = [make_node_from_property(prefix, obj, k, v, depth+1)
                             for k, v in props.iteritems()]
 
