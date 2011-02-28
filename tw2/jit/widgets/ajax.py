@@ -77,7 +77,6 @@ class AjaxRadialGraph(RadialGraph):
                     for ( var i = 0; i < subnodes.length; i++ ) {
                         map.push(subnodes[i].id);
                     }
-                    map.push(jitwidget.oldRootToRemove);
 
                     jitwidget.op.removeNode(map.reverse(), {
                         type: 'fade:seq',

@@ -109,7 +109,7 @@ def populateDB(sess):
         for p2 in Person.query.all():
             if p1 == p2 or p1 in p2.friends:
                 continue
-            if random.random() > 0.75:
+            if random.random() > 0.95:
                 p1.friends.append(p2)
                 p2.friends.append(p1)
 
@@ -117,7 +117,6 @@ def populateDB(sess):
 
 populateDB(session)
 transaction.commit()
-print Person.query.all()
 
 
 class DemoSQLARadialGraph(SQLARadialGraph):

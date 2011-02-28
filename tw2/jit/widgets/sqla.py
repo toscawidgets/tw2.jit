@@ -23,13 +23,7 @@ class SQLARadialGraph(AjaxRadialGraph):
     @classmethod
     @jsonify
     def request(cls, req):
-        ATTR_STR = "__attr__"
         SEP = '___'
-
-        import pprint
-        print "HALLO"
-        pprint.pprint(req.params)
-        print "-"*40
 
         if 'key' not in req.params:
             entkey, key = 'Person', 1
@@ -52,15 +46,15 @@ class SQLARadialGraph(AjaxRadialGraph):
         def safe_id(s):
             return s.replace(' ', '_').replace('#', '___')
 
-        def make_node_from_property(prefix, key, value, depth):
+        def make_node_from_property(prefix, parent, key, value, depth):
 
             if type(value) != sqlalchemy.orm.collections.InstrumentedList:
                 node_id = SEP.join([prefix, key, value])
                 name = "%s:<br/>%s" % (key, value),
                 children = []
             else:
-                node_id = SEP.join([prefix, key, str(uuid.uuid4())])
-                name = key
+                node_id = SEP.join([prefix, key])
+                name = "%s of %s" % (key, unicode(obj))
                 children = [make_node_from_object(o, depth+1, node_id) for o in value]
 
             node_id = safe_id(node_id)
@@ -75,7 +69,7 @@ class SQLARadialGraph(AjaxRadialGraph):
             prefix = node_id
             children = []
             if depth < 2:
-                children = [make_node_from_property(prefix, k, v, depth+1) for k, v in props.iteritems()]
+                children = [make_node_from_property(prefix, obj, k, v, depth+1) for k, v in props.iteritems()]
             return {
                 'id' : node_id,
                 'name' : "%s: %s" % (
@@ -86,7 +80,5 @@ class SQLARadialGraph(AjaxRadialGraph):
 
         json = make_node_from_object(obj, 0)
 
-        import pprint
-        pprint.pprint(json)
         return json
 
