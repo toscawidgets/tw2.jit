@@ -119,6 +119,7 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
                         onAfterCompute: (function(){}),
                         onBeforeCompute: (function(){}),
                     });
+
                     var old = jitwidget.graph.getNode(jitwidget.oldRootToRemove);
                     if ( !old ) return;
                     var subnodes = old.getSubnodes(0);
@@ -140,7 +141,8 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
 
     onBeforeCompute = JSSymbol(src="""
         (function (node) {
-           this.clickedNodeId = node.id;
+            jitwidget.oldRootToRemove = node.getParents()[0].id;
+            this.clickedNodeId = node.id;
          })""")
 
     onAfterCompute = JSSymbol(src="(function() { this.requestGraph(); })")
@@ -149,7 +151,6 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
         (function(domElement, node) {
             $(domElement).html(node.name);
             $(domElement).click(function() {
-                jitwidget.oldRootToRemove = jitwidget.root;
                 jitwidget.onClick(domElement.id);
             });
         })""")
