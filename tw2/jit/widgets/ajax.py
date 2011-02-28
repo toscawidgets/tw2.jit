@@ -33,21 +33,7 @@ class AjaxRadialGraph(RadialGraph):
         """ TODO """, attribute=True,
         default=JSSymbol(src="""
         (function(json) {
-            var ch = json.children;
-            var getNode = function(nodeName) {
-                for(var i=0; i<ch.length; i++) {
-                    if(ch[i].name == nodeName) return ch[i];
-                }
-                return false;
-            };
             json.id = jitwidget.root;
-            $jit.Graph.Util.eachAdjacency(
-                jitwidget.graph.getNode(jitwidget.root),
-                function(elem) {
-                    var nodeTo = elem.nodeTo, jsonNode = getNode(nodeTo.name);
-                    if(jsonNode) {  jsonNode.id = nodeTo.id; }
-                }
-            );
         })"""))
 
     requestGraph = twc.Param(
@@ -70,12 +56,23 @@ class AjaxRadialGraph(RadialGraph):
                         onBeforeCompute: (function(){}),
                     });
 
-                    var old = jitwidget.graph.getNode(jitwidget.oldRootToRemove);
+                    function hasID(json, id) {
+                         if ( json.id == id ) return true;
+
+                         for ( var i = 0; i < json.children.length; i++ ) {
+                            if ( hasID(json.children[i], id) ) return true;
+                         }
+                         return false;
+                    }
+
+                    var old = jitwidget.graph.getNode(jitwidget.root);
                     if ( !old ) return;
-                    var subnodes = old.getSubnodes(0);
+                    var subnodes = old.getSubnodes(1);
                     var map = [];
                     for ( var i = 0; i < subnodes.length; i++ ) {
-                        map.push(subnodes[i].id);
+                        if ( ! hasID(json, subnodes[i].id) ) {
+                            map.push(subnodes[i].id);
+                        }
                     }
 
                     jitwidget.op.removeNode(map.reverse(), {
