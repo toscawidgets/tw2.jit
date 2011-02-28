@@ -94,7 +94,7 @@ def populateDB(sess):
     firsts = ["Sally", "Suzie", "Sandy",
               "John", "Jim", "Joseph"]
     lasts = ["Anderson", "Flanderson", "Johnson",
-             "Frompson", "Qadafi", "Mubarak", "Ben Ali"]
+             "Frompson", "Qaddafi", "Mubarak", "Ben Ali"]
 
     for first in firsts:
         for last in lasts:
@@ -116,10 +116,10 @@ def populateDB(sess):
             person.pets.append(pet)
 
 
-    qadafis = Person.query.filter_by(last_name='Qadafi').all()
+    qaddafis = Person.query.filter_by(last_name='Qaddafi').all()
     mubaraks = Person.query.filter_by(last_name='Mubarak').all()
     benalis = Person.query.filter_by(last_name='Ben Ali').all()
-    dictators = qadafis + mubaraks + benalis
+    dictators = qaddafis + mubaraks + benalis
 
     print "populating dictators friends"
     for p1 in dictators:
