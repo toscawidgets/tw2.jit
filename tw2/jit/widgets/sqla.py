@@ -9,40 +9,54 @@ import tw2.jquery
 class SQLARadialGraph(AjaxRadialGraph):
     """ A radial graph built automatically from sqlalchemy objects """
 
-    entity = twc.Param("sqlalchemy class to which this graph is mapped",
-                      request_local=False)
+    entities = twc.Param(
+        "sqlalchemy classes to which this graph is mapped",
+        request_local=False)
+
+    # TBD -- show_relations?
+    # TBD -- show_attributes?
 
     from tw2.core.jsonify import jsonify
     @classmethod
     @jsonify
     def request(cls, req):
-        print "HALLO"
+        ATTR_STR = "__attr__"
+        SEP = '___'
 
         import pprint
+        print "HALLO"
         pprint.pprint(req.params)
         print "-"*40
+
         if 'key' not in req.params:
-            key = u'1'
+            entkey, key = 'Person', 1
+        elif req.params['key'].startswith(ATTR_STR):
+            # TODO how to handle this?
+            raise ValueError, "TDB -- How to handle this?"
         else:
-            key = req.params['key'].split('___')[-1]
-    
+            entkey, key = req.params['key'].split(SEP)
+
         key = int(key)
 
         get_pkey = lambda ent : ent.__mapper__.primary_key[0].key
-        pkey = get_pkey(cls.entity)
+        entity = filter(lambda x : x.__name__ == entkey, cls.entities)[0]
+        pkey = get_pkey(entity)
 
-        obj = cls.entity.query.filter_by(**{pkey:key}).one()
+        obj = entity.query.filter_by(**{pkey:key}).one()
         props = dict([(k, getattr(obj, k)) for k in obj.__mapper__.columns.keys()])
 
+        # TBD -- is this necessary?
+        del props[pkey]
+
         make_node_from_property = lambda key, value : {
-            'id' : "%s___%s" % (key, value),
-            'name' : "%s -> %s" % (key, value),
+            'id' : "%s%s%s%s" % (ATTR_STR, key, SEP, value),
+            'name' : "%s:<br/>%s" % (key, value),
             'data' : {}, 'children' : []
         }
 
         make_node_from_object = lambda obj : {
-            'id' : "%s___%s" % (
-                type(obj).__name__, get_pkey(type(obj))),
+            'id' : "%s%s%s" % (
+                type(obj).__name__, SEP, getattr(obj, get_pkey(type(obj)))),
             'name' : "%s: %s" % (
                 tw2.core.util.name2label(type(obj).__name__), unicode(obj)),
             'children' : [

@@ -92,14 +92,13 @@ def populateDB(sess):
 #                p1.friends.append(p2)
 
 populateDB(session)
-#session.commit()
 transaction.commit()
 print Person.query.all()
 
 
 class DemoSQLARadialGraph(SQLARadialGraph):
-    entity = Person
-    url = '/db_radialgraph_demo/?key=1'
+    entities = [Person]
+    url = '/db_radialgraph_demo/'
 
     background = { 'CanvasStyles':{ 'strokeStyle' : '#C73B0B' } }
     
