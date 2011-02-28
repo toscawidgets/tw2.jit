@@ -14,17 +14,16 @@ from tw2.jit.samples_data import RadialGraphJSONSampleData
 
 import commands
 
-def make_node(package, prefix):
-    return {
+
+def get_dependency_tree(package, n=1, prefix=''):
+    make_node = lambda package, prefix : { 
         'id': prefix + "___" + package,
         'name': package,
         'children': [],
         'data': []
     }
-
-def get_dependency_tree(package, n=1, prefix=''):
     package = package.strip()
-    print "Working on", package
+    print "Gathering dependencies of", package
     out = commands.getoutput(
         "yum deplist %s | grep dependency | awk ' { print $2 } '" % package)
     out = list(set([dep.split('(')[0] for dep in out.split('\n') if dep]))
@@ -45,24 +44,14 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
     @classmethod
     @jsonify
     def request(cls, req):
-        if 'id' not in req.params:
-            id = 'wine'
+        if 'key' not in req.params:
+            key = 'wine'
         else:
-            id = req.params['id'].split('___')[-1]
-        json = get_dependency_tree(id)
+            key = req.params['key'].split('___')[-1]
+        json = get_dependency_tree(key)
         return json
 
-    url = '/db_radialgraph_demo/'
-
-    def prepare(self):
-        super(DemoAjaxRadialGraph, self).prepare()
-        # Used for doing ajax stuff
-        import tw2.jquery
-        self.resources.append(tw2.jquery.jquery_js)
-
-        # Add the ajax url to the request graph source
-        if '%s' in self.requestGraph.src:
-            self.requestGraph.src = self.requestGraph.src % self.url
+    url = '/db_radialgraph_demo/?key=wine'
 
     background = { 'CanvasStyles':{ 'strokeStyle' : '#555' } }
     
@@ -83,97 +72,6 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
         'color': '#C17878',
         'lineWidth':1.5,
     }
-
-    preprocessTree = JSSymbol(src="""
-        (function(json) {
-            var ch = json.children;
-            var getNode = function(nodeName) {
-                for(var i=0; i<ch.length; i++) {
-                    if(ch[i].name == nodeName) return ch[i];
-                }
-                return false;
-            };
-            json.id = jitwidget.root;
-            $jit.Graph.Util.eachAdjacency(
-                jitwidget.graph.getNode(jitwidget.root),
-                function(elem) {
-                    var nodeTo = elem.nodeTo, jsonNode = getNode(nodeTo.name);
-                    if(jsonNode) {  jsonNode.id = nodeTo.id; }
-                }
-            );
-        })""")
-    requestGraph = JSSymbol(src="""
-        (function() {
-            var that = this, id = this.clickedNodeId;
-            var jsonRequest = $.ajax({
-                url: '%s?id=' + encodeURIComponent(id),
-                dataType: 'json',
-                success:  function (json) {
-                    that.preprocessTree(json);
-                    jitwidget.op.morph(json, {
-                        id: id,
-                        type: 'fade',
-                        duration:2000,
-                        transition: $jit.Trans.Quart.easeOut,
-                        hideLabels:true,
-                        onAfterCompute: (function(){}),
-                        onBeforeCompute: (function(){}),
-                    });
-
-                    var old = jitwidget.graph.getNode(jitwidget.oldRootToRemove);
-                    if ( !old ) return;
-                    var subnodes = old.getSubnodes(0);
-                    var map = [];
-                    for ( var i = 0; i < subnodes.length; i++ ) {
-                        map.push(subnodes[i].id);
-                    }
-                    map.push(jitwidget.oldRootToRemove);
-
-                    jitwidget.op.removeNode(map.reverse(), {
-                        type: 'fade:seq',
-                        duration: 2000,
-                        onAfterCompute: (function(){}),
-                        onBeforeCompute: (function(){}),
-                    });
-                },
-            });
-        })""")
-
-    onBeforeCompute = JSSymbol(src="""
-        (function (node) {
-            jitwidget.oldRootToRemove = node.getParents()[0].id;
-            this.clickedNodeId = node.id;
-         })""")
-
-    onAfterCompute = JSSymbol(src="(function() { this.requestGraph(); })")
-
-    onCreateLabel = JSSymbol(src="""
-        (function(domElement, node) {
-            $(domElement).html(node.name);
-            $(domElement).click(function() {
-                jitwidget.onClick(domElement.id);
-            });
-        })""")
-
-    onPlaceLabel = JSSymbol(src="""
-        (function(domElement, node){
-            domElement.style.display = "none";
-            domElement.innerHTML = node.name;
-            domElement.style.display = "";
-            var left = parseInt(domElement.style.left);
-            domElement.style.width = '';
-            domElement.style.height = '';
-            var w = domElement.offsetWidth;
-            domElement.style.left = (left - w /2) + 'px';
-
-            // This should all be moved to a css file
-            domElement.style.backgroundcolor = '#222';
-            domElement.style.cursor = 'pointer';
-            if ( node._depth <= 1 )
-                domElement.style.color = 'white';
-            else
-                domElement.style.color = 'grey';
-        })""")
 
 import tw2.core as twc
 mw = twc.core.request_local()['middleware']
