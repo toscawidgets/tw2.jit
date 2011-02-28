@@ -6,6 +6,9 @@ from tw2.jit.widgets.ajax import AjaxRadialGraph
 # Used for doing ajax stuff
 import tw2.jquery
 
+import sqlalchemy
+import uuid
+
 class SQLARadialGraph(AjaxRadialGraph):
     """ A radial graph built automatically from sqlalchemy objects """
 
@@ -30,11 +33,9 @@ class SQLARadialGraph(AjaxRadialGraph):
 
         if 'key' not in req.params:
             entkey, key = 'Person', 1
-        elif req.params['key'].startswith(ATTR_STR):
-            # TODO how to handle this?
-            raise ValueError, "TDB -- How to handle this?"
         else:
-            entkey, key = req.params['key'].split(SEP)
+            toks = req.params['key'].split(SEP)
+            entkey, key = toks[-2:]
 
         key = int(key)
 
@@ -43,28 +44,47 @@ class SQLARadialGraph(AjaxRadialGraph):
         pkey = get_pkey(entity)
 
         obj = entity.query.filter_by(**{pkey:key}).one()
-        props = dict([(k, getattr(obj, k)) for k in obj.__mapper__.columns.keys()])
+        props = dict([(p.key, getattr(obj, p.key)) for p in obj.__mapper__.iterate_properties])
 
         # TBD -- is this necessary?
         del props[pkey]
 
-        make_node_from_property = lambda key, value : {
-            'id' : "%s%s%s%s" % (ATTR_STR, key, SEP, value),
-            'name' : "%s:<br/>%s" % (key, value),
-            'data' : {}, 'children' : []
-        }
+        def safe_id(s):
+            return s.replace(' ', '_').replace('#', '___')
 
-        make_node_from_object = lambda obj : {
-            'id' : "%s%s%s" % (
-                type(obj).__name__, SEP, getattr(obj, get_pkey(type(obj)))),
-            'name' : "%s: %s" % (
-                tw2.core.util.name2label(type(obj).__name__), unicode(obj)),
-            'children' : [
-                make_node_from_property(k, v) for k, v in props.iteritems()],
-            'data' : {},
-        }
+        def make_node_from_property(prefix, key, value, depth):
 
-        json = make_node_from_object(obj)
+            if type(value) != sqlalchemy.orm.collections.InstrumentedList:
+                node_id = SEP.join([prefix, key, value])
+                name = "%s:<br/>%s" % (key, value),
+                children = []
+            else:
+                node_id = SEP.join([prefix, key, str(uuid.uuid4())])
+                name = key
+                children = [make_node_from_object(o, depth+1, node_id) for o in value]
+
+            node_id = safe_id(node_id)
+
+            return {
+                'id' : node_id, 'name' : name, 'children' : children, 'data' : {},
+            }
+
+        def make_node_from_object(obj, depth, prefix=''):
+            node_id = SEP.join([prefix, type(obj).__name__,
+                                str(getattr(obj, get_pkey(type(obj))))])
+            prefix = node_id
+            children = []
+            if depth < 2:
+                children = [make_node_from_property(prefix, k, v, depth+1) for k, v in props.iteritems()]
+            return {
+                'id' : node_id,
+                'name' : "%s: %s" % (
+                    tw2.core.util.name2label(type(obj).__name__), unicode(obj)),
+                'children' : children,
+                'data' : {},
+            }
+
+        json = make_node_from_object(obj, 0)
 
         import pprint
         pprint.pprint(json)

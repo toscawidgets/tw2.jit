@@ -35,13 +35,24 @@ def get_dependency_tree(package, n=1, prefix=''):
     return root
 
 import transaction
-from sqlalchemy import Column, Integer, Unicode, MetaData
+from sqlalchemy import (
+    Column, Integer, Unicode,
+    MetaData, Table, ForeignKey,
+)
+from sqlalchemy.orm import relation, backref
 from sqlalchemy.ext.declarative import declarative_base
 import tw2.sqla as tws
 
 session = tws.transactional_session()
 Base = declarative_base(metadata=MetaData('sqlite:///sample_sqla.db'))
 Base.query = session.query_property()
+
+friends_mapping = Table(
+    'persons_friends_mapping', Base.metadata,
+    Column('friender_id', Integer,
+           ForeignKey('persons.id'), primary_key=True),
+    Column('friendee_id', Integer,
+           ForeignKey('persons.id'), primary_key=True))
 
 class Person(Base):
     __tablename__ = 'persons'
@@ -53,6 +64,14 @@ class Person(Base):
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)
 
+Person.__mapper__.add_property('friends', relation(
+    Person,
+    primaryjoin=Person.id==friends_mapping.c.friendee_id,
+    secondaryjoin=friends_mapping.c.friender_id==Person.id,
+    secondary=friends_mapping,
+    doc="List of this persons' friends!",
+))
+
 Base.metadata.create_all()
 
 def populateDB(sess):
@@ -61,7 +80,6 @@ def populateDB(sess):
     firsts = ["Sally", "Suzie", "Sandy",
               "John", "Jim", "Joseph"]
     lasts = ["Anderson", "Flanderson", "Johnson",
-             "Bean", "Kelsey", "Bean-Kelsey",
              "Frompson", "Qadafi", "Mubarak", "Ben Ali"]
 
     for first in firsts:
@@ -76,20 +94,26 @@ def populateDB(sess):
     mubaraks = Person.query.filter_by(last_name='Mubarak').all()
     benalis = Person.query.filter_by(last_name='Ben Ali').all()
     dictators = qadafis + mubaraks + benalis
-#
-#    for p1 in dictators:
-#        for p2 in dictators:
-#            if p1 == p2 or p1 in p2.friends:
-#                continue
-#            if random.random() > 0.25:
-#                p1.friends.append(p2)
-#    
-#    for p1 in Person.query.all():
-#        for p2 in Person.query.all():
-#            if p1 == p2 or p1 in p2.friends:
-#                continue
-#            if random.random() > 0.75:
-#                p1.friends.append(p2)
+
+    print "populating dictators friends"
+    for p1 in dictators:
+        for p2 in dictators:
+            if p1 == p2 or p1 in p2.friends:
+                continue
+            if random.random() > 0.25:
+                p1.friends.append(p2)
+                p2.friends.append(p1)
+
+    print "populating everyone else's friends"
+    for p1 in Person.query.all():
+        for p2 in Person.query.all():
+            if p1 == p2 or p1 in p2.friends:
+                continue
+            if random.random() > 0.75:
+                p1.friends.append(p2)
+                p2.friends.append(p1)
+
+    print "done populating DB"
 
 populateDB(session)
 transaction.commit()
@@ -108,7 +132,6 @@ class DemoSQLARadialGraph(SQLARadialGraph):
         (function (jitwidget) {
               jitwidget.compute();
               jitwidget.plot();
-              $('#wine').click();
          })""")
     
     Node = {

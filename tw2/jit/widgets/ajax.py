@@ -99,10 +99,12 @@ class AjaxRadialGraph(RadialGraph):
 
     onCreateLabel = JSSymbol(src="""
         (function(domElement, node) {
-            $(domElement).html(node.name);
-            $(domElement).click(function() {
-                jitwidget.onClick(domElement.id);
-            });
+            try {
+                jQuery(domElement).html(node.name);
+                jQuery(domElement).click(function() {
+                    jitwidget.onClick(domElement.id);
+                });
+            } catch(err) {}
         })""")
 
     onPlaceLabel = JSSymbol(src="""
