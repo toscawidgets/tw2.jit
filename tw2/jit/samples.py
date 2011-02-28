@@ -53,9 +53,9 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
 
     url = '/db_radialgraph_demo/?key=wine'
 
-    background = { 'CanvasStyles':{ 'strokeStyle' : '#555' } }
+    background = { 'CanvasStyles':{ 'strokeStyle' : '#C73B0B' } }
     
-    backgroundcolor = '#0f0f0f'
+    backgroundcolor = '#350608'
 
     postInitJSCallback = JSSymbol(src="""
         (function (jitwidget) {
@@ -65,11 +65,11 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
          })""")
     
     Node = {
-        'color' : '#ddeeff',
+        'color' : '#C73B0B',
     }
             
     Edge = {
-        'color': '#C17878',
+        'color': '#F2C545',
         'lineWidth':1.5,
     }
 
