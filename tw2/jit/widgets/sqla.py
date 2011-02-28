@@ -25,6 +25,10 @@ class SQLARadialGraph(AjaxRadialGraph):
 
     depth = twc.Param("(int) number of levels of relations to show.", default=3)
 
+
+    # TODO -- prefixes are all messed up and we are left with weird orphan node
+
+
     from tw2.core.jsonify import jsonify
     @classmethod
     @jsonify
