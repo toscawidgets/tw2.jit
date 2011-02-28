@@ -18,6 +18,8 @@ class SQLARadialGraph(AjaxRadialGraph):
 
     # TBD -- show_relations?
     # TBD -- show_attributes?
+    # TBD -- excluded attributes
+    # TBD -- specified depth
 
     from tw2.core.jsonify import jsonify
     @classmethod
@@ -31,13 +33,12 @@ class SQLARadialGraph(AjaxRadialGraph):
             toks = req.params['key'].split(SEP)
             entkey, key = toks[-2:]
 
-        key = int(key)
-
-        get_pkey = lambda ent : ent.__mapper__.primary_key[0].key
         try:
             entity = filter(lambda x : x.__name__ == entkey, cls.entities)[0]
         except IndexError, e:
             raise ValueError, "No such sqla class '%s' in 'entities'." % entkey
+
+        get_pkey = lambda ent : ent.__mapper__.primary_key[0].key
         pkey = get_pkey(entity)
 
         obj = entity.query.filter_by(**{pkey:key}).one()
