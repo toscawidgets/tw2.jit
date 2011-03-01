@@ -12,8 +12,26 @@ from tw2.core.resources import JSSymbol
 from tw2.jit.widgets import AjaxRadialGraph
 from tw2.jit.samples.samples_data import RadialGraphJSONSampleData
 
-import commands
+yumobj = None
+try:
+    import yum
 
+    yumobj = yum.YumBase()
+    yumobj.setCacheDir()
+except ImportError, e:
+    import commands
+
+def get_dependencies(package):
+    if yumobj:
+        pkg = yumobj.pkgSack.searchNevra(name=package)[0]
+        deps_d = pkg.findDeps([pkg])
+        deps = [tup[0] for tup in deps_d[deps_d.keys()[0]].keys()]
+    else:
+        deps = commands.getoutput(
+            "yum deplist %s | grep dependency | awk ' { print $2 } '" % package)
+        deps = list(set([dep.split('(')[0] for dep in deps.split('\n') if dep]))
+
+    return deps
 
 def get_dependency_tree(package, n=1, prefix=''):
     make_node = lambda package, prefix : { 
@@ -24,18 +42,17 @@ def get_dependency_tree(package, n=1, prefix=''):
     }
     package = package.strip()
     print "Gathering dependencies of", package
-    out = commands.getoutput(
-        "yum deplist %s | grep dependency | awk ' { print $2 } '" % package)
-    out = list(set([dep.split('(')[0] for dep in out.split('\n') if dep]))
+
+    deps = get_dependencies(package)
 
     root = make_node(package, prefix)
     prefix = "%s_%s" % (prefix, package)
 
     if n > 0:
         [root['children'].append(
-            get_dependency_tree(dep, n-1, prefix)) for dep in out]
+            get_dependency_tree(dep, n-1, prefix)) for dep in deps]
     else:
-        [root['children'].append(make_node(dep, prefix)) for dep in out]
+        [root['children'].append(make_node(dep, prefix)) for dep in deps]
     return root
 
 
