@@ -96,6 +96,10 @@ Person.__mapper__.add_property('friends', relation(
 Base.metadata.create_all()
 
 def populateDB(sess):
+    if Person.query.count() > 0:
+        print "Not populating DB.  Already stuff in there."
+        return
+
     import random
 
     firsts = ["Sally", "Suzie", "Sandy",
