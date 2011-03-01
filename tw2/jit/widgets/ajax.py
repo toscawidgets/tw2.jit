@@ -11,10 +11,13 @@ import tw2.jquery
 class AjaxRadialGraph(RadialGraph):
     """ A radial graph that pulls nodes on demand.
 
+    WARNING : the "Live Demo" sample is hosted on a very slow machine.
+    When you click, be very patient.
+
     Based off of the following demo:
         http://demos.thejit.org/lpkgd/#
 
-    See thejit API documentation on RadialGraph:
+    See thejit API documentation on RadialGraph for more information:
         http://thejit.org/static/v20/Docs/files/Visualizations/RGraph-js.html
 
     """
