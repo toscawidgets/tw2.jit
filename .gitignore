@@ -5,6 +5,7 @@ tw2.jit.egg-info
 virtualenv-tw2.jit
 tw2core
 tw2devtools
+tw2.devtools
 README.pdf
 dist
 *.egg
