@@ -24,8 +24,8 @@ class AjaxRadialGraph(RadialGraph):
         self.resources.append(tw2.jquery.jquery_js)
 
         # Add the ajax url to the request graph source
-        if '%s' in self.requestGraph.src:
-            self.requestGraph.src = self.requestGraph.src % self.url
+        if '%s' in self.attrs['requestGraph'].src:
+            self.attrs['requestGraph'] = JSSymbol(src=self.requestGraph.src % self.url)
 
     url = twc.Param(""" TODO """)
 
