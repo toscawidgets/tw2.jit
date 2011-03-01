@@ -37,6 +37,9 @@ class JitWidget(twc.Widget):
     Uses tw2.jit.resources.CompoundJSSource for client-side initialization
     """
 
+    # Hide docs from the widget browser.  They're very verbose.
+    _hide_docs = True
+
     template = "tw2.jit.templates.jitwidget"
     resources = [jit_js, jit_glue_js]
    
