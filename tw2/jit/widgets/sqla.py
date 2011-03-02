@@ -34,9 +34,12 @@ class SQLARadialGraph(AjaxRadialGraph):
     @jsonify
     def request(cls, req):
         SEP = '___'
+        get_pkey = lambda ent : ent.__mapper__.primary_key[0].key
 
         if 'key' not in req.params:
-            entkey, key = cls.entities[0].__name__, 1
+            entkey = cls.entities[0].__name__
+            pkey = get_pkey(cls.entities[0])
+            key = getattr(cls.entities[0].query.first(), pkey)
         else:
             toks = req.params['key'].split(SEP)
             entkey, key = toks[-2:]
@@ -46,7 +49,6 @@ class SQLARadialGraph(AjaxRadialGraph):
         except IndexError, e:
             raise ValueError, "No such sqla class '%s' in 'entities'." % entkey
 
-        get_pkey = lambda ent : ent.__mapper__.primary_key[0].key
         pkey = get_pkey(entity)
 
         obj = entity.query.filter_by(**{pkey:key}).one()
