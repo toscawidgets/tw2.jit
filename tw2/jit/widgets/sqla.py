@@ -98,7 +98,7 @@ class SQLARadialGraph(AjaxRadialGraph):
                 children = [make_node_from_property(prefix, obj, k, v, depth+1)
                             for k, v in props.iteritems()]
 
-            data = getattr(obj, '__data__', lambda : {})()
+            data = getattr(obj, '__jit_data__', lambda : {})()
 
             return {
                 'id' : node_id,

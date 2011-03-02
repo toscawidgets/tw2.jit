@@ -65,8 +65,50 @@ class Person(Base):
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)
 
-    def __data__(self):
-        return {"some_attr" : self.some_attribute}
+    @property
+    def email(self):
+        return "%s.%s@socialistworker.org" % (self.first_name, self.last_name)
+
+    @property
+    def gravatar_url(self):
+        # import code for encoding urls and generating md5 hashes
+        import urllib
+        try:
+            from hashlib import md5
+        except ImportError:
+            import md5
+            md5 = md5.new
+
+        # construct the url
+        gravatar_url = "http://www.gravatar.com/avatar.php?"
+        gravatar_url += urllib.urlencode({
+            'gravatar_id': md5(self.email.lower()).hexdigest(),
+            'size': 64, 'd': 'monsterid',
+        })
+        return gravatar_url
+
+
+    def __jit_data__(self):
+        dictator = "This person is not a dictator."
+        if self.last_name in ["Ben Ali", "Mubarak", "Qaddafi"]:
+            dictator = "Probably needs to be overthrown."
+
+        return {
+            # This attribute is used to generate hoverover tips
+            "hover_html" : """
+            <div>
+                <h3>person.__jit_data__()['hover_html']</h3>
+                <img src="%s" />
+                <p>%s %s with %i friends and %i pets.</p>
+                <p>%s</p>
+            </div>
+            """ % (self.gravatar_url, self.first_name, self.last_name,
+                   len(self.friends), len(self.pets), dictator),
+            # This attribute is ultimately just ignored but by
+            # specifying it here, it is made available clientside
+            # for any custom js you want to rig up.
+            "some_attr" : self.some_attribute,
+        }
 
 
 class Pet(Base):
@@ -82,8 +124,22 @@ class Pet(Base):
     def __unicode__(self):
         return "%s the %s" % (self.name, self.variety)
 
-    def __data__(self):
-        return {"url" : "http://www.google.com/search?q=%s" % self.name}
+    def __jit_data__(self):
+        # TODO -- in the future, let's add other attributes
+        #         like 'click' or some js callbacks
+        return {
+            "hover_html" : """
+            <div>
+                <h3>pet.__jit_data__()['hover_html']</h3>
+                <p>This content is specified in the sqlalchemy model.
+                If you didn't know.  This is a Pet object.
+                It is a %s that goes by the name %s.</p>
+                <p>You might want to
+                <a href="http://www.google.com/search?q=%s">
+                    google for its name
+                </a>, or something.</p>
+            </div>""" % (self.variety, self.name, self.name),
+        }
 
 Person.__mapper__.add_property('friends', relation(
     Person,

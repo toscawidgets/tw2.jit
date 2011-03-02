@@ -38,7 +38,7 @@ def get_dependency_tree(package, n=1, prefix=''):
         'id': prefix + "___" + package,
         'name': package,
         'children': [],
-        'data': []
+        'data': {'hover_html':'<h2>%s</h2>' % package},
     }
     package = package.strip()
     print "Gathering dependencies of", package

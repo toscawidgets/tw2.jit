@@ -2,7 +2,7 @@ import tw2.core as twc
 from tw2.core.resources import JSSymbol
 
 from tw2.jit.widgets.core import JitTreeOrGraphWidget
-from tw2.jit.widgets.core import jit_js
+from tw2.jit.widgets.core import jit_css
 from tw2.jit.widgets.graph import RadialGraph
 
 # Used for doing ajax stuff
@@ -24,7 +24,7 @@ class AjaxRadialGraph(RadialGraph):
 
     def prepare(self):
         super(AjaxRadialGraph, self).prepare()
-        self.resources.append(tw2.jquery.jquery_js)
+        self.resources.extend([tw2.jquery.jquery_js, jit_css])
 
         # Add the ajax url to the request graph source
         if '%s' in self.attrs['requestGraph'].src:
@@ -102,10 +102,41 @@ class AjaxRadialGraph(RadialGraph):
                 jQuery(domElement).html(node.name);
                 jQuery(domElement).click(function() {
                     jitwidget.onClick(domElement.id);
-                    // TODO -- figure out something to really do with data here.
-                    // Here's one example:
-                    //if ( node.data.url ) window.location = node.data.url;
                 });
+                if ( node.data.hover_html ) {
+                    var TIP_FADE_TIME = 1000;
+                    var TIP_WAIT_TIME = 1000;
+                    var hover_id = 'ajaxRadialGraph_' + node.id + '_Tip';
+                    hover_id = hover_id.replace(/\./g,'_').replace(/\//g, '_');
+                    console.log(hover_id);
+                    jQuery(domElement)
+                      .mouseover(
+                         function (e) {
+                            if ( jQuery('#'+hover_id).length == 0 ) {
+                                var pos = jQuery(domElement).offset();
+                                var width = jQuery(domElement).width();
+                                jQuery('body').prepend("<div id='"+hover_id+"' class='radialGraphTip'></div>");
+                                var div = jQuery('#'+hover_id);
+                                div.css({
+                                    "position":"absolute",
+                                    "left":(pos.left+width) + "px",
+                                    "top":pos.top + "px"
+                                });
+                                div.hide().fadeIn(TIP_FADE_TIME);
+                                div.append(node.data.hover_html);
+                            }
+                        })
+                       .mouseout(
+                          function (e) {
+                            if ( jQuery('#'+hover_id).length == 0 ) { return; }
+                            setTimeout(function(){
+                                jQuery('#'+hover_id).fadeOut(TIP_FADE_TIME);
+                                setTimeout(function(){
+                                    jQuery('#'+hover_id).remove();
+                                }, TIP_FADE_TIME);
+                             },TIP_WAIT_TIME);
+                           });
+                }
             } catch(err) {}
         })""")
 
