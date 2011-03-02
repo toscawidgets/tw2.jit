@@ -7,7 +7,7 @@ f.close()
 
 setup(
     name='tw2.jit',
-    version='0.2.8b3',
+    version='0.2.8b4',
     description='toscawidgets2 wrapper for the javascript infovis toolkit(jit)',
     long_description=long_description,
     author='Ralph Bean',
@@ -36,7 +36,7 @@ setup(
         'toscawidgets.widgets',
     ],
     classifiers = [
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 3 - Beta',
         'Environment :: Web Environment',
         'Environment :: Web Environment :: ToscaWidgets',
         'Topic :: Software Development :: Libraries :: Python Modules',
