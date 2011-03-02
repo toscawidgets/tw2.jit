@@ -71,7 +71,7 @@ class SQLARadialGraph(AjaxRadialGraph):
             if type(value) in cls.entities:
                 result = make_node_from_object(value, depth, node_id)
                 result['name'] = "%s:<br/>%s" % (
-                    tw2.core.utils.name2label(key),
+                    tw2.core.util.name2label(key),
                     result['name'])
                 return result
             elif type(value) != sqlalchemy.orm.collections.InstrumentedList:
