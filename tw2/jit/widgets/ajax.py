@@ -177,4 +177,10 @@ class AjaxRadialGraph(RadialGraph):
             else
                 domElement.style.color = 'grey';
         })""")
+    postInitJSCallback = JSSymbol(
+        src="""
+        (function (jitwidget) {
+              jitwidget.compute();
+              jitwidget.plot();
+         })""")
 

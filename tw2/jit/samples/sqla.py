@@ -198,13 +198,6 @@ class DemoSQLARadialGraph(SQLARadialGraph):
 
     backgroundcolor = '#350608'
 
-    postInitJSCallback = JSSymbol(
-        src="""
-        (function (jitwidget) {
-        jitwidget.compute();
-        jitwidget.plot();
-    })""")
-
     Node = {
         'color' : '#C73B0B',
     }

@@ -74,13 +74,6 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
     
     backgroundcolor = '#350608'
 
-    postInitJSCallback = JSSymbol(src="""
-        (function (jitwidget) {
-              jitwidget.compute();
-              jitwidget.plot();
-              $('#wine').click();
-         })""")
-    
     Node = {
         'color' : '#C73B0B',
     }
