@@ -36,7 +36,7 @@ class SQLARadialGraph(AjaxRadialGraph):
         SEP = '___'
 
         if 'key' not in req.params:
-            entkey, key = 'Person', 1
+            entkey, key = cls.entities[0].__name__, 1
         else:
             toks = req.params['key'].split(SEP)
             entkey, key = toks[-2:]
