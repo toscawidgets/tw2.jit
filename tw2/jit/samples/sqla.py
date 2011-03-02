@@ -11,30 +11,6 @@ from tw2.core.resources import JSSymbol
 
 from tw2.jit.widgets import SQLARadialGraph
 
-def get_dependency_tree(package, n=1, prefix=''):
-    make_node = lambda package, prefix : { 
-        'id': prefix + "___" + package,
-        'name': package,
-        'children': [],
-        'data': []
-    }
-    package = package.strip()
-    print "Gathering dependencies of", package
-    out = commands.getoutput(
-        "yum deplist %s | grep dependency | awk ' { print $2 } '" % package)
-    out = list(set([dep.split('(')[0] for dep in out.split('\n') if dep]))
-
-    root = make_node(package, prefix)
-    prefix = "%s_%s" % (prefix, package)
-
-    if n > 0:
-        [root['children'].append(
-            get_dependency_tree(dep, n-1, prefix)) for dep in out]
-    else:
-        [root['children'].append(make_node(dep, prefix)) for dep in out]
-
-    return root
-
 import transaction
 from sqlalchemy import (
     Column, Integer, Unicode,
