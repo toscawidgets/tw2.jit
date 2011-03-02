@@ -70,13 +70,19 @@ class SQLARadialGraph(AjaxRadialGraph):
             children = []
             if type(value) in cls.entities:
                 result = make_node_from_object(value, depth, node_id)
-                result['name'] = "%s:<br/>%s" % (key, result['name'])
+                result['name'] = "%s:<br/>%s" % (
+                    tw2.core.utils.name2label(key),
+                    result['name'])
                 return result
             elif type(value) != sqlalchemy.orm.collections.InstrumentedList:
-                name = "%s:<br/>%s" % (key, unicode(value)),
+                name = "%s:<br/>%s" % (
+                    tw2.core.util.name2label(key),
+                    unicode(value))
             else:
                 node_id = SEP.join([prefix, key, unicode(uuid.uuid4())])
-                name = "%s of %s (%i)" % (key, unicode(parent), len(value))
+                name = "%s of %s (%i)" % (
+                    tw2.core.util.name2label(key),
+                    unicode(parent), len(value))
                 if depth < cls.depth:
                     children = [make_node_from_object(o, depth+1, node_id) for o in value]
 
