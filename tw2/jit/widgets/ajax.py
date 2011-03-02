@@ -104,11 +104,32 @@ class AjaxRadialGraph(RadialGraph):
                     jitwidget.onClick(domElement.id);
                 });
                 if ( node.data.hover_html ) {
+                    if ( window._fadeOutTimeouts === undefined ) { window._fadeOutTimeouts = {}; }
+                    if ( window._removeTimeouts === undefined ) { window._removeTimeouts = {}; }
+
                     var TIP_FADE_TIME = 1000;
                     var TIP_WAIT_TIME = 1000;
+
+                    function remove(hover_id, e) {
+                        var fadeOutTimeout = setTimeout(function(){
+                            window._fadeOutTimeouts[hover_id] = null;
+                            jQuery('#'+hover_id).fadeOut(TIP_FADE_TIME);
+                            var removeTimeout = setTimeout(function(){
+                                window._removeTimeouts[hover_id] = null;
+                                jQuery('#'+hover_id).remove();
+                            }, TIP_FADE_TIME);
+                            window._removeTimeouts[hover_id] = removeTimeout;
+                        },TIP_WAIT_TIME);
+                        window._fadeOutTimeouts[hover_id] = fadeOutTimeout;
+                    }
+                    function unremove(hover_id, e) {
+                         clearTimeout(window._fadeOutTimeouts[hover_id]);
+                         clearTimeout(window._removeTimeouts[hover_id]);
+                    }
+
                     var hover_id = 'ajaxRadialGraph_' + node.id + '_Tip';
                     hover_id = hover_id.replace(/\./g,'_').replace(/\//g, '_');
-                    console.log(hover_id);
+
                     jQuery(domElement)
                       .mouseover(
                          function (e) {
@@ -124,18 +145,15 @@ class AjaxRadialGraph(RadialGraph):
                                 });
                                 div.hide().fadeIn(TIP_FADE_TIME);
                                 div.append(node.data.hover_html);
+                                div.mouseover(function(e){unremove(hover_id, e);});
+                                div.mouseout(function(e){remove(hover_id, e);});
                             }
-                        })
+                         })
                        .mouseout(
                           function (e) {
                             if ( jQuery('#'+hover_id).length == 0 ) { return; }
-                            setTimeout(function(){
-                                jQuery('#'+hover_id).fadeOut(TIP_FADE_TIME);
-                                setTimeout(function(){
-                                    jQuery('#'+hover_id).remove();
-                                }, TIP_FADE_TIME);
-                             },TIP_WAIT_TIME);
-                           });
+                            remove(hover_id, e);
+                          });
                 }
             } catch(err) {}
         })""")
