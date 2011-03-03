@@ -47,6 +47,7 @@ class SQLARadialGraph(AjaxRadialGraph):
     @classmethod
     @jsonify
     def request(cls, req):
+        relationship_node = None
         if 'key' not in req.params:
             entkey = cls.entities[0].__name__
             pkey = get_pkey(cls.entities[0])
@@ -54,6 +55,11 @@ class SQLARadialGraph(AjaxRadialGraph):
         else:
             toks = req.params['key'].split(SEP)
             entkey, key = toks[-2:]
+            if entkey not in [x.__name__ for x in cls.entities]:
+                if len(toks) >= 4:
+                    # Then this might be a 'relationship' node
+                    entkey, key = toks[-4:-2]
+                    relationship_node = toks[-2]
 
         try:
             entity = filter(lambda x : x.__name__ == entkey, cls.entities)[0]
@@ -126,7 +132,14 @@ class SQLARadialGraph(AjaxRadialGraph):
                 'data' : data,
             }
 
-        json = make_node_from_object(obj)
+        if not relationship_node:
+            json = make_node_from_object(obj)
+        else:
+            json = make_node_from_property(
+                '', obj, relationship_node, getattr(obj, relationship_node), 0)
+            original_parent = make_node_from_object(
+                obj, prefix=json['id'], depth=1)
+            json['children'].append(original_parent)
 
         return json
 
