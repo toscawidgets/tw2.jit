@@ -91,9 +91,8 @@ class SQLARadialGraph(AjaxRadialGraph):
                     unicode(value))
             else:
                 node_id = SEP.join([prefix, key, unicode(uuid.uuid4())])
-                name = "%s of %s (%i)" % (
-                    tw2.core.util.name2label(key),
-                    unicode(parent), len(value))
+                name = "%s (%i)" % (
+                    tw2.core.util.name2label(key), len(value))
                 if depth < cls.depth:
                     children = [make_node_from_object(o, depth+1, node_id) for o in value]
 
