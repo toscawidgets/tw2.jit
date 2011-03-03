@@ -188,7 +188,7 @@ class JitWidget(twc.Widget):
                 for var, fun in self.jsVariables.iteritems():
                     res = fun(self)
                     if res:
-                        self.attrs[k].src = v.src.replace(var, res)
+                        self.attrs[k] = JSSymbol(src=v.src.replace(var, res))
 
         setupcall = JSFuncCall(
             function='var jitwidget = setupTW2JitWidget',
