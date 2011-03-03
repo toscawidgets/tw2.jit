@@ -68,7 +68,8 @@ class DemoAjaxRadialGraph(AjaxRadialGraph):
         json = get_dependency_tree(key)
         return json
 
-    url = '/ajax_radialgraph_demo/?key=wine'
+    base_url = '/ajax_radialgraph_demo/'
+    url_kw = {'key' : 'TurboGears'}
 
     background = { 'CanvasStyles':{ 'strokeStyle' : '#C73B0B' } }
     

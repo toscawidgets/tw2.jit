@@ -9,8 +9,14 @@ import tw2.jquery
 import sqlalchemy
 import uuid
 
+SEP = '___'
+get_pkey = lambda ent : ent.__mapper__.primary_key[0].key
+
 class SQLARadialGraph(AjaxRadialGraph):
     """ A radial graph built automatically from sqlalchemy objects """
+
+    rootObject = twc.Param(
+        "sqlalchemy mapped object to focus on when the graph first loads")
 
     entities = twc.Param(
         "sqlalchemy classes to which this graph is mapped",
@@ -25,17 +31,22 @@ class SQLARadialGraph(AjaxRadialGraph):
 
     depth = twc.Param("(int) number of levels of relations to show.", default=3)
 
+    def prepare(self):
+        if type(self.rootObject) not in self.entities:
+            raise ValueError, "Type of rootObject must be in entities"
 
-    # TODO -- prefixes are all messed up and we are left with weird orphan node
+        pkey = get_pkey(type(self.rootObject))
+        self.url_kw = { 'key' : SEP.join(
+            [type(self.rootObject).__name__,
+             unicode(getattr(self.rootObject, pkey))]) }
+
+        super(SQLARadialGraph, self).prepare()
 
 
     from tw2.core.jsonify import jsonify
     @classmethod
     @jsonify
     def request(cls, req):
-        SEP = '___'
-        get_pkey = lambda ent : ent.__mapper__.primary_key[0].key
-
         if 'key' not in req.params:
             entkey = cls.entities[0].__name__
             pkey = get_pkey(cls.entities[0])

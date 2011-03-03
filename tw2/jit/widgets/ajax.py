@@ -26,12 +26,6 @@ class AjaxRadialGraph(RadialGraph):
         super(AjaxRadialGraph, self).prepare()
         self.resources.extend([tw2.jquery.jquery_js, jit_css])
 
-        # Add the ajax url to the request graph source
-        if '%s' in self.attrs['requestGraph'].src:
-            self.attrs['requestGraph'] = JSSymbol(src=self.requestGraph.src % self.url)
-
-    url = twc.Param(""" TODO """)
-
     preprocessTree = twc.Param(
         """ TODO """, attribute=True,
         default=JSSymbol(src="""
@@ -45,7 +39,7 @@ class AjaxRadialGraph(RadialGraph):
         (function() {
             var that = this, id = this.clickedNodeId;
             var jsonRequest = $.ajax({
-                url: '%s?key=' + encodeURIComponent(id),
+                url: '$$base_url?key=' + encodeURIComponent(id),
                 dataType: 'json',
                 success:  function (json) {
                     that.preprocessTree(json);

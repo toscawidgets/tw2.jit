@@ -16,7 +16,7 @@ from tw2.jit.resources import CompoundJSSource
             
 import tw2.jquery
 
-from string import Formatter
+import urllib
 
 # TODO -- the tw2 devtools give me __name__ as tw2.jit.widgets but the resources are all in tw2.jit/static
 modname = ".".join(__name__.split('.')[:-1])
@@ -65,8 +65,11 @@ class JitWidget(twc.Widget):
     
     data = twc.Param('python data to be jsonified and passed to the widget',
                     default=None, attribute=True)
-    url = twc.Param('url to json data to be loaded into the widget',
+    base_url = twc.Param('url for json data to be loaded into the widget',
                    default=None, attribute=True)
+    url_args = twc.Param('dict of keyword args for the json url',
+                   default={}, attribute=True)
+    url = twc.Variable('internal use only.  full json url', attribute=True)
     # End twc Params
 
     # Start twc Attributes
@@ -151,6 +154,7 @@ class JitWidget(twc.Widget):
         'A dictionary of special jsVariables for substitution',
         default={
             '$$url': lambda s: s.url,
+            '$$base_url': lambda s: s.base_url,
             '$$jitwidget': lambda s:'window._jitwidgets["%s"]' % s.compound_id,
         }
     )
@@ -170,9 +174,14 @@ class JitWidget(twc.Widget):
             msg = "{0.__name__} requires a 'jitClassName'.".format(type(self))
             raise ValueError, msg
 
-        if not self.data and not self.url:
-            msg = "%s requires 'data' or 'url' param." % self.__class__.__name__
+        if not self.data and not self.base_url:
+            msg = "%s requires 'data' or 'base_url' param." % self.__class__.__name__
             raise ValueError, msg
+
+        self.url = self.base_url
+        if getattr(self, 'url_kw', {}):
+            q_str = urllib.urlencode(self.url_kw)
+            self.url += '?' + q_str
 
         for k, v in self.attrs.iteritems():
             if type(v) in [JSSymbol]:

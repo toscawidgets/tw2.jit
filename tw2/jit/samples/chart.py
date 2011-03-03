@@ -37,7 +37,7 @@ class DemoAreaChart(AreaChart):
     @jsonify
     def request(cls, req):
         return AreaChartJSONSampleData
-    url = '/area_chart_data/'
+    base_url = '/area_chart_data/'
 
 import tw2.core as twc
 twc.core.request_local()['middleware'].controllers.register(DemoAreaChart,

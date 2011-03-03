@@ -192,7 +192,10 @@ class DemoSQLARadialGraph(SQLARadialGraph):
     entities = [Person, Pet]
     excluded_columns = ['id', 'owner_id']
 
-    url = '/db_radialgraph_demo/'
+    # Some initial target
+    rootObject = Person.query.first()
+
+    base_url = '/db_radialgraph_demo/'
 
     background = { 'CanvasStyles':{ 'strokeStyle' : '#C73B0B' } }
 
