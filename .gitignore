@@ -11,4 +11,4 @@ dist
 *.egg
 tw2jquery
 tw2forms
-sample_sqla.db
+*.db
