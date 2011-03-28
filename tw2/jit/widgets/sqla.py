@@ -104,7 +104,7 @@ class SQLARadialGraph(AjaxRadialGraph):
     @jsonify
     def request(cls, req):
         relationship_node, alphabetic_node = None, None
-        if 'key' not in req.params:
+        if 'key' not in req.params or not req.params['key']:
             entkey = cls.entities[0].__name__
             pkey = get_pkey(cls.entities[0])
             key = getattr(cls.entities[0].query.first(), pkey)
