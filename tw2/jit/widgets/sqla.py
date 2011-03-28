@@ -9,6 +9,7 @@ import tw2.jquery
 
 import sqlalchemy as sa
 import uuid
+from itertools import product
 
 SEP = '___'
 get_pkey = lambda ent : ent.__mapper__.primary_key[0].key
@@ -36,6 +37,20 @@ class SQLARadialGraph(AjaxRadialGraph):
     auto_labels = twc.Param("(bool) Auto add relationship metadata to labels",
                             default=True)
 
+    alphabetize_relations = twc.Param(
+        """(str or int) Sub-package relationship items alphabetically.
+
+        If the value is a `str`, it must be either 'always', or 'never'.
+
+        If the value is an `int`, it is taken as a threshold where if and
+        only if the number of items in the relation is greater than the
+        threshold value will the relations then be branched out in
+        alphabetically organized sub trees.
+
+        The `imply_relations` param does not override this.  If you truely want
+        no implicit nodes shown, then both must be set to False/'never'.
+        """, default=26)
+
     depth = twc.Param("(int) number of levels of relations to show.", default=3)
 
     def prepare(self):
@@ -49,6 +64,30 @@ class SQLARadialGraph(AjaxRadialGraph):
 
         super(SQLARadialGraph, self).prepare()
 
+
+    @classmethod
+    def _alphabetize(cls, lst):
+        """ True if, as configured, this widget should alphabetize this list.
+        """
+        return (
+            cls.alphabetize_relations == 'always' or
+            cls.alphabetize_relations < len(lst)
+        )
+
+    @classmethod
+    def _do_alphabetize(cls, lst, depth, node_id):
+        """ Produce the list of children of an alphabetized relation. """
+        # TODO -- internationalization?
+        characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+        letter_nodes = [{
+            'id' : "%s%s%s" % (node_id, SEP, ch),
+            'name' : ch,
+            'children' : [],
+            'data' : {},
+        } for ch in characters]
+
+        return letter_nodes
 
     from tw2.core.jsonify import jsonify
     @classmethod
@@ -104,8 +143,17 @@ class SQLARadialGraph(AjaxRadialGraph):
                 node_id = SEP.join([prefix, key, unicode(uuid.uuid4())])
                 name = "%s (%i)" % (name2label(key), len(value))
                 if depth < cls.depth:
-                    children = [make_node_from_object(o, depth+1, node_id)
-                                for o in value]
+                    if not cls._alphabetize(value):
+                        children = [make_node_from_object(o, depth+1, node_id)
+                                    for o in value]
+                    else:
+                        children = cls._do_alphabetize(value, depth+1, node_id)
+                        for child, obj in product(children, value):
+                            if not child['id'].endswith(unicode(obj)[0]):
+                                continue
+                            # TBD - this might mess with all the depth checking
+                            n = make_node_from_object(obj,depth+2,child['id'])
+                            child['children'].append(n)
 
             node_id = safe_id(node_id)
 
