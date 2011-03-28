@@ -12,6 +12,7 @@ import uuid
 from itertools import product
 
 SEP = '___'
+ALPHA = 'ALPHA'
 get_pkey = lambda ent : ent.__mapper__.primary_key[0].key
 
 class SQLARadialGraph(AjaxRadialGraph):
@@ -90,7 +91,7 @@ class SQLARadialGraph(AjaxRadialGraph):
         characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
         letter_nodes = [{
-            'id' : "%s%s%s" % (node_id, SEP, ch),
+            'id' : "%s%s%s%s%s" % (node_id, SEP, ALPHA, SEP, ch),
             'name' : ch,
             'children' : [],
             'data' : {},
@@ -102,7 +103,7 @@ class SQLARadialGraph(AjaxRadialGraph):
     @classmethod
     @jsonify
     def request(cls, req):
-        relationship_node = None
+        relationship_node, alphabetic_node = None, None
         if 'key' not in req.params:
             entkey = cls.entities[0].__name__
             pkey = get_pkey(cls.entities[0])
@@ -111,7 +112,14 @@ class SQLARadialGraph(AjaxRadialGraph):
             toks = req.params['key'].split(SEP)
             entkey, key = toks[-2:]
             if entkey not in [x.__name__ for x in cls.entities]:
-                if len(toks) >= 4:
+                if entkey == ALPHA:
+                    # Then this must be an 'alphabetic' node
+                    if not len(toks) >= 6:
+                        raise ValueError, "Invalid id len with %s." % ALPHA
+                    entkey, key = toks[-6:-4]
+                    relationship_node = toks[-4]
+                    alphabetic_node = toks[-1]
+                elif len(toks) >= 4:
                     # Then this might be a 'relationship' node
                     entkey, key = toks[-4:-2]
                     relationship_node = toks[-2]
@@ -223,14 +231,43 @@ class SQLARadialGraph(AjaxRadialGraph):
                 'data' : data,
             }
 
-        if not relationship_node:
-            json = make_node_from_object(obj)
-        else:
+        if alphabetic_node:
+            prefix = SEP.join([
+                entity.__name__, key, relationship_node, str(uuid.uuid4())])
+
+            json = {
+                'id' : prefix,
+                'name' : alphabetic_node,
+                'children' : [],
+                'data' : {}
+            }
+
+            original_relation = make_node_from_property(
+                SEP.join([entity.__name__, key]),
+                obj, relationship_node,
+                getattr(obj, relationship_node), depth=1)
+
+            original_parent = make_node_from_object(
+                obj, prefix=json['id'], depth=2)
+
+            for child in original_relation['children']:
+                if child['name'].startswith('%s (' % alphabetic_node):
+                    # TODO -- this isn't quite right and doesn't obey the depth
+                    # rules correctly.
+                    json['children'] = child['children']
+                    original_relation['children'].remove(child)
+
+            original_relation['children'].append(original_parent)
+            json['children'].append(original_relation)
+        elif relationship_node:
             json = make_node_from_property(
-                '', obj, relationship_node, getattr(obj, relationship_node), 0)
+                SEP.join([entity.__name__, key]),
+                obj, relationship_node, getattr(obj, relationship_node), 0)
             original_parent = make_node_from_object(
                 obj, prefix=json['id'], depth=1)
             json['children'].append(original_parent)
+        else:
+            json = make_node_from_object(obj)
 
         return json
 
