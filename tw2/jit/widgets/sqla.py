@@ -29,6 +29,9 @@ class SQLARadialGraph(AjaxRadialGraph):
     show_relations = twc.Param("(bool) show relationships?", default=True)
     show_attributes = twc.Param("(bool) show attributes?", default=True)
 
+    imply_relations = twc.Param("(bool) show implied relationship nodes?",
+                                default=True)
+
     depth = twc.Param("(int) number of levels of relations to show.", default=3)
 
     def prepare(self):
@@ -118,6 +121,16 @@ class SQLARadialGraph(AjaxRadialGraph):
                 props = dict([(p.key, getattr(obj, p.key))
                               for p in obj.__mapper__.iterate_properties
                               if not exclude_property(p) ])
+
+                # If 'imply_relations' is set to False
+                # Wipe out each relation in the dict of props and replace it
+                # with the actual objects from the relation.
+                if not cls.imply_relations:
+                    for k, v in list(props.iteritems()):
+                        if isinstance(v, sa.orm.collections.InstrumentedList):
+                            del props[k]
+                            for i, item in enumerate(v):
+                                props["%s%s%i" % (k, SEP, i)] = item
 
                 children = [make_node_from_property(prefix, obj, k, v, depth+1)
                             for k, v in props.iteritems()]
