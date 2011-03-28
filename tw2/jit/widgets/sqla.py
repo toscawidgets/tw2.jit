@@ -263,10 +263,29 @@ class SQLARadialGraph(AjaxRadialGraph):
 
             for child in original_relation['children']:
                 if child['name'].startswith('%s (' % alphabetic_node):
-                    # TODO -- this isn't quite right and doesn't obey the depth
-                    # rules correctly.
-                    json['children'] = child['children']
+                    # Here we throw away work that we've already done.  Sad.
                     original_relation['children'].remove(child)
+
+            # Unfortunately, we have to 'do the same work twice' here
+            # because at present I'm too lazy to do it correctly.  We're
+            # going to make the same queries to expand children out a
+            # second time.  Fortunately, sqlalchemy should make the
+            # performance hit less noticable.
+            #
+            # Just to be clear, the call above to build
+            # 'original_relation' makes the same queries we're about to
+            # make here but with a 'depth' setting that doesn't make
+            # sense since we reorganizing the tree here.  We just going
+            # to make the same calls again on the children of the
+            # 'faked' root node.
+            #
+            # In the future this can be optimized.
+            for child in getattr(obj, relationship_node):
+                if not unicode(child)[0].upper().startswith(alphabetic_node):
+                    continue
+
+                json['children'].append(make_node_from_object(
+                    child, prefix=prefix, depth=1))
 
             original_relation['children'].append(original_parent)
             json['children'].append(original_relation)
