@@ -180,7 +180,7 @@ class AjaxRadialGraph(RadialGraph):
               jitwidget.compute();
               jitwidget.plot();
               jitwidget.deep_linking = $$deep_linking;
-              if ( jitwidget.deep_linking ) {
+              if ( jitwidget.deep_linking && window.location.hash != '' ) {
                   jitwidget.clickedNodeId = window.location.hash;
                   $.getJSON(
                     '$$base_url?key='+encodeURIComponent(jitwidget.clickedNodeId),
