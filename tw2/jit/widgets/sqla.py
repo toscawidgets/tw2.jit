@@ -103,7 +103,8 @@ class SQLARadialGraph(AjaxRadialGraph):
                 name = "%s (%i)" % (
                     tw2.core.util.name2label(key), len(value))
                 if depth < cls.depth:
-                    children = [make_node_from_object(o, depth+1, node_id) for o in value]
+                    children = [make_node_from_object(o, depth+1, node_id)
+                                for o in value]
 
             node_id = safe_id(node_id)
 
