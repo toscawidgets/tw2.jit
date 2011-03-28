@@ -32,6 +32,9 @@ class SQLARadialGraph(AjaxRadialGraph):
     imply_relations = twc.Param("(bool) show implied relationship nodes?",
                                 default=True)
 
+    auto_labels = twc.Param("(bool) Auto add relationship metadata to labels",
+                            default=True)
+
     depth = twc.Param("(int) number of levels of relations to show.", default=3)
 
     def prepare(self):
@@ -90,14 +93,13 @@ class SQLARadialGraph(AjaxRadialGraph):
             children = []
             if type(value) in cls.entities:
                 result = make_node_from_object(value, depth, node_id)
-                result['name'] = "%s:<br/>%s" % (
-                    tw2.core.util.name2label(key),
-                    result['name'])
+                if cls.auto_labels:
+                    result['name'] = "%s:<br/>%s" % (
+                        tw2.core.util.name2label(key),
+                        result['name'])
                 return result
             elif type(value) != sa.orm.collections.InstrumentedList:
-                name = "%s:<br/>%s" % (
-                    tw2.core.util.name2label(key),
-                    unicode(value))
+                name = "%s:<br/>%s" % (tw2.core.util.name2label(key), unicode(value))
             else:
                 node_id = SEP.join([prefix, key, unicode(uuid.uuid4())])
                 name = "%s (%i)" % (
@@ -138,10 +140,12 @@ class SQLARadialGraph(AjaxRadialGraph):
 
             data = getattr(obj, '__jit_data__', lambda : {})()
 
+            name = unicode(obj)
+            if cls.auto_labels:
+                name = "%s:  %s" % (tw2.core.util.name2label(type(obj).__name__), name)
             return {
                 'id' : node_id,
-                'name' : "%s: %s" % (
-                    tw2.core.util.name2label(type(obj).__name__), unicode(obj)),
+                'name' : name,
                 'children' : children,
                 'data' : data,
             }
