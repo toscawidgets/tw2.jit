@@ -169,7 +169,7 @@ def populateDB(sess):
         for p2 in dictators:
             if p1 == p2 or p1 in p2.friends:
                 continue
-            if random.random() > 0.25:
+            if random.random() > 0.75:
                 p1.friends.append(p2)
                 p2.friends.append(p1)
 
