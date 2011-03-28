@@ -166,7 +166,7 @@ class SQLARadialGraph(AjaxRadialGraph):
                     else:
                         children = cls._do_alphabetize(value, depth+1, node_id)
                         for child, obj in product(children, value):
-                            if not child['id'].endswith(unicode(obj)[0]):
+                            if not child['id'].endswith(unicode(obj)[0].upper()):
                                 continue
                             # TBD - this might mess with all the depth checking
                             n = make_node_from_object(obj,depth+2,child['id'])
