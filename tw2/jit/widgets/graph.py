@@ -58,7 +58,6 @@ class AsynchronousRadialGraph(RadialGraph):
       };
       var rgraph = $$jitwidget;
       json.id = rgraph.root;
-      console.log('JSON id is:' + json.id);
       $jit.Graph.Util.eachAdjacency(rgraph.graph.getNode(rgraph.root),
           function(elem) {
             var nodeTo = elem.nodeTo, jsonNode = getNode(nodeTo.name);
@@ -69,11 +68,9 @@ class AsynchronousRadialGraph(RadialGraph):
     requestGraph = twc.Param(attribute=True, default=JSSymbol(src="""
        (function() {
         var that = this, id = this.clickedNodeId;
-        console.log("requesting info <em>please wait...</em>");
         $.getJSON(
             '$$url' + encodeURIComponent(that.clickedNodeName) + '/',
             function(json) {
-            console.log("morphing...");
             that.preprocessTree(json);
             var op = $jit.ST.Op($$jitwidget.viz);
             $jit.Graph.Op.viz = $$jitwidget;
@@ -102,7 +99,6 @@ class AsynchronousRadialGraph(RadialGraph):
               modes:['polar'],
               duration: 2000
           });
-        console.log('setting up json call');
         $.getJSON(
            '$$url' + name + '/',
             function(json) {
@@ -110,7 +106,6 @@ class AsynchronousRadialGraph(RadialGraph):
          jitwidget.loadJSON(json);
           //compute positions
           jitwidget.compute();
-          console.log("done");
           jitwidget.controller.clickedNodeName = name;
         });
     })""")
