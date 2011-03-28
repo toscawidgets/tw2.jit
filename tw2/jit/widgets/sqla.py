@@ -191,14 +191,24 @@ class SQLARadialGraph(AjaxRadialGraph):
                 # If 'imply_relations' is set to False
                 # Wipe out each relation in the dict of props and replace it
                 # with the actual objects from the relation.
-                if not cls.imply_relations:
-                    for k, v in list(props.iteritems()):
-                        if isinstance(v, sa.orm.collections.InstrumentedList):
-                            del props[k]
-                            for i, item in enumerate(v):
-                                props["%s%s%i" % (k, SEP, i)] = item
+                children = []
+                for k, v in list(props.iteritems()):
+                    if isinstance(v, sa.orm.collections.InstrumentedList):
+                        del props[k]
+                        if not cls.imply_relations:
+                            children.extend([
+                                make_node_from_object(
+                                    item, depth+1,
+                                    "%s%s%s%s%i" % (prefix, SEP, k, SEP, i))
+                                for i, item in enumerate(v)
+                            ])
+                        else:
+                            children.append(
+                                make_node_from_property(
+                                    prefix, obj, k, v, depth+1)
+                            )
 
-                children = [make_node_from_property(prefix, obj, k, v, depth+1)
+                children += [make_node_from_property(prefix, obj, k, v, depth+1)
                             for k, v in props.iteritems()]
 
             data = getattr(obj, '__jit_data__', lambda : {})()
