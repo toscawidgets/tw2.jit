@@ -48,8 +48,8 @@ class SQLARadialGraph(AjaxRadialGraph):
         threshold value will the relations then be branched out in
         alphabetically organized sub trees.
 
-        The `imply_relations` param does not override this.  If you truely want
-        no implicit nodes shown, then both must be set to False/'never'.
+        The `imply_relations` param overrides this!  The two params are not
+        compatible.
         """, default=26)
 
     alphabetize_minimal = twc.Param(
