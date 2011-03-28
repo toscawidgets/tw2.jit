@@ -165,10 +165,12 @@ class SQLARadialGraph(AjaxRadialGraph):
                                     for o in value]
                     else:
                         children = cls._do_alphabetize(value, depth+1, node_id)
+
                         for child, obj in product(children, value):
                             if not child['id'].endswith(unicode(obj)[0].upper()):
                                 continue
-                            # TBD - this might mess with all the depth checking
+                            # This would mess with all the depth checking if it
+                            # weren't for the removal code three blocks below.
                             n = make_node_from_object(obj,depth+2,child['id'])
                             child['children'].append(n)
 
@@ -178,6 +180,15 @@ class SQLARadialGraph(AjaxRadialGraph):
                         if cls.alphabetize_minimal:
                             children = [c for c in children
                                         if len(c['children']) > 0]
+
+                        if not depth + 1 < cls.depth:
+                            # Just delete 'em'!  We had to query them anyways
+                            # to get the length counts for each alphabet letter,
+                            # but if we keep them, we disobey the cls.depth
+                            # parameter!  Oh wellz.
+                            for child in children:
+                                child['children'] = []
+
 
             node_id = safe_id(node_id)
 
