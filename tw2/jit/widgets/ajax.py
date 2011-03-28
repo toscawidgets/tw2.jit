@@ -37,7 +37,7 @@ class AjaxRadialGraph(RadialGraph):
         """ TODO """, attribute=True,
         default=JSSymbol(src="""
         (function() {
-            var that = this, id = this.clickedNodeId;
+            var that = this, id = jitwidget.clickedNodeId;
             var jsonRequest = $.ajax({
                 url: '$$base_url?key=' + encodeURIComponent(id),
                 dataType: 'json',
@@ -85,7 +85,10 @@ class AjaxRadialGraph(RadialGraph):
     onBeforeCompute = JSSymbol(src="""
         (function (node) {
             jitwidget.oldRootToRemove = node.getParents()[0].id;
-            this.clickedNodeId = node.id;
+            jitwidget.clickedNodeId = node.id;
+            if ( jitwidget.deep_linking ) {
+                window.location.hash = jitwidget.clickedNodeId;
+            }
          })""")
 
     onAfterCompute = JSSymbol(src="(function() { this.requestGraph(); })")
@@ -176,5 +179,16 @@ class AjaxRadialGraph(RadialGraph):
         (function (jitwidget) {
               jitwidget.compute();
               jitwidget.plot();
+              jitwidget.deep_linking = $$deep_linking;
+              if ( jitwidget.deep_linking ) {
+                  jitwidget.clickedNodeId = window.location.hash;
+                  $.getJSON(
+                    '$$base_url?key='+encodeURIComponent(jitwidget.clickedNodeId),
+                    function (data) {
+                        jitwidget.loadJSON(data);
+                        jitwidget.compute();
+                        jitwidget.plot();
+                    });
+              }
          })""")
 

@@ -8,6 +8,7 @@ import tw2.core as twc
 from tw2.core.resources import JSLink, CSSLink
 from tw2.core.resources import JSSymbol, JSFuncCall
 from tw2.core.resources import JSSource
+from tw2.core.resources import encoder
 from tw2.core.widgets import WidgetMeta
 from tw2.core.widgets import Widget
 
@@ -150,12 +151,23 @@ class JitWidget(twc.Widget):
             'onMouseWheel': '(function() {})' 
         })
 
+    deep_linking = twc.Param(
+        """(bool) Use 'deep-linking'.
+
+        Only employed by *some* widgets.  (AjaxRadialGraph,
+        SQLARadialGraph).
+
+        Warning:  This will conflict with and probably break any other
+        form of deep-linking you may have on the page.  Disabled by default.
+        """, default=False)
+
     jsVariables = twc.Param(
         'A dictionary of special jsVariables for substitution',
         default={
             '$$url': lambda s: s.url,
             '$$base_url': lambda s: s.base_url,
             '$$jitwidget': lambda s:'window._jitwidgets["%s"]' % s.compound_id,
+            '$$deep_linking': lambda s: s.deep_linking,
         }
     )
     # End twc attrs
@@ -186,9 +198,14 @@ class JitWidget(twc.Widget):
         for k, v in self.attrs.iteritems():
             if type(v) in [JSSymbol]:
                 for var, fun in self.jsVariables.iteritems():
+                    if not var in v.src:
+                        continue
                     res = fun(self)
-                    if res:
-                        self.attrs[k] = JSSymbol(src=v.src.replace(var, res))
+                    if not isinstance(res, basestring):
+                        res = encoder.encode(res)
+
+                    self.attrs[k] = JSSymbol(
+                        src=self.attrs[k].src.replace(var, res))
 
         setupcall = JSFuncCall(
             function='var jitwidget = setupTW2JitWidget',
@@ -203,7 +220,8 @@ class JitWidget(twc.Widget):
             loadcall = JSFuncCall(
                 function='jitwidget.loadJSON',
                 args=[self.data],)
-            postcall = JSSource(src=self.postInitJSCallback.src+'(jitwidget)')
+            postcall = JSSource(
+                src=self.attrs['postInitJSCallback'].src+'(jitwidget)')
         else:
             # For asynchronous loading
             self.resources.append(tw2.jquery.jquery_js)
@@ -217,7 +235,8 @@ class JitWidget(twc.Widget):
                                         // Do post-init stuff
                                         %s(jitwidget);
                                     }
-                               );""" % (self.url, self.postInitJSCallback.src))
+                               );""" % (self.url,
+                                        self.attrs['postInitJSCallback'].src))
 
         composite_js_call = CompoundJSSource(
             exec_delay=self.init_delay,
