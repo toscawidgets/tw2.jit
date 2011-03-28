@@ -6,7 +6,7 @@ from tw2.jit.widgets.ajax import AjaxRadialGraph
 # Used for doing ajax stuff
 import tw2.jquery
 
-import sqlalchemy
+import sqlalchemy as sa
 import uuid
 
 SEP = '___'
@@ -71,8 +71,8 @@ class SQLARadialGraph(AjaxRadialGraph):
         obj = entity.query.filter_by(**{pkey:key}).one()
 
         def exclude_property(p):
-            is_attribute = lambda x: type(x) is sqlalchemy.orm.properties.ColumnProperty
-            is_relation = lambda x: type(x) is sqlalchemy.orm.properties.RelationshipProperty
+            is_attribute = lambda x: type(x) is sa.orm.properties.ColumnProperty
+            is_relation = lambda x: type(x) is sa.orm.properties.RelationshipProperty
 
             explicitly_excluded = p.key in cls.excluded_columns
             excluded_by_attribute = is_attribute(p) and not cls.show_attributes
@@ -91,7 +91,7 @@ class SQLARadialGraph(AjaxRadialGraph):
                     tw2.core.util.name2label(key),
                     result['name'])
                 return result
-            elif type(value) != sqlalchemy.orm.collections.InstrumentedList:
+            elif type(value) != sa.orm.collections.InstrumentedList:
                 name = "%s:<br/>%s" % (
                     tw2.core.util.name2label(key),
                     unicode(value))
