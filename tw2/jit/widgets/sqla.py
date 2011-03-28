@@ -1,5 +1,6 @@
 import tw2.core as twc
 from tw2.core.resources import JSSymbol
+from tw2.core.util import name2label
 
 from tw2.jit.widgets.ajax import AjaxRadialGraph
 
@@ -95,15 +96,13 @@ class SQLARadialGraph(AjaxRadialGraph):
                 result = make_node_from_object(value, depth, node_id)
                 if cls.auto_labels:
                     result['name'] = "%s:<br/>%s" % (
-                        tw2.core.util.name2label(key),
-                        result['name'])
+                        name2label(key), result['name'])
                 return result
             elif type(value) != sa.orm.collections.InstrumentedList:
-                name = "%s:<br/>%s" % (tw2.core.util.name2label(key), unicode(value))
+                name = "%s:<br/>%s" % (name2label(key), unicode(value))
             else:
                 node_id = SEP.join([prefix, key, unicode(uuid.uuid4())])
-                name = "%s (%i)" % (
-                    tw2.core.util.name2label(key), len(value))
+                name = "%s (%i)" % (name2label(key), len(value))
                 if depth < cls.depth:
                     children = [make_node_from_object(o, depth+1, node_id)
                                 for o in value]
@@ -142,7 +141,7 @@ class SQLARadialGraph(AjaxRadialGraph):
 
             name = unicode(obj)
             if cls.auto_labels:
-                name = "%s:  %s" % (tw2.core.util.name2label(type(obj).__name__), name)
+                name = "%s:  %s" % (name2label(type(obj).__name__), name)
             return {
                 'id' : node_id,
                 'name' : name,
