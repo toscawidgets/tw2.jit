@@ -51,6 +51,15 @@ class SQLARadialGraph(AjaxRadialGraph):
         no implicit nodes shown, then both must be set to False/'never'.
         """, default=26)
 
+    alphabetize_minimal = twc.Param(
+        """(bool) Trim away alphabetic entries that have no children.
+
+        True or False.
+
+        Make the tree easier to see.  Only useful in conjunction with
+        `alphabetize_relations`.
+        """, default=False)
+
     depth = twc.Param("(int) number of levels of relations to show.", default=3)
 
     def prepare(self):
@@ -154,6 +163,13 @@ class SQLARadialGraph(AjaxRadialGraph):
                             # TBD - this might mess with all the depth checking
                             n = make_node_from_object(obj,depth+2,child['id'])
                             child['children'].append(n)
+
+                        for child in children:
+                            child['name'] += " (%i)" % len(child['children'])
+
+                        if cls.alphabetize_minimal:
+                            children = [c for c in children
+                                        if len(c['children']) > 0]
 
             node_id = safe_id(node_id)
 
