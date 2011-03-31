@@ -7,6 +7,7 @@ from tw2.jit.widgets.ajax import AjaxRadialGraph
 # Used for doing ajax stuff
 import tw2.jquery
 
+import urllib
 import sqlalchemy as sa
 from hashlib import md5
 from itertools import product
@@ -178,7 +179,16 @@ class SQLARadialGraph(AjaxRadialGraph):
             return explicitly_excluded or excluded_by_attribute or excluded_by_relation
 
         def safe_id(s):
-            return s.replace(' ', '_').replace('#', '___')
+            s = s.replace(' ', '_').replace('#', '___')
+            try:
+                i, j = s.index('<'), s.rindex('>')+1
+                if j < i:
+                    return s
+                hashed = md5(s[i:j]).hexdigest()
+                return s[:i] + hashed + s[j:]
+            except ValueError as e:
+                pass
+            return s
 
         def make_node_from_property(prefix, parent, key, value, depth):
             node_id = safe_id(SEP.join([prefix, key, unicode(value)]))
