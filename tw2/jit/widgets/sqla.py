@@ -75,6 +75,10 @@ class SQLARadialGraph(AjaxRadialGraph):
         super(SQLARadialGraph, self).prepare()
 
     # Override this from AjaxRadialGraph to get hot morphing!!!
+    # This javascript stuff gets called after a json graph has been successfully
+    # retrieved, but before it is handed to jit for rendering.  The code that
+    # follows mangles IDs in the new tree so that thejit smoothly animates
+    # (morphs) the old tree into the new (where it can).
     preprocessTree = JSSymbol(src="""
         (function(json) {
             var SEP = '%s';
