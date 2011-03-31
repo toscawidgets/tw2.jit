@@ -8,7 +8,7 @@ from tw2.jit.widgets.ajax import AjaxRadialGraph
 import tw2.jquery
 
 import sqlalchemy as sa
-import uuid
+from hashlib import md5
 from itertools import product
 
 SEP = '___'
@@ -157,7 +157,9 @@ class SQLARadialGraph(AjaxRadialGraph):
             elif type(value) != sa.orm.collections.InstrumentedList:
                 name = "%s:<br/>%s" % (name2label(key), unicode(value))
             else:
-                node_id = SEP.join([prefix, key, unicode(uuid.uuid4())])
+                salt = SEP.join(prefix.split(SEP)[-2:] + [key])
+                digest = md5(salt).hexdigest()
+                node_id = SEP.join([prefix, key, digest])
                 name = "%s (%i)" % (name2label(key), len(value))
                 if depth < cls.depth:
                     if not cls._alphabetize(value):
@@ -243,8 +245,9 @@ class SQLARadialGraph(AjaxRadialGraph):
             }
 
         if alphabetic_node:
-            prefix = SEP.join([
-                entity.__name__, key, relationship_node, str(uuid.uuid4())])
+            salt = SEP.join(entity.__name__, key, relationship_node)
+            digest = md5(salt).hexdigest()
+            prefix = SEP.join([entity.__name__, key, relationship_node, digest])
 
             json = {
                 'id' : prefix,
