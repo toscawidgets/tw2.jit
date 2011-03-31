@@ -280,7 +280,7 @@ class SQLARadialGraph(AjaxRadialGraph):
             }
 
         if alphabetic_node:
-            salt = SEP.join(entity.__name__, key, relationship_node)
+            salt = SEP.join([entity.__name__, key, relationship_node])
             digest = md5(salt).hexdigest()
             prefix = SEP.join([entity.__name__, key, relationship_node, digest])
 
