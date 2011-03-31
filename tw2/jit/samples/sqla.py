@@ -39,14 +39,14 @@ class Person(Base):
     some_attribute = Column(Unicode(255), nullable=False)
 
     def __unicode__(self):
-        return "%s %s" % (self.first_name, self.last_name)
+        return "<img src='%s' /> %s %s" % (
+            self.gravatar_url(8), self.first_name, self.last_name)
 
     @property
     def email(self):
         return "%s.%s@socialistworker.org" % (self.first_name, self.last_name)
 
-    @property
-    def gravatar_url(self):
+    def gravatar_url(self, size=64):
         # import code for encoding urls and generating md5 hashes
         import urllib
         try:
@@ -59,7 +59,7 @@ class Person(Base):
         gravatar_url = "http://www.gravatar.com/avatar.php?"
         gravatar_url += urllib.urlencode({
             'gravatar_id': md5(self.email.lower()).hexdigest(),
-            'size': 64, 'd': 'monsterid',
+            'size': size, 'd': 'monsterid',
         })
         return gravatar_url
 
@@ -78,7 +78,7 @@ class Person(Base):
                 <p>%s %s with %i friends and %i pets.</p>
                 <p>%s</p>
             </div>
-            """ % (self.gravatar_url, self.first_name, self.last_name,
+            """ % (self.gravatar_url(), self.first_name, self.last_name,
                    len(self.friends), len(self.pets), dictator),
             # This attribute is ultimately just ignored but by
             # specifying it here, it is made available clientside
