@@ -74,6 +74,37 @@ class SQLARadialGraph(AjaxRadialGraph):
 
         super(SQLARadialGraph, self).prepare()
 
+    # Override this from AjaxRadialGraph to get hot morphing!!!
+    preprocessTree = JSSymbol(src="""
+        (function(json) {
+            var SEP = '%s';
+            var ch = json.children;
+            var getNode = function(nodeId) {
+                for(var i=0; i < ch.length; i++) {
+                    var new_ch_toks = ch[i].id.split(SEP).reverse();
+                    var old_id_toks = nodeId.split(SEP).reverse();
+                    var count = 0;
+                    for (var j=0; j < new_ch_toks.length && j < old_id_toks.length; j++) {
+                        if ( new_ch_toks[j] === old_id_toks[j] ) {
+                            count++;
+                        } else {
+                            break;
+                        }
+                    }
+                    if ( count >= 4 ) {
+                        return ch[i]
+                    }
+                }
+                return false;
+            }
+            json.id = jitwidget.root;
+            var root = jitwidget.graph.getNode(jitwidget.root);
+            $jit.Graph.Util.eachAdjacency(root, function(elem) {
+                var nodeTo = elem.nodeTo, jsonNode = getNode(nodeTo.id);
+                if(jsonNode) jsonNode.id = nodeTo.id;
+            });
+        })""" % SEP)
+
 
     @classmethod
     def _alphabetize(cls, lst):
