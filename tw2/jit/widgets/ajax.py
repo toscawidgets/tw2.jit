@@ -46,7 +46,7 @@ class AjaxRadialGraph(RadialGraph):
                     jitwidget.op.morph(json, {
                         id: id,
                         type: 'fade',
-                        duration:100,
+                        duration: $$duration,
                         transition: $jit.Trans.Quart.easeOut,
                         hideLabels:true,
                         onAfterCompute: (function(){}),
@@ -74,7 +74,7 @@ class AjaxRadialGraph(RadialGraph):
 
                     jitwidget.op.removeNode(map.reverse(), {
                         type: 'fade:seq',
-                        duration: 100,
+                        duration: $$duration,
                         onAfterCompute: (function(){}),
                         onBeforeCompute: (function(){}),
                     });

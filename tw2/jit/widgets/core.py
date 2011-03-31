@@ -168,6 +168,7 @@ class JitWidget(twc.Widget):
             '$$base_url': lambda s: s.base_url,
             '$$jitwidget': lambda s:'window._jitwidgets["%s"]' % s.compound_id,
             '$$deep_linking': lambda s: s.deep_linking,
+            '$$duration': lambda s: s.duration,
         }
     )
     # End twc attrs
