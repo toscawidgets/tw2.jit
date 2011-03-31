@@ -303,6 +303,7 @@ class SQLARadialGraph(AjaxRadialGraph):
                 if child['name'].startswith('%s (' % alphabetic_node):
                     # Here we throw away work that we've already done.  Sad.
                     original_relation['children'].remove(child)
+                    break
 
             # Unfortunately, we have to 'do the same work twice' here
             # because at present I'm too lazy to do it correctly.  We're
@@ -333,6 +334,10 @@ class SQLARadialGraph(AjaxRadialGraph):
                 obj, relationship_node, getattr(obj, relationship_node), 0)
             original_parent = make_node_from_object(
                 obj, prefix=json['id'], depth=1)
+            for child in original_parent['children']:
+                if child['name'] == json['name']:
+                    original_parent['children'].remove(child)
+                    break
             json['children'].append(original_parent)
         else:
             json = make_node_from_object(obj)
