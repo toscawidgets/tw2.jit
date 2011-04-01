@@ -42,17 +42,11 @@ class AjaxRadialGraph(RadialGraph):
                 url: '$$base_url?key=' + encodeURIComponent(id),
                 dataType: 'json',
                 success:  function (json) {
+                    // Massage any data-specific stuff in the new json graph.
                     that.preprocessTree(json);
-                    jitwidget.op.morph(json, {
-                        id: id,
-                        type: 'fade',
-                        duration: $$duration,
-                        transition: $$transition,
-                        hideLabels:true,
-                        onAfterCompute: (function(){}),
-                        onBeforeCompute: (function(){}),
-                    });
 
+                    // Build a little recursive function that checks for the
+                    // given id inside the json structure.
                     function hasID(json, id) {
                          if ( json.id == id ) return true;
 
@@ -62,22 +56,87 @@ class AjaxRadialGraph(RadialGraph):
                          return false;
                     }
 
+                    // Get handle on the root of the old graph.  We'll use this
+                    // repeatedly.
                     var old = jitwidget.graph.getNode(jitwidget.root);
                     if ( !old ) return;
-                    var subnodes = old.getSubnodes(1);
+
+
+                    // This function is *awkward* and could probably be
+                    // streamlined.  Get *all* the
+                    // subnodes of the old tree except nodes which are
+                    // further away than level two.  What we really want at the
+                    // end of the day are only the top-level nodes, but JIT
+                    // provides no nice way for us to get that.
+                    function getTopLevelNodes(root) {
+                        var lvl_one_nodes = old.getSubnodes(1);
+                        var lvl_two_nodes = old.getSubnodes(2);
+                        for ( var i = 0; i < lvl_two_nodes.length; i++ ) {
+                             var index = -1;
+                             for ( var j = 0; j < lvl_one_nodes.length; j++ ) {
+                                 if ( lvl_two_nodes[i].id == lvl_one_nodes[j].id ) {
+                                     index = j;
+                                 }
+                             }
+                             if ( index != -1 ) { lvl_one_nodes.splice(index, 1); }
+                        }
+                        return lvl_one_nodes;
+                    }
+
+                    var subnodes = getTopLevelNodes(old);
+                    
+                    // Prepare for subtree contraction but only on those whose
+                    // top-level node does not also have an entry in the new
+                    // JSON.
                     var map = [];
                     for ( var i = 0; i < subnodes.length; i++ ) {
                         if ( ! hasID(json, subnodes[i].id) ) {
+                            map.push(subnodes[i]);
+                        }
+                    }
+                    
+                    // Actually contract those subtrees.
+                    for ( var i = 0; i < map.length; i++ ) {
+                        jitwidget.op.contract(map[i], {
+                            type: 'animate',
+                            duration: $$duration,
+                            onAfterCompute: (function(){}),
+                            onBeforeCompute: (function(){}),
+                        });
+                    }
+
+                    // Prepare the list of *all* nodes that were under
+                    // the collapsed subtrees.  We need to actually
+                    // remove them from the graph now.
+                    map = [];
+                    subnodes = old.getSubnodes(1);
+                    for ( var i = 0; i < subnodes.length; i++ ) {
+                        if ( ! hasID(json, subnodes[i].id ) ) {
                             map.push(subnodes[i].id);
                         }
                     }
 
-                    jitwidget.op.removeNode(map.reverse(), {
-                        type: 'fade:seq',
-                        duration: $$duration,
-                        onAfterCompute: (function(){}),
-                        onBeforeCompute: (function(){}),
-                    });
+                    // Wait until the 'contract' animation is done, then
+                    // morph in the new nodes and *actually* remove the old
+                    // nodes.
+                    setTimeout(function(){
+                        jitwidget.op.morph(json, {
+                            id: id,
+                            type: 'fade',
+                            duration: $$duration,
+                            transition: $$transition,
+                            hideLabels:true,
+                            onAfterCompute: (function(){}),
+                            onBeforeCompute: (function(){}),
+                        });
+                        jitwidget.op.removeNode(map.reverse(), {
+                            type : 'replot',
+                            duration : 0,
+                            onAfterCompute: (function(){}),
+                            onBeforeCompute: (function(){}),
+                        })
+                    }, $$duration);
+
                 },
             });
         })"""))
