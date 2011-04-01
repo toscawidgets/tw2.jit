@@ -47,7 +47,7 @@ class AjaxRadialGraph(RadialGraph):
                         id: id,
                         type: 'fade',
                         duration: $$duration,
-                        transition: $jit.Trans.Quart.easeOut,
+                        transition: $$transition,
                         hideLabels:true,
                         onAfterCompute: (function(){}),
                         onBeforeCompute: (function(){}),

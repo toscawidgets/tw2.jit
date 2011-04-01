@@ -85,6 +85,10 @@ class JitWidget(twc.Widget):
     animate = twc.Param(
         '(boolean) Whether to add animated transitions.',
         default=True, attribute=True)
+
+    transition = twc.Param(
+        'javascript symbol of the type of jit transition to use',
+        default=JSSymbol(src="$jit.Trans.Quart.easeOut"), attribute=True)
     
     duration = twc.Param(
         '(number) Duration of the animation in milliseconds.',
@@ -169,6 +173,7 @@ class JitWidget(twc.Widget):
             '$$jitwidget': lambda s:'window._jitwidgets["%s"]' % s.compound_id,
             '$$deep_linking': lambda s: s.deep_linking,
             '$$duration': lambda s: s.duration,
+            '$$transition': lambda s: s.transition.src,
         }
     )
     # End twc attrs
