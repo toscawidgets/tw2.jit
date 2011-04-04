@@ -75,40 +75,62 @@ class SQLARadialGraph(AjaxRadialGraph):
 
         super(SQLARadialGraph, self).prepare()
 
+    getNode = twc.Param(
+        """ TODO """, attribute=True,
+        default=JSSymbol(src="""
+        (function(json, nodeId) {
+            var SEP = '%s';
+            var ch = json.children;
+            var MAX_COUNT = 0;
+            var MAX_ITEM;
+            for(var i=0; i < ch.length; i++) {
+                var new_ch_toks = ch[i].id.split(SEP).reverse();
+                var old_id_toks = nodeId.split(SEP).reverse();
+                var count = 0;
+                for (var j=0; j < new_ch_toks.length && j < old_id_toks.length; j++) {
+                    if ( new_ch_toks[j] === old_id_toks[j] ) {
+                        count++;
+                    } else {
+                        break;
+                    }
+                }
+                if ( count >= MAX_COUNT ) {
+                    MAX_COUNT = count;
+                    MAX_ITEM = ch[i];
+                }
+            }
+            if ( MAX_COUNT >= 4 ) {
+                return MAX_ITEM;
+            }
+            return false;
+        })""" % SEP))
+
     # Override this from AjaxRadialGraph to get hot morphing!!!
     # This javascript stuff gets called after a json graph has been successfully
     # retrieved, but before it is handed to jit for rendering.  The code that
     # follows mangles IDs in the new tree so that thejit smoothly animates
     # (morphs) the old tree into the new (where it can).
+
+    # TODO - The devil is right here.
+    # when you set jsonNode.id = nodeTo.id
+    # Its fine the first time around,
+    # but on the next click, things get picked up for contraction/deletion
+    # that shouldn't.
     preprocessTree = JSSymbol(src="""
         (function(json) {
-            var SEP = '%s';
-            var ch = json.children;
-            var getNode = function(nodeId) {
-                for(var i=0; i < ch.length; i++) {
-                    var new_ch_toks = ch[i].id.split(SEP).reverse();
-                    var old_id_toks = nodeId.split(SEP).reverse();
-                    var count = 0;
-                    for (var j=0; j < new_ch_toks.length && j < old_id_toks.length; j++) {
-                        if ( new_ch_toks[j] === old_id_toks[j] ) {
-                            count++;
-                        } else {
-                            break;
-                        }
-                    }
-                    if ( count >= 4 ) {
-                        return ch[i]
-                    }
-                }
-                return false;
-            }
+            var that = this;
             json.id = jitwidget.root;
             var root = jitwidget.graph.getNode(jitwidget.root);
             $jit.Graph.Util.eachAdjacency(root, function(elem) {
-                var nodeTo = elem.nodeTo, jsonNode = getNode(nodeTo.id);
+                var nodeTo = elem.nodeTo, jsonNode = that.getNode(json, nodeTo.id);
                 if(jsonNode) jsonNode.id = nodeTo.id;
             });
-        })""" % SEP)
+        })""")
+
+    hasID = JSSymbol(src="""
+        (function(json, id) {
+             return this.getNode(json, id);
+        })""")
 
 
     @classmethod
