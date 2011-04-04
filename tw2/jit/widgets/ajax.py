@@ -120,7 +120,6 @@ class AjaxRadialGraph(RadialGraph):
                     // morph in the new nodes and *actually* remove the old
                     // nodes.
                     setTimeout(function(){
-                        // Morph in new nodes.
                         jitwidget.op.morph(json, {
                             id: id,
                             type: 'fade',
@@ -130,8 +129,6 @@ class AjaxRadialGraph(RadialGraph):
                             onAfterCompute: (function(){}),
                             onBeforeCompute: (function(){}),
                         });
-
-                        // Actually remove the old nodes.
                         jitwidget.op.removeNode(map.reverse(), {
                             type : 'replot',
                             duration : 0,
