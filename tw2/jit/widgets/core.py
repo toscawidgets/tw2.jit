@@ -87,11 +87,7 @@ class JitWidget(twc.Widget):
         default=True, attribute=True)
 
     transition = twc.Param(
-        """javascript symbol of the type of jit transition to use.
-
-        All the possible transitions are listed here:
-            http://thejit.org/static/v20/Docs/files/Options/Options-Fx-js.html#Options.Fx
-        """,
+        'javascript symbol of the type of jit transition to use',
         default=JSSymbol(src="$jit.Trans.Quart.easeOut"), attribute=True)
     
     duration = twc.Param(
