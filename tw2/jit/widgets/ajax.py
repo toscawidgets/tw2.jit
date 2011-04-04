@@ -33,6 +33,19 @@ class AjaxRadialGraph(RadialGraph):
             json.id = jitwidget.root;
         })"""))
 
+    hasID = twc.Param(
+        """ A function that checks if a json data structure contains an id
+        somewhere within it.""", attribute=True,
+        default=JSSymbol(src="""
+        (function(json, id) {
+             if ( json.id == id ) return true;
+
+             for ( var i = 0; i < json.children.length; i++ ) {
+                 if ( this.hasID(json.children[i], id) ) return true;
+             }
+             return false;
+        })"""))
+
     requestGraph = twc.Param(
         """ TODO """, attribute=True,
         default=JSSymbol(src="""
@@ -44,17 +57,6 @@ class AjaxRadialGraph(RadialGraph):
                 success:  function (json) {
                     // Massage any data-specific stuff in the new json graph.
                     that.preprocessTree(json);
-
-                    // Build a little recursive function that checks for the
-                    // given id inside the json structure.
-                    function hasID(json, id) {
-                         if ( json.id == id ) return true;
-
-                         for ( var i = 0; i < json.children.length; i++ ) {
-                            if ( hasID(json.children[i], id) ) return true;
-                         }
-                         return false;
-                    }
 
                     // Get handle on the root of the old graph.  We'll use this
                     // repeatedly.
@@ -90,7 +92,7 @@ class AjaxRadialGraph(RadialGraph):
                     // JSON.
                     var map = [];
                     for ( var i = 0; i < subnodes.length; i++ ) {
-                        if ( ! hasID(json, subnodes[i].id) ) {
+                        if ( ! that.hasID(json, subnodes[i].id) ) {
                             map.push(subnodes[i]);
                         }
                     }
@@ -111,7 +113,7 @@ class AjaxRadialGraph(RadialGraph):
                     map = [];
                     subnodes = old.getSubnodes(1);
                     for ( var i = 0; i < subnodes.length; i++ ) {
-                        if ( ! hasID(json, subnodes[i].id ) ) {
+                        if ( ! that.hasID(json, subnodes[i].id ) ) {
                             map.push(subnodes[i].id);
                         }
                     }
