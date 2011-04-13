@@ -251,6 +251,7 @@ class SQLARadialGraph(AjaxRadialGraph):
             prefix = node_id
             children = []
             data = getattr(obj, '__jit_data__', lambda : {})()
+            cost = lambda k : data.get('traversal_costs', {}).get(k, 1)
             if depth < cls.depth:
                 props = dict([(p.key, getattr(obj, p.key))
                               for p in obj.__mapper__.iterate_properties
@@ -263,21 +264,20 @@ class SQLARadialGraph(AjaxRadialGraph):
                 for k, v in list(props.iteritems()):
                     if isinstance(v, sa.orm.collections.InstrumentedList):
                         del props[k]
-                        cost = data.get('traversal_costs', {}).get(k, 1)
                         if not cls.imply_relations:
                             children.extend([
                                 make_node_from_object(
-                                    item, depth+cost,
+                                    item, depth+cost(k),
                                     "%s%s%s%s%i" % (prefix, SEP, k, SEP, i))
                                 for i, item in enumerate(v)
                             ])
                         else:
                             children.append(
                                 make_node_from_property(
-                                    prefix, obj, k, v, depth+cost)
+                                    prefix, obj, k, v, depth+cost(k))
                             )
 
-                children += [make_node_from_property(prefix, obj, k, v, depth+cost)
+                children += [make_node_from_property(prefix, obj, k, v, depth+cost(k))
                             for k, v in props.iteritems()]
 
             name = unicode(obj)

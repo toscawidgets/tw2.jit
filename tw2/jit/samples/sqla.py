@@ -80,6 +80,7 @@ class Person(Base):
             </div>
             """ % (self.gravatar_url(), self.first_name, self.last_name,
                    len(self.friends), len(self.pets), dictator),
+
             # This attribute is ultimately just ignored but by
             # specifying it here, it is made available clientside
             # for any custom js you want to rig up.
@@ -121,6 +122,10 @@ class Pet(Base):
                     google for its name
                 </a>, or something.</p>
             </div>""" % (self.variety, self.name, self.name),
+
+            "traversal_costs" : {
+                'owner' : 1,
+            }
         }
 
 Person.__mapper__.add_property('friends', relation(
