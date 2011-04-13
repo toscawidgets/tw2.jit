@@ -14,6 +14,7 @@ from itertools import product
 
 SEP = '___'
 ALPHA = 'ALPHA'
+
 get_pkey = lambda ent : ent.__mapper__.primary_key[0].key
 
 class SQLARadialGraph(AjaxRadialGraph):
@@ -249,6 +250,7 @@ class SQLARadialGraph(AjaxRadialGraph):
                           unicode(getattr(obj, get_pkey(type(obj))))]))
             prefix = node_id
             children = []
+            data = getattr(obj, '__jit_data__', lambda : {})()
             if depth < cls.depth:
                 props = dict([(p.key, getattr(obj, p.key))
                               for p in obj.__mapper__.iterate_properties
@@ -261,23 +263,22 @@ class SQLARadialGraph(AjaxRadialGraph):
                 for k, v in list(props.iteritems()):
                     if isinstance(v, sa.orm.collections.InstrumentedList):
                         del props[k]
+                        cost = data.get('traversal_costs', {}).get(k, 1)
                         if not cls.imply_relations:
                             children.extend([
                                 make_node_from_object(
-                                    item, depth+1,
+                                    item, depth+cost,
                                     "%s%s%s%s%i" % (prefix, SEP, k, SEP, i))
                                 for i, item in enumerate(v)
                             ])
                         else:
                             children.append(
                                 make_node_from_property(
-                                    prefix, obj, k, v, depth+1)
+                                    prefix, obj, k, v, depth+cost)
                             )
 
-                children += [make_node_from_property(prefix, obj, k, v, depth+1)
+                children += [make_node_from_property(prefix, obj, k, v, depth+cost)
                             for k, v in props.iteritems()]
-
-            data = getattr(obj, '__jit_data__', lambda : {})()
 
             name = unicode(obj)
             if cls.auto_labels:

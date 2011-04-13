@@ -84,6 +84,12 @@ class Person(Base):
             # specifying it here, it is made available clientside
             # for any custom js you want to rig up.
             "some_attr" : self.some_attribute,
+
+            "traversal_costs" : {
+                # You can set this to 2 to change the way depth
+                # accumulates during the generation of a json response.
+                'friends' : 1
+            }
         }
 
 
