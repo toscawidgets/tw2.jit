@@ -23,6 +23,7 @@ except ImportError, e:
 
 def get_dependencies(package):
     if yumobj:
+        # TODO -- fix this using the example from the Leafy Miracle
         pkg = yumobj.pkgSack.searchNevra(name=package)[0]
         deps_d = pkg.findDeps([pkg])
         deps = [tup[0] for tup in deps_d[deps_d.keys()[0]].keys()]
