@@ -264,6 +264,8 @@ class SQLARadialGraph(AjaxRadialGraph):
                 for k, v in list(props.iteritems()):
                     if isinstance(v, sa.orm.collections.InstrumentedList):
                         del props[k]
+                        if depth+cost(k) > cls.depth:
+                            continue
                         if not cls.imply_relations:
                             children.extend([
                                 make_node_from_object(
@@ -277,8 +279,13 @@ class SQLARadialGraph(AjaxRadialGraph):
                                     prefix, obj, k, v, depth+cost(k))
                             )
 
-                children += [make_node_from_property(prefix, obj, k, v, depth+cost(k))
-                            for k, v in props.iteritems()]
+                for k, v in props.iteritems():
+                    if depth+cost(k) > cls.depth:
+                        continue
+                    children.append(
+                        make_node_from_property(prefix, obj, k, v,
+                                                depth+cost(k))
+                    )
 
             name = unicode(obj)
             if cls.auto_labels:

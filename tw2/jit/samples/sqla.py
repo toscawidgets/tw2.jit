@@ -124,7 +124,7 @@ class Pet(Base):
             </div>""" % (self.variety, self.name, self.name),
 
             "traversal_costs" : {
-                'owner' : 1,
+                'owner' : 2,
             }
         }
 
