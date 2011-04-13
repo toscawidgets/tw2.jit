@@ -32,6 +32,8 @@ class SQLARadialGraph(AjaxRadialGraph):
         default=[])
 
     show_relations = twc.Param("(bool) show relationships?", default=True)
+    show_empty_relations = twc.Param("(bool) show empty relationships?",
+                                     default=True)
     show_attributes = twc.Param("(bool) show attributes?", default=True)
 
     imply_relations = twc.Param("(bool) show implied relationship nodes?",
@@ -265,6 +267,8 @@ class SQLARadialGraph(AjaxRadialGraph):
                     if isinstance(v, sa.orm.collections.InstrumentedList):
                         del props[k]
                         if depth+cost(k) > cls.depth:
+                            continue
+                        if not cls.show_empty_relations and len(v) == 0:
                             continue
                         if not cls.imply_relations:
                             children.extend([
