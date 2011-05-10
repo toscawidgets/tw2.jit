@@ -21,6 +21,8 @@ class AjaxRadialGraph(RadialGraph):
         http://thejit.org/static/v20/Docs/files/Visualizations/RGraph-js.html
 
     """
+    data = []
+    base_url = twc.Param(default=twc.Required)
 
     def prepare(self):
         super(AjaxRadialGraph, self).prepare()
