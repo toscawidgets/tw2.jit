@@ -51,7 +51,6 @@ class AjaxRadialGraph(RadialGraph):
                         duration: $$duration,
                         transition: $$transition,
                         hideLabels:true,
-                        onAfterCompute: (function(){}),
                         onBeforeCompute: (function(){}),
                     });
 
@@ -77,7 +76,6 @@ class AjaxRadialGraph(RadialGraph):
                     jitwidget.op.removeNode(map.reverse(), {
                         type: 'fade:seq',
                         duration: $$duration,
-                        onAfterCompute: (function(){}),
                         onBeforeCompute: (function(){}),
                     });
                 },
@@ -93,14 +91,17 @@ class AjaxRadialGraph(RadialGraph):
             }
          })""")
 
-    onAfterCompute = JSSymbol(src="(function() { this.requestGraph(); })")
-
     onCreateLabel = JSSymbol(src="""
         (function(domElement, node) {
             try {
+                var that = this;
                 jQuery(domElement).html(node.name);
                 jQuery(domElement).click(function() {
-                    jitwidget.onClick(domElement.id);
+                    jitwidget.onClick(domElement.id, {
+                        onComplete: function() {
+                             that.requestGraph();
+                        }
+                    });
                 });
                 if ( node.data.hover_html ) {
                     if ( window._fadeOutTimeouts === undefined ) { window._fadeOutTimeouts = {}; }
