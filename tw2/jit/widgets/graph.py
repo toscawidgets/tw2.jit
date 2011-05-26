@@ -23,7 +23,7 @@ class RadialGraph(JitGraph):
     levelDistance = twc.Param(
         '(number) Distance between levels',
         default=100, attribute=True, request_local=False)
-   
+
 class ForceDirectedGraph(JitGraph):
     """ A visualization that lays graphs using a Force-Directed layout algorithm.
 
@@ -32,14 +32,14 @@ class ForceDirectedGraph(JitGraph):
     """
 
     jitClassName = 'ForceDirected'
-    
+
     iterations = twc.Param(
         '(number) The number of iterations for the spring ' +
         'layout simulation.  Depending on the browser\'s ' +
         'speed you could set this to a more "interesting" ' +
         'number, like 200.',
         default=2, attribute=True, request_local=False)
-    
+
     levelDistance = twc.Param(
         '(number) The natural length desired for the edges.',
         default=50, attribute=True, request_local=False)

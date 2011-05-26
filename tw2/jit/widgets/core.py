@@ -14,7 +14,7 @@ from tw2.core.widgets import Widget
 
 from tw2.jit import jit_base
 from tw2.jit.resources import CompoundJSSource
-            
+
 import tw2.jquery
 
 import urllib
@@ -32,7 +32,7 @@ jit_css = CSSLink(modname=modname, filename="static/css/jit_base.css")
 # TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
     """ Baseclass for all other tw2.jit.widgets
-    
+
     Provides a set of parameters common to widgets in the library.
 
     Uses tw2.jit.resources.CompoundJSSource for client-side initialization
@@ -43,7 +43,7 @@ class JitWidget(twc.Widget):
 
     template = "tw2.jit.templates.jitwidget"
     resources = [jit_js, jit_glue_js]
-   
+
     # Internal twc Variables
     jitClassName = twc.Variable('Name of the Jit class for this widget')
     jitSecondaryClassName = twc.Variable(
@@ -63,7 +63,7 @@ class JitWidget(twc.Widget):
     postInitJSCallback = twc.Param(
         'javascript to run after client-side initialization of the widget',
         default=JSSymbol(src='(function(jitwidget){})'), attribute=True)
-    
+
     data = twc.Param('python data to be jsonified and passed to the widget',
                     default=None, attribute=True)
     base_url = twc.Param('url for json data to be loaded into the widget',
@@ -81,7 +81,7 @@ class JitWidget(twc.Widget):
     width = twc.Param('(string) widget width', default='750',attribute=True)
 
     height = twc.Param('(string) widget height', default='750',attribute=True)
-    
+
     animate = twc.Param(
         '(boolean) Whether to add animated transitions.',
         default=True, attribute=True)
@@ -93,7 +93,7 @@ class JitWidget(twc.Widget):
             http://thejit.org/static/v20/Docs/files/Options/Options-Fx-js.html#Options.Fx
         """,
         default=JSSymbol(src="$jit.Trans.Quart.easeOut"), attribute=True)
-    
+
     duration = twc.Param(
         '(number) Duration of the animation in milliseconds.',
         default=1000, attribute=True)
@@ -101,7 +101,7 @@ class JitWidget(twc.Widget):
     fps = twc.Param(
         '(number) Frames per second of the animation.',
         default=45, attribute=True)
-    
+
     offset = twc.Param(
         '(number) Margin between the display and the canvas.',
         default=25, attribute=True)
@@ -122,7 +122,7 @@ class JitWidget(twc.Widget):
             'overridable' : False,
             'type': 'HTML',
             'style' : ' ',
-            'size': 10,  
+            'size': 10,
             'family': 'sans-serif',
             'textAlign' : 'center',
             'textBaseline' : 'alphabetic',
@@ -131,32 +131,32 @@ class JitWidget(twc.Widget):
     Tips = twc.Param(
         '(dict) Of the form of Options.Tips in the jit docs.', attribute=True,
         default={
-            'enable' : False,  
-            'type' : 'auto',  
-            'offsetX' : 20,  
-            'offsetY' : 20,  
+            'enable' : False,
+            'type' : 'auto',
+            'offsetX' : 20,
+            'offsetY' : 20,
             'onShow' : "(function() {})",
             'onHide' : "(function() {})",
         })
     Events = twc.Param(
         '(dict) Of the form Options.Events in the jit docs.', attribute=True,
         default={
-            'enable': False,  
-            'type': 'auto',  
-            'onClick': '(function() {})',  
-            'onRightClick': '(function() {})',  
-            'onMouseMove': '(function() {})',  
-            'onMouseEnter': '(function() {})',  
-            'onMouseLeave': '(function() {})',  
-            'onDragStart': '(function() {})',  
-            'onDragMove': '(function() {})',  
-            'onDragCancel': '(function() {})',  
-            'onDragEnd': '(function() {})',  
-            'onTouchStart': '(function() {})',  
-            'onTouchMove': '(function() {})',  
-            'onTouchEnd': '(function() {})',  
-            'onTouchCancel': '(function() {})',  
-            'onMouseWheel': '(function() {})' 
+            'enable': False,
+            'type': 'auto',
+            'onClick': '(function() {})',
+            'onRightClick': '(function() {})',
+            'onMouseMove': '(function() {})',
+            'onMouseEnter': '(function() {})',
+            'onMouseLeave': '(function() {})',
+            'onDragStart': '(function() {})',
+            'onDragMove': '(function() {})',
+            'onDragCancel': '(function() {})',
+            'onDragEnd': '(function() {})',
+            'onTouchStart': '(function() {})',
+            'onTouchMove': '(function() {})',
+            'onTouchEnd': '(function() {})',
+            'onTouchCancel': '(function() {})',
+            'onMouseWheel': '(function() {})'
         })
 
     deep_linking = twc.Param(
@@ -256,7 +256,7 @@ class JitWidget(twc.Widget):
 
         self.resources.append(composite_js_call)
 
-    
+
 class JitTreeOrGraphWidget(JitWidget):
     """ Baseclass common to all Tree and Graph JitWidgets """
 
@@ -266,29 +266,29 @@ class JitTreeOrGraphWidget(JitWidget):
         default={
             'enable': False,
             'type': 'auto',
-            'panning': False, #True, 'avoid nodes'  
+            'panning': False, #True, 'avoid nodes'
             'zooming': False
         }, attribute=True)
- 
+
     Node = twc.Param(
         '(dict) Provides Node rendering options for ' +
         'Tree and Graph based visualizations.',
         default = {
-    #        'overridable': False,  
-    #        'type': 'circle',  
-            'color': '#ccb',  
-            'alpha': 1,  
-            'dim': 3,  
-            'height': 20,  
-            'width': 90,  
-            'autoHeight': False,  
-            'autoWidth': False,  
-            'lineWidth': 1,  
-            'transform': True,  
-            'align': "center",  
-            'angularWidth':1,  
-            'span':1,  
-            'CanvasStyles': {}  
+    #        'overridable': False,
+    #        'type': 'circle',
+            'color': '#ccb',
+            'alpha': 1,
+            'dim': 3,
+            'height': 20,
+            'width': 90,
+            'autoHeight': False,
+            'autoWidth': False,
+            'lineWidth': 1,
+            'transform': True,
+            'align': "center",
+            'angularWidth':1,
+            'span':1,
+            'CanvasStyles': {}
         }, attribute=True)
 
     Edge = twc.Param(
@@ -296,12 +296,12 @@ class JitTreeOrGraphWidget(JitWidget):
         "Tree and Graph based visualizations.",
         default = {
     #        'overridable': False,
-    #        'type': 'line',  
-            'color': '#ccb',  
-            'lineWidth': 1,  
-            'dim':15,  
-            'alpha': 1,  
-            'CanvasStyles': {} 
+    #        'type': 'line',
+            'color': '#ccb',
+            'lineWidth': 1,
+            'dim':15,
+            'alpha': 1,
+            'CanvasStyles': {}
         }, attribute=True)
 
     onBeforeCompute = twc.Param(

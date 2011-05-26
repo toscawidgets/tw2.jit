@@ -9,7 +9,7 @@ sunburst_css = CSSLink(modname=modname, filename="static/css/Sunburst.css")
 
 class JitTree(JitTreeOrGraphWidget):
     """ Baseclass common to all jit tree widgets """
-    
+
     constrained = twc.Param(
         '(boolean) Whether to show the entire tree when loaded ' +
         'or just the number of levels specified by levelsToShow.',
@@ -33,20 +33,20 @@ class TreeMap(JitTree):
     def prepare(self):
         super(TreeMap, self).prepare()
         self.resources.extend([jit_css, treemap_css])
-    
+
     jitClassName = 'TM'
     jitSecondaryClassName = 'Squarified'
 
     offset = twc.Param(
         '(number) Margin between boxes.', default=2, attribute=True)
-    
+
     cushion = twc.Param(
         '(boolean) Cushion Gradients', default=False, attribute=True)
 
     titleHeight = twc.Param(
         '(number) The height of the title rectangle for non-leaf nodes.',
         default=13, attribute=True)
-    
+
     orientation = twc.Param(
         '(string) Whether to set horizontal or vertical layout.  ' +
         'Possible values are "h" or "v".', default='h', attribute=True)
@@ -54,7 +54,7 @@ class TreeMap(JitTree):
     titleHeight = twc.Param(
         '(number) Separation between the center of the ' +
         'canvas and each pie slice.', default=13, attribute=True)
-   
+
     Events = twc.Param(
         '(dict) Of the form Options.Events in the jit docs.',
         default={
@@ -63,7 +63,7 @@ class TreeMap(JitTree):
             'onRightClick': JSSymbol(src='(function() {jitwidget.out();})'),
         }, attribute=True)
 
-    # TODO - Node.Type 
+    # TODO - Node.Type
     #see http://thejit.org/static/v20/Docs/files/Visualizations/Treemap-js.html
 
 class Sunburst(JitTree):
@@ -90,10 +90,10 @@ class HyperTree(JitTree):
     """
 
     jitClassName = 'Hypertree'
-    
+
     w = twc.Variable( 'width of the canvas.', default=500 )
     h = twc.Variable( 'height of the canvas.', default=500 )
-    
+
     def prepare(self):
         super(HyperTree, self).prepare()
         self.w = self.width
@@ -114,7 +114,7 @@ class SpaceTree(JitTree):
     """
 
     jitClassName = 'ST'
-   
+
     transition = twc.Param(
         '(javascript) Javascript to perform transition.',
         default=JSSymbol(src='$jit.Trans.Quart.easeInOut'), attribute=True)
@@ -141,6 +141,6 @@ class Icicle(JitTree):
     """
 
     jitClassName = 'Icicle'
-    
+
     offset = twc.Param('(number) Boxes offset', default=2, attribute=True)
 

@@ -4,7 +4,7 @@ from tw2.jit.widgets.core import JitWidget
 class JitChart(JitWidget):
     """ Baseclass common to all chart widgets """
     type = twc.Param(
-        '(string) Stack style.  Possible values are ' + 
+        '(string) Stack style.  Possible values are ' +
         '"stacked", "stacked:gradient" to add gradients.',
         default='stacked:gradient', attribute=True)
 
@@ -24,11 +24,11 @@ class AreaChart(JitChart):
     """
 
     jitClassName = 'AreaChart'
-    
+
     selectOnHover = twc.Param(
         '(boolean) Add a mark to the hovered stack.',
         default=True, attribute=True)
-    
+
     filterOnClick = twc.Param(
         '(boolean) Select the clicked stack and hide others.',
         default=True, attribute=True)
@@ -36,7 +36,7 @@ class AreaChart(JitChart):
     restoreOnRightClick = twc.Param(
         '(boolean) Show all stacks by right clicking.',
         default=True, attribute=True)
-    
+
     showAggregates = twc.Param(
         '(boolean) Display the sum of the stack values.',
         default=True, attribute=True)
@@ -50,7 +50,7 @@ class BarChart(JitChart):
     """
 
     jitClassName = 'BarChart'
-    
+
     barsOffset = twc.Param(
         '(number) Separation between bars.', default=0, attribute=True)
 
@@ -59,10 +59,10 @@ class BarChart(JitChart):
         default='#9fd4ff', attribute=True)
 
     orientation = twc.Param(
-        '(string) The direction of the bars.  ' + 
+        '(string) The direction of the bars.  ' +
         'Possible options are "vertical" and "horizontal".',
         default='horizontal', attribute=True)
-    
+
     showAggregates = twc.Param(
         '(boolean) Display the sum of the stack values.',
         default=True, attribute=True)
@@ -76,7 +76,7 @@ class PieChart(JitChart):
     """
 
     jitClassName = 'PieChart'
-    
+
     sliceOffset = twc.Param(
         '(number) Separation between slices.', default=0, attribute=True)
 
@@ -95,4 +95,4 @@ class PieChart(JitChart):
         'charts.  Resize the height of the pie slices ' +
         'according to their current values.',
         default=False, attribute=True)
-   
+
