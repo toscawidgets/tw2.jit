@@ -194,7 +194,7 @@ class SQLARadialGraph(AjaxRadialGraph):
             return s
 
         def make_node_from_property(prefix, parent, key, value, depth):
-            node_id = safe_id(SEP.join([prefix, key, unicode(value)]))
+            node_id = safe_id(SEP.join([prefix, key, unicode(value or '')]))
             children = []
             if type(value) in cls.entities:
                 result = make_node_from_object(value, depth, node_id)
