@@ -11,11 +11,16 @@ import urllib
 import sqlalchemy as sa
 from hashlib import md5
 from itertools import product
+from BeautifulSoup import BeautifulSoup
 
 SEP = '___'
 ALPHA = 'ALPHA'
 
 get_pkey = lambda ent : ent.__mapper__.primary_key[0].key
+
+def _unicode(obj):
+    result = ''.join(BeautifulSoup(unicode(obj)).findAll(text=True)).strip()
+    return unicode(result)
 
 class SQLARadialGraph(AjaxRadialGraph):
     """ A radial graph built automatically from sqlalchemy objects """
@@ -74,7 +79,7 @@ class SQLARadialGraph(AjaxRadialGraph):
         pkey = get_pkey(type(self.rootObject))
         self.url_kw = { 'key' : SEP.join(
             [type(self.rootObject).__name__,
-             unicode(getattr(self.rootObject, pkey))]) }
+             _unicode(getattr(self.rootObject, pkey))]) }
 
         super(SQLARadialGraph, self).prepare()
 
@@ -194,7 +199,7 @@ class SQLARadialGraph(AjaxRadialGraph):
             return s
 
         def make_node_from_property(prefix, parent, key, value, depth):
-            node_id = safe_id(SEP.join([prefix, key, unicode(value or '')]))
+            node_id = safe_id(SEP.join([prefix, key, _unicode(value or '')]))
             children = []
             if type(value) in cls.entities:
                 result = make_node_from_object(value, depth, node_id)
@@ -217,7 +222,7 @@ class SQLARadialGraph(AjaxRadialGraph):
                         children = cls._do_alphabetize(value, depth+1, node_id)
 
                         for child, obj in product(children, value):
-                            if not child['id'].endswith(unicode(obj)[0].upper()):
+                            if not child['id'].endswith(_unicode(obj)[0].upper()):
                                 continue
                             # This would mess with all the depth checking if it
                             # weren't for the removal code three blocks below.
@@ -249,7 +254,7 @@ class SQLARadialGraph(AjaxRadialGraph):
         def make_node_from_object(obj, depth=0, prefix=''):
             node_id = safe_id(
                 SEP.join([prefix, type(obj).__name__,
-                          unicode(getattr(obj, get_pkey(type(obj))))]))
+                          _unicode(getattr(obj, get_pkey(type(obj))))]))
             prefix = node_id
             children = []
             data = getattr(obj, '__jit_data__', lambda : {})()
@@ -342,7 +347,7 @@ class SQLARadialGraph(AjaxRadialGraph):
             #
             # In the future this can be optimized.
             for child in getattr(obj, relationship_node):
-                if not unicode(child)[0].upper().startswith(alphabetic_node):
+                if not _unicode(child)[0].upper().startswith(alphabetic_node):
                     continue
 
                 json['children'].append(make_node_from_object(

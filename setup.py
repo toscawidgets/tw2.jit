@@ -7,7 +7,7 @@ f.close()
 
 setup(
     name='tw2.jit',
-    version='0.3.01',
+    version='0.3.05',
     description='toscawidgets2 wrapper for the javascript infovis toolkit(jit)',
     long_description=long_description,
     author='Ralph Bean',
@@ -22,6 +22,7 @@ setup(
         "elixir",
         "sqlalchemy",
         "tw2.dynforms",
+        "BeautifulSoup",
         ],
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages = ['tw2'],
