@@ -128,7 +128,10 @@ class AjaxRadialGraph(RadialGraph):
                     }
 
                     var hover_id = 'ajaxRadialGraph_' + node.id + '_Tip';
-                    hover_id = hover_id.replace(/\./g,'_').replace(/\//g, '_');
+                    hover_id = hover_id.replace(/\./g,'_');
+                    hover_id = hover_id.replace(/\//g, '_');
+                    hover_id = hover_id.replace(/\(/g, '_');
+                    hover_id = hover_id.replace(/\)/g, '_');
 
                     jQuery(domElement)
                       .mouseover(
