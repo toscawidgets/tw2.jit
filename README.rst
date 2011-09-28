@@ -21,7 +21,7 @@ tw2.jit is a `toscawidgets2 (tw2)`_ wrapper for `thejit`_.
 Live Demo
 ---------
 
-Peep the `live demonstration <http://craftsman.rc.rit.edu/module?module=tw2.jit>`_ and
+Peep the `live demonstration <http://tw2-demos.threebean.org/module?module=tw2.jit>`_ and
 `screenshots <http://github.com/ralphbean/tw2.jit/raw/master/doc/images/screenshot1.png>`_.
 
 Links
