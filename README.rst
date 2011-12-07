@@ -50,24 +50,24 @@ This module, tw2.jit, provides `toscawidgets2 (tw2)`_ widgets that render `theji
 Sampling tw2.jit in the WidgetBrowser
 -------------------------------------
 
-The best way to scope out ``tw2.jit`` is to load its widgets in the 
+The best way to scope out ``tw2.jit`` is to load its widgets in the
 ``tw2.devtools`` WidgetBrowser.  To see the source code that configures them,
 check out ``tw2/jit/samples.py``
 
-To give it a try you'll need git, mercurial, python, and virtualenv.  Run:
+To give it a try you'll need git, mercurial, python, and virtualenv.  Run::
 
-    ``git clone git://github.com/ralphbean/tw2.jit.git``
+    $ git clone git://github.com/ralphbean/tw2.jit.git
+    $ cd tw2.jit
 
-    ``cd tw2.jit``
+Setup a virtualenv with all the necessary tw2 dependencies::
 
-The following script will set up all the necessary tw2 dependencies in a
-python virtualenv:
+    $ mkvirtualenv --no-site-packages tw2.jit
+    $ python setup.py develop
+    $ pip install tw2.devtools
 
-    ``./develop-tw2-destroy-and-setup.sh``
+Start up the tw2 development server::
 
-The following will enter the virtualenv and start up ``paster tw2.browser``:
-
-    ``./develop-tw2-start.sh``
+    $ paster tw2.browser
 
 ...and browse to http://localhost:8000/ to check it out.
 
