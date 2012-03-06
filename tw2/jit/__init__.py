@@ -1,7 +1,7 @@
 """
 This package contains the basic jit widgets.
 
-Get this source from http://github.com/ralphbean/tw2.jit
+Get this source from http://github.com/toscawidgets/tw2.jit
 """
 
 #TODO -- this is *not* the right way to do this.
