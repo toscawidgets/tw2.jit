@@ -222,5 +222,4 @@ class DemoSQLARadialGraph(SQLARadialGraph):
     }
 
 import tw2.core as twc
-mw = twc.core.request_local()['middleware']
-mw.controllers.register(DemoSQLARadialGraph, 'db_radialgraph_demo')
+twc.register_controller(DemoSQLARadialGraph, 'db_radialgraph_demo')

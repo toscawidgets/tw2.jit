@@ -6,7 +6,7 @@ This file contains baseclasses for thejit widgets
 
 import tw2.core as twc
 from tw2.core.resources import JSLink, CSSLink
-from tw2.core.resources import JSSymbol, JSFuncCall
+from tw2.core.resources import JSSymbol, _JSFuncCall as JSFuncCall
 from tw2.core.resources import JSSource
 from tw2.core.resources import encoder
 from tw2.core.widgets import WidgetMeta
@@ -252,7 +252,8 @@ class JitWidget(twc.Widget):
             exec_delay=self.init_delay,
             setupcall=setupcall,
             loadcall=loadcall,
-            postcall=postcall)
+            postcall=postcall,
+        )
 
         self.resources.append(composite_js_call)
 

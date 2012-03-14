@@ -26,4 +26,10 @@ class TestAreaChartWidget(WidgetTest):
             { 'label': 'date B', 'values': [30, 10, 45, 10] }
         ]
     }
-    expected = """<div style="text-align:center; overflow:hidden; background-color:#3a3a3a; width: 500; height: 500;" id="foo"></div>"""
+    expected = """<div style="text-align:center; overflow:hidden; background-color:#3a3a3a; width: 750; height: 750;" id="foo"></div>"""
+
+class test_JS(object):
+    def test_js_call(self):
+        import tw2.jit.samples
+        w = tw2.jit.samples.DemoAreaChart(id='foo')
+        w.display()
