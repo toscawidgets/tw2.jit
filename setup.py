@@ -1,7 +1,5 @@
 from setuptools import setup, find_packages
 
-import multiprocessing, logging
-
 f = open('README.rst')
 long_description = f.read().strip()
 long_description = long_description.split('split here', 1)[1]
@@ -26,13 +24,6 @@ setup(
         "tw2.dynforms",
         "BeautifulSoup",
         ],
-    test_suite='nose.collector',
-    tests_require = [
-        'nose',
-        'formencode',
-        'strainer',
-        'webtest',
-    ],
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages = ['tw2'],
     zip_safe=False,

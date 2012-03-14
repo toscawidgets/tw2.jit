@@ -40,7 +40,8 @@ class DemoAreaChart(AreaChart):
     base_url = '/area_chart_data/'
 
 import tw2.core as twc
-twc.register_controller(DemoAreaChart, 'area_chart_data')
+twc.core.request_local()['middleware'].controllers.register(DemoAreaChart,
+                                                            'area_chart_data')
 
 from tw2.jit.widgets import BarChart
 from tw2.jit.samples.samples_data import BarChartJSONSampleData
