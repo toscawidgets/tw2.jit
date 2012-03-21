@@ -32,20 +32,20 @@ class AjaxRadialGraph(RadialGraph):
         """ TODO """, attribute=True,
         default=JSSymbol(src="""
         (function(json) {
-            json.id = jitwidget.root;
+            json.id = $$jitwidget.root;
         })"""))
 
     requestGraph = twc.Param(
         """ TODO """, attribute=True,
         default=JSSymbol(src="""
         (function() {
-            var that = this, id = jitwidget.clickedNodeId;
+            var that = this, id = $$jitwidget.clickedNodeId;
             var jsonRequest = $.ajax({
                 url: '$$base_url?key=' + encodeURIComponent(id),
                 dataType: 'json',
                 success:  function (json) {
                     that.preprocessTree(json);
-                    jitwidget.op.morph(json, {
+                    $$jitwidget.op.morph(json, {
                         id: id,
                         type: 'fade',
                         duration: $$duration,
@@ -63,7 +63,7 @@ class AjaxRadialGraph(RadialGraph):
                          return false;
                     }
 
-                    var old = jitwidget.graph.getNode(jitwidget.root);
+                    var old = $$jitwidget.graph.getNode($$jitwidget.root);
                     if ( !old ) return;
                     var subnodes = old.getSubnodes(1);
                     var map = [];
@@ -73,7 +73,7 @@ class AjaxRadialGraph(RadialGraph):
                         }
                     }
 
-                    jitwidget.op.removeNode(map.reverse(), {
+                    $$jitwidget.op.removeNode(map.reverse(), {
                         type: 'fade:seq',
                         duration: $$duration,
                         onBeforeCompute: (function(){}),
@@ -84,10 +84,10 @@ class AjaxRadialGraph(RadialGraph):
 
     onBeforeCompute = JSSymbol(src="""
         (function (node) {
-            jitwidget.oldRootToRemove = node.getParents()[0].id;
-            jitwidget.clickedNodeId = node.id;
-            if ( jitwidget.deep_linking ) {
-                window.location.hash = jitwidget.clickedNodeId;
+            $$jitwidget.oldRootToRemove = node.getParents()[0].id;
+            $$jitwidget.clickedNodeId = node.id;
+            if ( $$jitwidget.deep_linking ) {
+                window.location.hash = $$jitwidget.clickedNodeId;
             }
          })""")
 
@@ -97,7 +97,7 @@ class AjaxRadialGraph(RadialGraph):
                 var that = this;
                 jQuery(domElement).html(node.name);
                 jQuery(domElement).click(function() {
-                    jitwidget.onClick(domElement.id, {
+                    $$jitwidget.onClick(domElement.id, {
                         onComplete: function() {
                              that.requestGraph();
                         }
