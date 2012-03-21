@@ -80,7 +80,7 @@ class DemoSunburst(Sunburst):
 
     onCreateLabel = JSSymbol(src="""
     (function(domElement, node){
-       var labels = jitwidget.config.Label.type;
+       var labels = $$jitwidget.config.Label.type;
        var aw = node.getData('angularWidth');  
        if (labels === 'HTML' && (node._depth < 2 || aw > 2000)) {  
          domElement.innerHTML = node.name;  
@@ -90,7 +90,7 @@ class DemoSunburst(Sunburst):
      })""")
     onPlaceLabel = JSSymbol(src="""
         (function(domElement, node){  
-            var labels = jitwidget.config.Label.type;  
+            var labels = $$jitwidget.config.Label.type;  
             if (labels === 'SVG') {  
                 var fch = domElement.firstChild;  
                 var style = fch.style;  
