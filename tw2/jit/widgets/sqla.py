@@ -110,8 +110,8 @@ class SQLARadialGraph(AjaxRadialGraph):
                 }
                 return false;
             }
-            json.id = jitwidget.root;
-            var root = jitwidget.graph.getNode(jitwidget.root);
+            json.id = $$jitwidget.root;
+            var root = $$jitwidget.graph.getNode($$jitwidget.root);
             $jit.Graph.Util.eachAdjacency(root, function(elem) {
                 var nodeTo = elem.nodeTo, jsonNode = getNode(nodeTo.id);
                 if(jsonNode) jsonNode.id = nodeTo.id;
