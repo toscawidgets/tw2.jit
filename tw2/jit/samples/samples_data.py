@@ -1870,7 +1870,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "$jit namespace and $jit() for append vis to Global\n    \n    Example:\n    \n    new $jit.Hypertree({\n      'injectInto': 'myvisContainer'\n    });",
+             "description": "",
              "$angularWidth": 7490,
              "days": 111,
              "$color": "#FCD9A1",
@@ -1931,7 +1931,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "$jit namespace and $jit() for append vis to Global\n    \n    Example:\n    \n    new $jit.Hypertree({\n      'injectInto': 'myvisContainer'\n    });",
+             "description": "",
              "$angularWidth": 5838,
              "days": 111,
              "$color": "#FCD9A1",
@@ -2041,7 +2041,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "(Re)-Implemented nodeTypes using node/edgeHelpers\n    \n    Code is cleaner and NodeTypes are now easier to implement.",
+             "description": "(Re)-Implemented nodeTypes",
              "$angularWidth": 6947,
              "days": 32,
              "$color": "#ECCFB3",
@@ -2066,7 +2066,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "$jit namespace and $jit() for append vis to Global\n    \n    Example:\n    \n    new $jit.Hypertree({\n      'injectInto': 'myvisContainer'\n    });",
+             "description": "$jit namespace",
              "$angularWidth": 4064,
              "days": 111,
              "$color": "#FCD9A1",
@@ -2090,7 +2090,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "$jit namespace and $jit() for append vis to Global\n    \n    Example:\n    \n    new $jit.Hypertree({\n      'injectInto': 'myvisContainer'\n    });",
+             "description": "$jit namespace",
              "$angularWidth": 4372,
              "days": 111,
              "$color": "#FCD9A1",
@@ -2114,7 +2114,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "$jit namespace and $jit() for append vis to Global\n    \n    Example:\n    \n    new $jit.Hypertree({\n      'injectInto': 'myvisContainer'\n    });",
+             "description": "$jit namespace",
              "$angularWidth": 6696,
              "days": 111,
              "$color": "#FCD9A1",
@@ -2188,7 +2188,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "Add label types in Label configuration object.\n    \n    Add calls to getLabelData in plotLabel.",
+             "description": "Add label types",
              "$angularWidth": 392,
              "days": 26,
              "$color": "#E0C7C0",
@@ -2212,7 +2212,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "Added raw Canvas options + and animations\n    \n    Added the CanvasStyles object in Node/Edge properties to define raw\n    canvas properties before plotting a node or edge. For example\n    \n          Node: {\n            overridable: true,\n            dim: 4,\n            color: \"#fff\",\n            CanvasStyles: {\n              shadowBlur: 10,\n              shadowColor: '#ccc',\n              shadowOffsetY: 5,\n              shadowOffsetX: 5\n            }\n          }\n    \n    These properties can also be animated and accessed just like dataset\n    properties.\n    \n    Also there are new APIs for setting multiple properties at the same\n    time. setDataset and setCanvasStyles have been added and can be used\n    like this:\n    \n         node.setCanvasStyle('shadowBlur', 100, 'end');\n    \n         //will perform various node.setCanvasStyle\n         node.setCanvasStyles(['current', 'end'], {\n           'shadowBlur': [100, 5],\n           'shadowOffsetX': [200, 3]\n         });\n    \n         node.setData('width', 100, 'end');\n    \n         //will perform various node.setData\n         node.setDataset('end', {\n           'width': 100,\n           'color: '#ccc'\n         });\n    \n    For more information take a look at test1.js for the ForceDirected\n    visualization.",
+             "description": "Added raw Canvas options ",
              "$angularWidth": 1475,
              "days": 31,
              "$color": "#EACDB5",
@@ -2236,7 +2236,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "$jit namespace and $jit() for append vis to Global\n    \n    Example:\n    \n    new $jit.Hypertree({\n      'injectInto': 'myvisContainer'\n    });",
+             "description": "$jit namespace",
              "$angularWidth": 749,
              "days": 111,
              "$color": "#FCD9A1",
@@ -2248,7 +2248,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "Revisiting Extras.js Redesigning MouseEventManager and registered\n    classes to automatically use DOM elements via event delegation or canvas\n    based events.",
+             "description": "Revisiting Extras.js",
              "$angularWidth": 530,
              "days": 25,
              "$color": "#DEC6C2",
@@ -2260,7 +2260,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "Add label types in Label configuration object.\n    \n    Add calls to getLabelData in plotLabel.",
+             "description": "Add label types",
              "$angularWidth": 203,
              "days": 26,
              "$color": "#E0C7C0",
@@ -2272,7 +2272,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "* Ignore panning if Options.Navigation.panning = false\n     * Add 'avoid nodes' panning option for panning only when the cursor does not match a nodes position",
+             "description": "* Ignore panning",
              "$angularWidth": 137,
              "days": 1,
              "$color": "#AEA9F8",
@@ -2284,7 +2284,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "Added raw Canvas options + and animations\n    \n    Added the CanvasStyles object in Node/Edge properties to define raw\n    canvas properties before plotting a node or edge. For example\n    \n          Node: {\n            overridable: true,\n            dim: 4,\n            color: \"#fff\",\n            CanvasStyles: {\n              shadowBlur: 10,\n              shadowColor: '#ccc',\n              shadowOffsetY: 5,\n              shadowOffsetX: 5\n            }\n          }\n    \n    These properties can also be animated and accessed just like dataset\n    properties.\n    \n    Also there are new APIs for setting multiple properties at the same\n    time. setDataset and setCanvasStyles have been added and can be used\n    like this:\n    \n         node.setCanvasStyle('shadowBlur', 100, 'end');\n    \n         //will perform various node.setCanvasStyle\n         node.setCanvasStyles(['current', 'end'], {\n           'shadowBlur': [100, 5],\n           'shadowOffsetX': [200, 3]\n         });\n    \n         node.setData('width', 100, 'end');\n    \n         //will perform various node.setData\n         node.setDataset('end', {\n           'width': 100,\n           'color: '#ccc'\n         });\n    \n    For more information take a look at test1.js for the ForceDirected\n    visualization.",
+             "description": "Added raw Canvas options",
              "$angularWidth": 2083,
              "days": 31,
              "$color": "#EACDB5",
@@ -2320,7 +2320,7 @@ SunburstJSONSampleData = {
          {
            "children": [],
            "data": {
-             "description": "Revisiting Extras.js Redesigning MouseEventManager and registered\n    classes to automatically use DOM elements via event delegation or canvas\n    based events.",
+             "description": "Revisiting Extras.js RedesigningMouseEventManager",
              "$angularWidth": 1120,
              "days": 25,
              "$color": "#DEC6C2",

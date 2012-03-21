@@ -1,11 +1,11 @@
 tw2.jit
 =======
 
-:Author: Ralph Bean <ralph.bean@gmail.com>
+:Author: Ralph Bean <rbean@redhat.com>
 
 .. figure:: tw2.jit/raw/master/doc/images/screenshot1.png
     :alt: An examle of the RadialGraph widget
-    :target: http://github.com/ralphbean/tw2.jit
+    :target: http://github.com/toscawidgets/tw2.jit
     :align: center
 
     A screenshot of the ``tw2.jit.widgets.RadialGraph`` widget in action.
@@ -22,14 +22,14 @@ Live Demo
 ---------
 
 Peep the `live demonstration <http://tw2-demos.threebean.org/module?module=tw2.jit>`_ and
-`screenshots <http://github.com/ralphbean/tw2.jit/raw/master/doc/images/screenshot1.png>`_.
+`screenshots <http://github.com/toscawidgets/tw2.jit/raw/master/doc/images/screenshot1.png>`_.
 
 Links
 -----
 
-You can `get the source from github <http://github.com/ralphbean/tw2.jit>`_,
+You can `get the source from github <http://github.com/toscawidgets/tw2.jit>`_,
 check out `the PyPI page <http://pypi.python.org/pypi/tw2.jit>`_, and
-report or look into `bugs <http://github.com/ralphbean/tw2.jit/issues/>`_.
+report or look into `bugs <http://github.com/toscawidgets/tw2.jit/issues/>`_.
 
 Description
 -----------
@@ -46,30 +46,21 @@ for the Web.  It is pretty, interactive, and fast.
 
 This module, tw2.jit, provides `toscawidgets2 (tw2)`_ widgets that render `thejit`_ data visualizations.
 
-
 Sampling tw2.jit in the WidgetBrowser
 -------------------------------------
 
 The best way to scope out ``tw2.jit`` is to load its widgets in the
 ``tw2.devtools`` WidgetBrowser.  To see the source code that configures them,
-check out ``tw2/jit/samples.py``
+check out ``tw2.jit/tw2/jit/samples.py``
 
-To give it a try you'll need git, mercurial, python, and virtualenv.  Run::
+To give it a try you'll need git, python, and `virtualenvwrapper
+<http://pypi.python.org/pypi/virtualenvwrapper>`_.  Run::
 
-    $ git clone git://github.com/ralphbean/tw2.jit.git
+    $ git clone git://github.com/toscawidgets/tw2.jit.git
     $ cd tw2.jit
-
-Setup a virtualenv with all the necessary tw2 dependencies::
-
-    $ mkvirtualenv --no-site-packages tw2.jit
-    $ python setup.py develop
-    $ pip install tw2.devtools
-
-Start up the tw2 development server::
-
-    $ paster tw2.browser
+    $ mkvirtualenv tw2.jit
+    (tw2.jit) $ pip install tw2.devtools
+    (tw2.jit) $ python setup.py develop
+    (tw2.jit) $ paster tw2.browser
 
 ...and browse to http://localhost:8000/ to check it out.
-
-
-

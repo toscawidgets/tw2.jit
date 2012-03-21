@@ -5,15 +5,13 @@ This file contains baseclasses for thejit widgets
 """
 
 import tw2.core as twc
-from tw2.core.resources import JSLink, CSSLink
-from tw2.core.resources import JSSymbol, JSFuncCall
-from tw2.core.resources import JSSource
-from tw2.core.resources import encoder
+
+from tw2.core import js_callback, js_function, js_symbol
+
 from tw2.core.widgets import WidgetMeta
 from tw2.core.widgets import Widget
 
 from tw2.jit import jit_base
-from tw2.jit.resources import CompoundJSSource
 
 import tw2.jquery
 
@@ -24,18 +22,16 @@ modname = ".".join(__name__.split('.')[:-1])
 modname = "tw2.jit"
 
 # TODO -- what's the right way to choose minified or not in tw2?
-jit_yc_js = JSLink(modname=modname, filename="%s/jit-yc.js" % jit_base)
-jit_js = JSLink(modname=modname, filename="%s/jit.js" % jit_base)
-jit_glue_js = JSLink(modname=modname, filename="static/js/tw2.jit.glue.js")
-jit_css = CSSLink(modname=modname, filename="static/css/jit_base.css")
+jit_yc_js = twc.JSLink(modname=modname, filename="%s/jit-yc.js" % jit_base)
+jit_js = twc.JSLink(modname=modname, filename="%s/jit.js" % jit_base)
+jit_glue_js = twc.JSLink(modname=modname, filename="static/js/tw2.jit.glue.js")
+jit_css = twc.CSSLink(modname=modname, filename="static/css/jit_base.css")
 
 # TODO -- redo all of these with mako so we have examples of that and genshi
 class JitWidget(twc.Widget):
     """ Baseclass for all other tw2.jit.widgets
 
     Provides a set of parameters common to widgets in the library.
-
-    Uses tw2.jit.resources.CompoundJSSource for client-side initialization
     """
 
     # Hide docs from the widget browser.  They're very verbose.
@@ -62,7 +58,7 @@ class JitWidget(twc.Widget):
 
     postInitJSCallback = twc.Param(
         'javascript to run after client-side initialization of the widget',
-        default=JSSymbol(src='(function(jitwidget){})'), attribute=True)
+        default=js_callback("(function(node) {})"), attribute=True)
 
     data = twc.Param('python data to be jsonified and passed to the widget',
                     default=None, attribute=True)
@@ -92,7 +88,7 @@ class JitWidget(twc.Widget):
         All the possible transitions are listed here:
             http://thejit.org/static/v20/Docs/files/Options/Options-Fx-js.html#Options.Fx
         """,
-        default=JSSymbol(src="$jit.Trans.Quart.easeOut"), attribute=True)
+        default=js_callback("$jit.Trans.Quart.easeOut"), attribute=True)
 
     duration = twc.Param(
         '(number) Duration of the animation in milliseconds.',
@@ -177,7 +173,7 @@ class JitWidget(twc.Widget):
             '$$jitwidget': lambda s:'window._jitwidgets["%s"]' % s.compound_id,
             '$$deep_linking': lambda s: s.deep_linking,
             '$$duration': lambda s: s.duration,
-            '$$transition': lambda s: s.transition.src,
+            '$$transition': lambda s: str(s.transition),
         }
     )
     # End twc attrs
@@ -197,7 +193,8 @@ class JitWidget(twc.Widget):
             raise ValueError, msg
 
         if not self.data and not self.base_url:
-            msg = "%s requires 'data' or 'base_url' param." % self.__class__.__name__
+            msg = "%s requires 'data' or 'base_url' param." % \
+                    self.__class__.__name__
             raise ValueError, msg
 
         self.url = self.base_url
@@ -205,56 +202,66 @@ class JitWidget(twc.Widget):
             q_str = urllib.urlencode(self.url_kw)
             self.url += '?' + q_str
 
+        # TODO -- this should be overhauled to not use JSSymbol
         for k, v in self.attrs.iteritems():
-            if type(v) in [JSSymbol]:
+            if type(v) in [twc.JSSymbol]:
                 for var, fun in self.jsVariables.iteritems():
                     if not var in v.src:
                         continue
                     res = fun(self)
                     if not isinstance(res, basestring):
-                        res = encoder.encode(res)
+                        res = twc.encoder.encode(res)
 
-                    self.attrs[k] = JSSymbol(
+                    self.attrs[k] = twc.JSSymbol(
                         src=self.attrs[k].src.replace(var, res))
 
-        setupcall = JSFuncCall(
-            function='var jitwidget = setupTW2JitWidget',
-            args=[
-                self.jitClassName,
-                self.jitSecondaryClassName,
-                self.compound_id,
-                self.attrs
-            ])
+        setupcall = js_function('setupTW2JitWidget')(
+            self.jitClassName,
+            self.jitSecondaryClassName,
+            self.compound_id,
+            self.attrs
+        )
         if self.data:
             # For normal loading
-            loadcall = JSFuncCall(
-                function='jitwidget.loadJSON',
-                args=[self.data],)
-            postcall = JSSource(
-                src=self.attrs['postInitJSCallback'].src+'(jitwidget)')
+            loadcall = js_function(
+                self._jit_js_ident() + '.loadJSON'
+            )(self.data)
+            postcall = js_function(self.attrs['postInitJSCallback'])(
+                js_symbol(self._jit_js_ident()))
         else:
             # For asynchronous loading
             self.resources.append(tw2.jquery.jquery_js)
             loadcall = None
-            postcall = JSSource(src="""
-                                $.getJSON(
-                                    '%s',
-                                    function (data) {
-                                        // load data when we get it
-                                        jitwidget.loadJSON(data);
-                                        // Do post-init stuff
-                                        %s(jitwidget);
-                                    }
-                               );""" % (self.url,
-                                        self.attrs['postInitJSCallback'].src))
+            postcall = js_function('$.getJSON')(
+                self.url,
+                js_callback(
+                    """function(data) {
+                        // load data when we get it
+                        %s.loadJSON(data);
+                        // Do post-init stuff
+                        (%s)(%s);
+                    }
+                    """ % (
+                        self._jit_js_ident(),
+                        self.attrs['postInitJSCallback'],
+                        self._jit_js_ident(),
+                    )
+                ))
+        self.add_delayed_call(setupcall)
+        self.add_delayed_call(loadcall)
+        self.add_delayed_call(postcall)
 
-        composite_js_call = CompoundJSSource(
-            exec_delay=self.init_delay,
-            setupcall=setupcall,
-            loadcall=loadcall,
-            postcall=postcall)
+    def _jit_js_ident(self):
+        return self.jsVariables['$$jitwidget'](self)
 
-        self.resources.append(composite_js_call)
+    def add_delayed_call(self, call):
+        if not call:
+            return
+        self.add_call(js_function('setTimeout')(
+            js_callback(call),
+            self.init_delay
+        ))
+
 
 
 class JitTreeOrGraphWidget(JitWidget):
@@ -308,12 +315,12 @@ class JitTreeOrGraphWidget(JitWidget):
         "(javascript) This method is called right before performing all " +
         "computations and animations.  The selected Graph.Node " +
         "is passed as parameter.",
-        default=JSSymbol(src="(function(node) {})"), attribute=True)
+        default=js_callback("(function(node) {})"), attribute=True)
 
     onAfterCompute = twc.Param(
         "(javascript) This method is triggered after all animations " +
         "or computations ended.",
-        default=JSSymbol(src="(function(node) {})"), attribute=True)
+        default=js_callback("(function(node) {})"), attribute=True)
 
     onCreateLabel = twc.Param(
         "(javascript) This method receives a new label DIV element as " +
@@ -321,7 +328,7 @@ class JitTreeOrGraphWidget(JitWidget):
         "parameter.  This method will only be called once for each label.  " +
         "This method is useful when adding events or styles to the labels " +
         "used by the JIT.",
-        default=JSSymbol(src="(function(node) {})"), attribute=True)
+        default=js_callback("(function(node) {})"), attribute=True)
 
     onPlaceLabel = twc.Param(
         "(javascript) This method receives a label DIV element as first " +
@@ -333,26 +340,26 @@ class JitTreeOrGraphWidget(JitWidget):
         "the labels positions.  That means that, for example, the left and " +
         "top css properties are already updated to match the nodes " +
         "positions.  Width and height properties are not set however.",
-        default=JSSymbol(src="(function(node) {})"), attribute=True)
+        default=js_callback("(function(node) {})"), attribute=True)
 
     onBeforePlotNode = twc.Param(
         "(javascript) This method is triggered right before plotting " +
         "each Graph.Node.  This method is useful for changing a node " +
         "style right before plotting it.",
-        default=JSSymbol(src="(function(node) {})"), attribute=True)
+        default=js_callback("(function(node) {})"), attribute=True)
 
     onAfterPlotNode = twc.Param(
         "(javascript) This method is triggered right after plotting " +
         "each Graph.Node.",
-        default=JSSymbol(src="(function(node) {})"), attribute=True)
+        default=js_callback("(function(node) {})"), attribute=True)
 
     onBeforePlotLine = twc.Param(
         "(javascript) This method is triggered right before plotting " +
         "a Graph.Adjacence.  This method is useful for adding some " +
         "styles to a particular edge before being plotted.",
-        default=JSSymbol(src="(function(node) {})"), attribute=True)
+        default=js_callback("(function(node) {})"), attribute=True)
 
     onAfterPlotLine = twc.Param(
         "(javascript) This method is triggered right after plotting " +
         "a Graph.Adjacence.",
-        default=JSSymbol(src="(function(node) {})"), attribute=True)
+        default=js_callback("(function(node) {})"), attribute=True)

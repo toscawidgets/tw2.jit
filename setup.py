@@ -7,14 +7,14 @@ f.close()
 
 setup(
     name='tw2.jit',
-    version='0.3.06',
+    version='2.0.0',
     description='toscawidgets2 wrapper for the javascript infovis toolkit(jit)',
     long_description=long_description,
     author='Ralph Bean',
-    author_email='ralph.bean@gmail.com',
-    url='',
+    author_email='rbean@redhat.com',
+    url='http://github.com/toscawidgets/tw2.jit',
     install_requires=[
-        "tw2.core",
+        "tw2.core>=2.0.0",
         "tw2.jquery",
         "genshi",
         "mako",
