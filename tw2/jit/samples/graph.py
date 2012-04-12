@@ -45,7 +45,7 @@ class DemoRadialGraph(RadialGraph):
         (function(domElement, node){
             domElement.innerHTML = node.name;
             domElement.onclick = function(){
-                jitwidget.onClick(node.id);
+                $$jitwidget.onClick(node.id);
             };
         })""")
     onPlaceLabel = JSSymbol(src="""
@@ -129,17 +129,17 @@ class DemoForceDirectedGraph(ForceDirectedGraph):
             'enable' : True,
             'onMouseEnter' : JSSymbol(src="""
             (function() { 
-                jitwidget.canvas.getElement().style.cursor = \'move\';
+                $$jitwidget.canvas.getElement().style.cursor = \'move\';
             })"""),
             'onMouseLeave' : JSSymbol(src="""
             (function() {
-                jitwidget.canvas.getElement().style.cursor = \'\';
+                $$jitwidget.canvas.getElement().style.cursor = \'\';
             })"""),
             'onDragMove' : JSSymbol(src="""
             (function(node, eventInfo, e) {
                 var pos = eventInfo.getPos();
                 node.pos.setc(pos.x, pos.y);
-                jitwidget.plot();
+                $$jitwidget.plot();
             })"""),
             'onTouchMove' : JSSymbol(src="""
             (function(node, eventInfo, e) {

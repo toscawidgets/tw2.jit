@@ -202,18 +202,39 @@ class JitWidget(twc.Widget):
             q_str = urllib.urlencode(self.url_kw)
             self.url += '?' + q_str
 
+
+        def replacements(k, v):
+            """ Generator that yields key, value pairs where the value has had
+            all of its custom jsVariables replaced.
+
+            TODO - this could be wildly optimized.
+            """
+
+            src = v.src
+
+            for var, fun in self.jsVariables.iteritems():
+                if not var in src:
+                    continue
+                res = fun(self)
+                if not isinstance(res, basestring):
+                    res = twc.encoder.encode(res)
+
+                src = src.replace(var, res)
+
+            yield k, twc.JSSymbol(src=src)
+
         # TODO -- this should be overhauled to not use JSSymbol
         for k, v in self.attrs.iteritems():
             if type(v) in [twc.JSSymbol]:
-                for var, fun in self.jsVariables.iteritems():
-                    if not var in v.src:
-                        continue
-                    res = fun(self)
-                    if not isinstance(res, basestring):
-                        res = twc.encoder.encode(res)
+                for key_to_replace, new_value in replacements(k, v):
+                    self.attrs[key_to_replace] = new_value
 
-                    self.attrs[k] = twc.JSSymbol(
-                        src=self.attrs[k].src.replace(var, res))
+            if k == 'Events':
+                for _k, _v in v.items():
+                    if type(_v) in [twc.JSSymbol]:
+                        for key_to_replace, new_value in replacements(_k, _v):
+                            self.attrs['Events'][key_to_replace] = new_value
+
 
         setupcall = js_function('setupTW2JitWidget')(
             self.jitClassName,

@@ -130,8 +130,8 @@ class DemoSunburst(Sunburst):
         'onClick': JSSymbol(src="""
             (function(node) {  
                 if(!node) return;  
-                jitwidget.tips.hide();  
-                jitwidget.rotate(node, 'animate', {  
+                $$jitwidget.tips.hide();  
+                $$jitwidget.rotate(node, 'animate', {  
                     duration: 1000,  
                     transition: $jit.Trans.Quart.easeInOut  
                 });  
@@ -164,7 +164,7 @@ class DemoHyperTree(HyperTree):
             ( function(domElement, node){
                   domElement.innerHTML = node.name;
                   $jit.util.addEvent(domElement, 'click', function () {
-                      jitwidget.onClick(node.id);
+                      $$jitwidget.onClick(node.id);
                   });
             })""")
 
@@ -225,7 +225,7 @@ class DemoSpaceTree(SpaceTree):
             label.id = node.id;            
             label.innerHTML = node.name;
             label.onclick = function(){
-                jitwidget.onClick(node.id);
+                $$jitwidget.onClick(node.id);
             };
             var style = label.style;
             style.width = 60 + 'px';
@@ -296,34 +296,34 @@ class DemoIcicle(Icicle):
         'onMouseEnter': JSSymbol(src="""
             (function(node) {
                 node.setData('border', '#33dddd');
-                jitwidget.fx.plotNode(node, jitwidget.canvas);
-                jitwidget.labels.plotLabel(
-                                 jitwidget.canvas,
+                $$jitwidget.fx.plotNode(node, $$jitwidget.canvas);
+                $$jitwidget.labels.plotLabel(
+                                 $$jitwidget.canvas,
                                  node,
-                                 jitwidget.controller);
+                                 $$jitwidget.controller);
             })"""),
         'onMouseLeave': JSSymbol(src="""
             (function(node) {
                 node.removeData('border');
-                jitwidget.fx.plot();
+                $$jitwidget.fx.plot();
             })"""),
         'onClick': JSSymbol(src="""
             (function(node){
                 if (node) {
-                    jitwidget.tips.hide();
-                    if(jitwidget.events.hoveredNode){
-                        this.onMouseLeave(jitwidget.events.hoveredNode);
+                    $$jitwidget.tips.hide();
+                    if($$jitwidget.events.hoveredNode){
+                        this.onMouseLeave($$jitwidget.events.hoveredNode);
                     }
-                    jitwidget.enter(node);
+                    $$jitwidget.enter(node);
                }
             })"""),
         'onRightClick': JSSymbol(src="""
             (function(){
-                jitwidget.tips.hide();
-                if(jitwidget.events.hoveredNode) {
-                    this.onMouseLeave(jitwidget.events.hoveredNode);
+                $$jitwidget.tips.hide();
+                if($$jitwidget.events.hoveredNode) {
+                    this.onMouseLeave($$jitwidget.events.hoveredNode);
                 }
-                jitwidget.out();
+                $$jitwidget.out();
             })"""),
     }
     onCreateLabel = JSSymbol(src="""
