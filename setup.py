@@ -7,12 +7,13 @@ f.close()
 
 setup(
     name='tw2.jit',
-    version='2.0.1',
+    version='2.0.2',
     description='toscawidgets2 wrapper for the javascript infovis toolkit(jit)',
     long_description=long_description,
     author='Ralph Bean',
     author_email='rbean@redhat.com',
     url='http://github.com/toscawidgets/tw2.jit',
+    license='MIT',
     install_requires=[
         "tw2.core>=2.0.0",
         "tw2.jquery",
@@ -35,7 +36,8 @@ setup(
         'toscawidgets.widgets',
     ],
     classifiers = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
+        'License :: OSI Approved :: MIT License',
         'Environment :: Web Environment',
         'Environment :: Web Environment :: ToscaWidgets',
         'Topic :: Software Development :: Libraries :: Python Modules',
