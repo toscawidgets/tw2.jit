@@ -59,8 +59,8 @@ class TreeMap(JitTree):
         '(dict) Of the form Options.Events in the jit docs.',
         default={
             'enable': True,
-            'onClick': JSSymbol(src='(function(node) {if (node) {jitwidget.enter(node);}})'),
-            'onRightClick': JSSymbol(src='(function() {jitwidget.out();})'),
+            'onClick': JSSymbol(src='(function(node) {if (node) {$$jitwidget.enter(node);}})'),
+            'onRightClick': JSSymbol(src='(function() {$$jitwidget.out();})'),
         }, attribute=True)
 
     # TODO - Node.Type
