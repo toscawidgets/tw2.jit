@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 f = open('README.rst')
 long_description = f.read().strip()
@@ -23,7 +23,12 @@ setup(
         "sqlalchemy",
         "BeautifulSoup",
         ],
-    packages=find_packages(exclude=['ez_setup']),
+    packages=[
+        'tw2',
+        'tw2.jit',
+        'tw2.jit.samples',
+        'tw2.jit.widgets',
+    ],
     namespace_packages = ['tw2'],
     zip_safe=False,
     include_package_data=True,
