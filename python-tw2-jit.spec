@@ -3,8 +3,8 @@
 %global modname tw2.jit
 
 Name:           python-tw2-jit
-Version:        2.0.2
-Release:        2%{?dist}
+Version:        2.0.3
+Release:        1%{?dist}
 Summary:        Javascript Infovis Toolkit (JIT) for ToscaWidgets2
 
 Group:          Development/Languages
@@ -67,10 +67,13 @@ mv setup.py.tmp setup.py
     --install-data=%{_datadir} --root %{buildroot}
 
 %files
-%doc README.rst
+%doc README.rst LICENSE-tw2-jit.txt LICENSE-jit.txt
 %{python_sitelib}/*
 
 %changelog
+* Wed May 02 2012 Ralph Bean <rbean@redhat.com> - 2.0.3-1
+- New upstream release just to include LICENSE files.
+
 * Wed May 02 2012 Ralph Bean <rbean@redhat.com> - 2.0.2-2
 - Removed clean section
 - Removed defattr in files section
