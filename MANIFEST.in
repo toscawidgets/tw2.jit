@@ -1,4 +1,6 @@
+include LICENSE-jit.txt
+include LICENSE-tw2-jit.txt
 include README.rst
 recursive-include tw2/jit/templates *
 recursive-include tw2/jit/static *
-recursive-include tests *
+recursive-include tests *.py

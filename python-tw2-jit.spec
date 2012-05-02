@@ -3,7 +3,7 @@
 %global modname tw2.jit
 
 Name:           python-tw2-jit
-Version:        2.0.2
+Version:        2.0.3
 Release:        1%{?dist}
 Summary:        Javascript Infovis Toolkit (JIT) for ToscaWidgets2
 
@@ -11,7 +11,6 @@ Group:          Development/Languages
 License:        MIT
 URL:            http://toscawidgets.org
 Source0:        http://pypi.python.org/packages/source/t/%{modname}/%{modname}-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
 # For building
@@ -51,22 +50,34 @@ thejit data visualizations.
 %prep
 %setup -q -n %{modname}-%{version}
 
+%if %{?rhel}%{!?rhel:0} >= 6
+
+# Make sure that epel/rhel picks up the correct version of webob
+awk 'NR==1{print "import __main__; __main__.__requires__ = __requires__ = [\"WebOb>=1.0\"]; import pkg_resources"}1' setup.py > setup.py.tmp
+mv setup.py.tmp setup.py
+
+%endif
+
+
 %build
 %{__python} setup.py build
 
 %install
-rm -rf %{buildroot}
 %{__python} setup.py install -O1 --skip-build \
     --install-data=%{_datadir} --root %{buildroot}
 
-%clean
-rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root,-)
-%doc README.rst
+%doc README.rst LICENSE-tw2-jit.txt LICENSE-jit.txt
 %{python_sitelib}/*
 
 %changelog
+* Wed May 02 2012 Ralph Bean <rbean@redhat.com> - 2.0.3-1
+- New upstream release just to include LICENSE files.
+
+* Wed May 02 2012 Ralph Bean <rbean@redhat.com> - 2.0.2-2
+- Removed clean section
+- Removed defattr in files section
+- Removed unnecessary references to buildroot
+
 * Thu Apr 12 2012 Ralph Bean <rbean@redhat.com> - 2.0.2-1
 - Initial packaging for Fedora
