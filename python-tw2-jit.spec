@@ -4,7 +4,7 @@
 
 Name:           python-tw2-jit
 Version:        2.0.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Javascript Infovis Toolkit (JIT) for ToscaWidgets2
 
 Group:          Development/Languages
@@ -71,10 +71,13 @@ mv setup.py.tmp setup.py
 %doc README.rst LICENSE-tw2-jit.txt LICENSE-jit.txt
 
 %{python_sitelib}/tw2/jit
-%{python_sitelib}/%{name}-%{version}*
+%{python_sitelib}/%{modname}-%{version}*
 
 
 %changelog
+* Fri May 11 2012 Ralph Bean <rbean@redhat.com> - 2.0.3-3
+- Fixed typo in the files section.
+
 * Fri May 11 2012 Ralph Bean <rbean@redhat.com> - 2.0.3-2
 - Resolved directory ownership conflict.
 
