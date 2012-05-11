@@ -4,7 +4,7 @@
 
 Name:           python-tw2-jit
 Version:        2.0.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Javascript Infovis Toolkit (JIT) for ToscaWidgets2
 
 Group:          Development/Languages
@@ -20,6 +20,7 @@ BuildRequires:  python-tw2-core
 BuildRequires:  python-tw2-jquery
 BuildRequires:  python-tw2-sqla
 BuildRequires:  python-sqlalchemy
+
 BuildRequires:  python-BeautifulSoup
 BuildRequires:  python-genshi
 BuildRequires:  python-mako
@@ -68,9 +69,15 @@ mv setup.py.tmp setup.py
 
 %files
 %doc README.rst LICENSE-tw2-jit.txt LICENSE-jit.txt
-%{python_sitelib}/*
+
+%{python_sitelib}/tw2/jit
+%{python_sitelib}/%{name}-%{version}*
+
 
 %changelog
+* Fri May 11 2012 Ralph Bean <rbean@redhat.com> - 2.0.3-2
+- Resolved directory ownership conflict.
+
 * Wed May 02 2012 Ralph Bean <rbean@redhat.com> - 2.0.3-1
 - New upstream release just to include LICENSE files.
 
