@@ -74,9 +74,9 @@ class JitWidget(twc.Widget):
         '(string) background color of the jit container div',
         default='#3a3a3a', attribute=True)
 
-    width = twc.Param('(string) widget width', default='750',attribute=True)
+    width = twc.Param('(string) widget width', default='590',attribute=True)
 
-    height = twc.Param('(string) widget height', default='750',attribute=True)
+    height = twc.Param('(string) widget height', default='590',attribute=True)
 
     animate = twc.Param(
         '(boolean) Whether to add animated transitions.',
